@@ -1,52 +1,73 @@
 import React from "react";
 import styles from "./Tile.module.css";
 
-const Tile = () => {
+const Tile = ({
+  goatImages,
+  gender,
+  netWeight,
+  meatOnlyWeight,
+  totalShares,
+  approxShareSize,
+  perShareCost,
+  cutSize,
+  headLegsBrainPrice,
+  headPrice,
+  legsPrice,
+  brainPrice,
+  extraCost,
+  totalBotiShares,
+  botiShareCost,
+  deliveryDateTimestamp,
+}) => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.tileImage}>
-          <img src="/images/goatLogo.jpeg" alt="Goat Logo" />
+          <img
+            src={goatImages ? goatImages[0] : "/images/goat1.jpeg"}
+            alt="Goat Logo"
+          />
         </div>
         <div className={styles.goatDetails}>
           <p>
-            Gender: <span>Male (పొట్టేలు)</span>
+            Gender: <span>{gender}</span>
           </p>
           <p>
-            Net weight: <span>19 kgs</span>
+            Net weight: <span>{netWeight}</span>
           </p>
           <p>
-            Expected meat-only weight (including liver): <span>10 kgs</span>
+            Expected meat-only weight (including liver):{" "}
+            <span>{meatOnlyWeight}</span>
           </p>
           <p>
-            Total shares: <span>20</span>
+            Total shares: <span>{totalShares}</span>
           </p>
           <p>
-            Approx share size: <span>500 gms</span>
+            Approx share size: <span>{approxShareSize}</span>
           </p>
           <p>
-            Per share cost: <span>390</span>
+            Per share cost: <span>₹ {perShareCost}/-</span>
           </p>
           <p>
-            Size: <span>Curry cut</span>
+            Size: <span>{cutSize}</span>
           </p>
           <p>
-            Talkaya + Kaalu + Brain: <span>650</span>
+            Talkaya + Kaalu + Brain: <span>₹{headLegsBrainPrice}/-</span>
           </p>
           <p>
-            Takaya: <span>350</span>
+            Talkaya: <span>₹ {headPrice}/-</span>
           </p>
           <p>
-            Kaalu: <span>250</span>
+            Kaalu: <span>₹ {legsPrice}/-</span>
           </p>
           <p>
-            Brain: <span>100</span>
+            Brain: <span>₹ {brainPrice}/-</span>
           </p>
           <p>
-            Tilli, Heart, Liver, Testicles, etc.: <span>200</span>
+            Tilli, Heart, Liver, Testicles, etc.: <span>₹ {extraCost}/-</span>
           </p>
           <p>
-            Boti (2 shares, share cost): <span>200</span>
+            Boti (2 shares, share cost): <span>₹ {botiShareCost}/-</span>
           </p>
         </div>
       </div>

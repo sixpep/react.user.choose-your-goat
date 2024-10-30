@@ -1,0 +1,33 @@
+.container {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  border-radius: 8px; /* optional for smooth corners */
+  padding: 1rem; /* adjust padding as needed */
+  background-color: white; /* set a background for contrast */
+  width: 100%;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.tileImage {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.tileImage img {
+  display: flex;
+  width: 100%;
+}
+
+.goatDetails {
+  padding: 1rem;
+}
+
+.goatDetails span {
+  font-weight: 600;
+}
