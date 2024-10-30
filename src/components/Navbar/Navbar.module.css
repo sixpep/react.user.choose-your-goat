@@ -1,0 +1,37 @@
+.container {
+  position: sticky;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #133e87;
+  top: 0;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+  width: 95%;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.logoContainer h6 {
+  color: #eeeeee;
+  font-size: 18px;
+}
+
+.logoImageContainer {
+  display: flex;
+  align-items: center;
+}
+
+.logoImageContainer img {
+  width: 38px;
+  border-radius: 50%;
+}
