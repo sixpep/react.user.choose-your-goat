@@ -43,6 +43,9 @@ const Tile = ({
             Total shares: <span>{totalShares}</span>
           </p>
           <p>
+            Remaining shares: <span>{totalShares}</span>
+          </p>
+          <p>
             Approx share size: <span>{approxShareSize}</span>
           </p>
           <p>

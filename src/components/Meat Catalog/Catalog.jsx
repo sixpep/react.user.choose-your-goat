@@ -70,7 +70,7 @@ const Catalog = () => {
         brainPrice={97}
         botiShareCost={200}
         extraCost={200}
-      />{" "}
+      />
       <Tile
         gender="Male"
         netWeight={12}
