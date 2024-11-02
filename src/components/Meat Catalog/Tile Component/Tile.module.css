@@ -1,16 +1,27 @@
 .container {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
-  border-radius: 8px; /* optional for smooth corners */
-  padding: 1rem; /* adjust padding as needed */
-  background-color: white; /* set a background for contrast */
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: white;
   width: 100%;
+  user-select: none;
 }
 
 .content {
   display: flex;
   flex-direction: column;
   width: 100%;
+  gap: 1rem;
+}
+
+.content h3 {
+  display: inline-block;
+  background-color: #ffedcd;
+  font-weight: 400;
+  font-size: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 0.2rem 0;
 }
 
 .tileImage {
@@ -25,9 +36,101 @@
 }
 
 .goatDetails {
-  padding: 1rem;
+  color: #374452;
+  /* padding: 1rem; */
+}
+
+.descriptionTable {
+  border-bottom: 1px solid #374452;
+}
+
+.descriptionTable table {
+  width: 100%;
+}
+
+.descriptionTable table tbody tr td {
+  padding-bottom: 0.8rem;
+  /* align-content: baseline; */
+}
+
+.descriptionTable table tr td:nth-child(3) {
+  box-sizing: border-box;
+  font-weight: 600;
+  padding-left: 1rem;
+}
+
+.descriptionTable td:nth-child(1) {
+  width: 60%;
 }
 
 .goatDetails span {
   font-weight: 600;
+}
+
+.quantityControl {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  flex-direction: column;
+  gap: 0.3rem;
+  border-bottom: 1px solid #374452;
+  padding-bottom: 0.3rem;
+}
+
+.quantityLabels {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.quantityButtons {
+  display: flex;
+  align-items: center;
+}
+
+.quantityButtons button {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  border-radius: 50%;
+}
+
+.quantityButtons button:hover {
+  background-color: #e0e0e0;
+}
+
+.quantityButtons input {
+  width: 40px;
+  text-align: center;
+  border: none;
+  margin: 0 4px;
+  font-size: 14px;
+}
+
+.addToCartWrap {
+  display: flex;
+  justify-content: right;
+}
+
+.addToCartButton {
+  background-color: #608bc1;
+  color: #fff;
+  padding: 8px 12px;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 16px;
+  transition: background-color 0.3s ease;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.availableNote {
+  font-size: 12px;
+  color: #bb2124;
 }

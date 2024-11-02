@@ -3,4 +3,33 @@
   flex-direction: column;
   gap: 2rem;
   padding: 1rem;
+  margin-bottom: 4rem;
+}
+
+.checkOutWrap {
+  background-color: #133e87;
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+  color: white;
+}
+
+.checkOutWrap span {
+  font-weight: 600;
+}
+
+.checkOutWrap button {
+  background-color: #f5c656;
+  border: none;
+  color: #363e47;
+  font-weight: 600;
+  padding: 0.6rem 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  border-radius: 5px;
 }

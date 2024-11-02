@@ -25,6 +25,7 @@ const Catalog = () => {
         return (
           <Tile
             key={index}
+            goatImage={item.goatImage}
             gender={item.gender}
             netWeight={item.netWeight}
             meatOnlyWeight={item.meatOnlyWeight}
@@ -38,6 +39,43 @@ const Catalog = () => {
             brainPrice={item.brainPrice}
             botiShareCost={item.botiShareCost}
             extraCost={item.extraCost}
+            deliveryDateTimestamp={item.deliveryDateTimestamp}
+            totalBotiShares={item.totalBotiShares}
+            remainingBotiShares={item.remainingBotiShares}
+            headLegsBrainAvailability={item.headLegsBrainAvailability}
+            headAvailability={item.headAvailability}
+            brainAvailability={item.brainAvailability}
+            legsAvailability={item.legsAvailability}
+            remainingShares={item.remainingShares}
+          />
+        );
+      })}
+      {goatsData?.map((item, index) => {
+        return (
+          <Tile
+            key={index}
+            goatImage={item.goatImage}
+            gender={item.gender}
+            netWeight={item.netWeight}
+            meatOnlyWeight={item.meatOnlyWeight}
+            totalShares={item.totalShares}
+            approxShareSize={item.approxShareSize}
+            perShareCost={item.perShareCost}
+            cutSize={item.cutSize}
+            headLegsBrainPrice={item.headLegsBrainPrice}
+            headPrice={item.headPrice}
+            legsPrice={item.legsPrice}
+            brainPrice={item.brainPrice}
+            botiShareCost={item.botiShareCost}
+            extraCost={item.extraCost}
+            deliveryDateTimestamp={item.deliveryDateTimestamp}
+            totalBotiShares={item.totalBotiShares}
+            remainingBotiShares={item.remainingBotiShares}
+            headLegsBrainAvailability={item.headLegsBrainAvailability}
+            headAvailability={item.headAvailability}
+            brainAvailability={item.brainAvailability}
+            legsAvailability={item.legsAvailability}
+            remainingShares={item.remainingShares}
           />
         );
       })}
@@ -55,6 +93,7 @@ const Catalog = () => {
         brainPrice={97}
         botiShareCost={200}
         extraCost={200}
+        deliveryDateTimestamp={1731196800000}
       />{" "}
       <Tile
         gender="Male"
@@ -86,6 +125,12 @@ const Catalog = () => {
         botiShareCost={200}
         extraCost={200}
       />
+      <div className={styles.checkOutWrap}>
+        <p>
+          Total : <span> ₹ 4000</span>
+        </p>
+        <button>Check out</button>
+      </div>
     </div>
   );
 };
