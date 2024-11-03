@@ -7,6 +7,7 @@ const socket = io("http://localhost:3000");
 
 const Catalog = () => {
   const [goatsData, setGoatsData] = useState([]);
+  const [order, setOrder] = useState({});
 
   useEffect(() => {
     socket.on("goatsData", (data) => {
@@ -47,10 +48,12 @@ const Catalog = () => {
             brainAvailability={item.brainAvailability}
             legsAvailability={item.legsAvailability}
             remainingShares={item.remainingShares}
+            order={order}
+            setOrder={setOrder}
           />
         );
       })}
-      {goatsData?.map((item, index) => {
+      {/* {goatsData?.map((item, index) => {
         return (
           <Tile
             key={index}
@@ -124,10 +127,10 @@ const Catalog = () => {
         brainPrice={97}
         botiShareCost={200}
         extraCost={200}
-      />
+      /> */}
       <div className={styles.checkOutWrap}>
         <p>
-          Total : <span> ₹ 4000</span>
+          Total : <span> ₹ {order.totalBill}</span>
         </p>
         <button>Check out</button>
       </div>

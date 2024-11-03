@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Tile.module.css";
 
 const Tile = ({
@@ -24,23 +24,56 @@ const Tile = ({
   remainingShares,
   headAvailability,
   legsAvailability,
+  order,
+  setOrder,
 }) => {
   // State to manage quantity for each item
+  const [muttonQuantity, setMuttonQuantity] = useState(0);
   const [headQuantity, setHeadQuantity] = useState(0);
   const [legsQuantity, setLegsQuantity] = useState(0);
   const [brainQuantity, setBrainQuantity] = useState(0);
   const [botiQuantity, setBotiQuantity] = useState(0);
+  const [headLegsBrainQuantity, setHeadLegsBrainQuantity] = useState(0);
+  const [addedToCart, setAddedToCart] = useState(false);
 
   // Handlers to control quantity increment and decrement
-  const handleIncrement = (setter) => setter((prev) => prev + 1);
+  const handleIncrement = (setter, availability, quantity) => {
+    if (quantity < availability) setter((prev) => prev + 1);
+  };
+
   const handleDecrement = (setter, quantity) => {
-    if (quantity > 0) setter((prev) => prev - 1);
+    if (quantity > 0) {
+      setter((prev) => prev - 1);
+    }
   };
 
   const handleDeliveryDate = (timestamp) => {
     const options = { weekday: "long", month: "short", day: "numeric" };
     return new Date(timestamp).toLocaleDateString("en-US", options);
   };
+
+  useEffect(() => {
+    const updatedBill =
+      muttonQuantity * perShareCost +
+      headQuantity * headPrice +
+      legsQuantity * legsPrice +
+      brainQuantity * brainPrice +
+      headLegsBrainQuantity * headLegsBrainPrice +
+      botiQuantity * botiShareCost;
+
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      totalBill: updatedBill, // Add updatedBill to the previous totalBill
+    }));
+    console.log(order);
+  }, [
+    muttonQuantity,
+    headQuantity,
+    legsQuantity,
+    brainQuantity,
+    headLegsBrainQuantity,
+    botiQuantity,
+  ]);
 
   return (
     <div className={styles.container}>
@@ -115,16 +148,26 @@ const Tile = ({
             <div className={styles.quantityLabels}>
               <div className={styles.quantityButtons}>
                 <button
-                  onClick={() => handleDecrement(setHeadQuantity, headQuantity)}
+                  onClick={() =>
+                    handleDecrement(setMuttonQuantity, muttonQuantity)
+                  }
                 >
                   -
                 </button>
-                <input type="text" value={headQuantity} readOnly />
-                <button onClick={() => handleIncrement(setHeadQuantity)}>
+                <input type="text" value={muttonQuantity} readOnly />
+                <button
+                  onClick={() =>
+                    handleIncrement(
+                      setMuttonQuantity,
+                      remainingShares,
+                      muttonQuantity
+                    )
+                  }
+                >
                   +
                 </button>
               </div>
-              <span>₹ {perShareCost * headQuantity}/-</span>
+              <span>₹ {perShareCost * muttonQuantity}/-</span>
             </div>
             <span className={styles.availableNote}>
               (Available: {remainingShares || 0} shares)
@@ -135,16 +178,32 @@ const Tile = ({
             <div className={styles.quantityLabels}>
               <div className={styles.quantityButtons}>
                 <button
-                  onClick={() => handleDecrement(setHeadQuantity, headQuantity)}
+                  onClick={() =>
+                    handleDecrement(
+                      setHeadLegsBrainQuantity,
+                      headLegsBrainQuantity
+                    )
+                  }
                 >
                   -
                 </button>
-                <input type="text" value={headQuantity} readOnly />
-                <button onClick={() => handleIncrement(setHeadQuantity)}>
+                <input type="text" value={headLegsBrainQuantity} readOnly />
+                <button
+                  onClick={() =>
+                    handleIncrement(
+                      setHeadLegsBrainQuantity,
+                      headLegsBrainAvailability,
+                      headLegsBrainQuantity
+                    )
+                  }
+                  disabled={
+                    headQuantity > 0 || legsQuantity > 0 || brainQuantity > 0
+                  }
+                >
                   +
                 </button>
               </div>
-              <span>₹ {headPrice * headQuantity}/-</span>
+              <span>₹ {headLegsBrainPrice * headLegsBrainQuantity}/-</span>
             </div>
             <span className={styles.availableNote}>
               (Available:{" "}
@@ -164,7 +223,16 @@ const Tile = ({
                   -
                 </button>
                 <input type="text" value={headQuantity} readOnly />
-                <button onClick={() => handleIncrement(setHeadQuantity)}>
+                <button
+                  onClick={() =>
+                    handleIncrement(
+                      setHeadQuantity,
+                      headAvailability,
+                      headQuantity
+                    )
+                  }
+                  disabled={headLegsBrainQuantity > 0}
+                >
                   +
                 </button>
               </div>
@@ -184,7 +252,16 @@ const Tile = ({
                   -
                 </button>
                 <input type="text" value={legsQuantity} readOnly />
-                <button onClick={() => handleIncrement(setLegsQuantity)}>
+                <button
+                  onClick={() =>
+                    handleIncrement(
+                      setLegsQuantity,
+                      legsAvailability,
+                      legsQuantity
+                    )
+                  }
+                  disabled={headLegsBrainQuantity > 0}
+                >
                   +
                 </button>
               </div>
@@ -206,7 +283,16 @@ const Tile = ({
                   -
                 </button>
                 <input type="text" value={brainQuantity} readOnly />
-                <button onClick={() => handleIncrement(setBrainQuantity)}>
+                <button
+                  onClick={() =>
+                    handleIncrement(
+                      setBrainQuantity,
+                      brainAvailability,
+                      brainQuantity
+                    )
+                  }
+                  disabled={headLegsBrainQuantity > 0}
+                >
                   +
                 </button>
               </div>
@@ -226,7 +312,15 @@ const Tile = ({
                   -
                 </button>
                 <input type="text" value={botiQuantity} readOnly />
-                <button onClick={() => handleIncrement(setBotiQuantity)}>
+                <button
+                  onClick={() =>
+                    handleIncrement(
+                      setBotiQuantity,
+                      remainingBotiShares,
+                      botiQuantity
+                    )
+                  }
+                >
                   +
                 </button>
               </div>
@@ -239,7 +333,9 @@ const Tile = ({
 
           {/* Add to Cart Button */}
           <div className={styles.addToCartWrap}>
-            <button className={styles.addToCartButton}>Add to Cart</button>
+            <button className={styles.addToCartButton}>
+              {addedToCart ? "Added" : "Add Cart"}
+            </button>
           </div>
         </div>
       </div>
