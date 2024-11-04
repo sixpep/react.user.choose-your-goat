@@ -1,9 +1,10 @@
 import React from "react";
+import styles from "../Tile Component/Tile.module.css";
 import { RxCross2 } from "react-icons/rx";
 
 const CheckOutForm = ({ setShowCheckOutForm }) => {
   return (
-    <section className="bg-white py-4 antialiased dark:bg-gray-900 md:pb-16 shadow-inner max-h-[99vh] overflow-y-auto">
+    <section className="bg-white py-4 antialiased dark:bg-gray-900 md:pb-16 shadow-inner max-h-[99vh] overflow-y-auto z-30">
       <form action="#" className="mx-auto max-w-screen-xl px-4 2xl:px-0">
         <div className="flex justify-end">
           <button onClick={() => setShowCheckOutForm(false)}>
@@ -12,7 +13,7 @@ const CheckOutForm = ({ setShowCheckOutForm }) => {
         </div>
 
         <div className="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12 xl:gap-16">
-          <div className="min-w-0 flex-1 space-y-8">
+          {/* <div className="min-w-0 flex-1 space-y-8">
             <div className="space-y-4">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                 Delivery Details
@@ -120,6 +121,21 @@ const CheckOutForm = ({ setShowCheckOutForm }) => {
                 </div>{" "}
               </div>{" "}
             </div>
+          </div> */}
+
+          <div className={styles.quantityControl}>
+            <p>
+              Extras: ₹ 200 <br />{" "}
+            </p>
+            <div className={styles.quantityLabels}>
+              <div className={styles.quantityButtons}>
+                <button>-</button>
+                <input type="text" readOnly value={1} />
+                <button>+</button>
+              </div>
+              <span>₹ 20/-</span>
+            </div>
+            <span className={styles.availableNote}>(Available : 1 sets)</span>
           </div>
 
           <div className="mt-6 w-full space-y-6 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">

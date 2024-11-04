@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Tile.module.css";
+import Carousel from "../Carousel/Carousel";
+import { FaInfoCircle } from "react-icons/fa";
 
 const Tile = ({
   docId,
@@ -36,6 +38,7 @@ const Tile = ({
   const [botiQuantity, setBotiQuantity] = useState(0);
   const [extrasQuantity, setExtrasQuantity] = useState(0);
   const [headLegsBrainQuantity, setHeadLegsBrainQuantity] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
   const meat = {
     goatId: docId,
     numberOfMuttonShares: muttonQuantity,
@@ -159,7 +162,7 @@ const Tile = ({
       ...prevOrder,
       totalBill: updatedBill,
     }));
-    console.log(order);
+    console.log("order variable in catalog", order);
   }, [
     muttonQuantity,
     headQuantity,
@@ -170,76 +173,100 @@ const Tile = ({
     extrasQuantity,
   ]);
 
+  const handleShowGoatInfo = () => {
+    setIsVisible(true);
+    setTimeout(() => {
+      setIsVisible(false);
+    }, 3000);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.tileImage}>
-          <img src={goatImage || "/images/goat1.jpeg"} alt="Goat Logo" />
+          <Carousel images={[goatImage, "/images/goat1.jpeg"]} />
+          <i onClick={handleShowGoatInfo}>
+            <FaInfoCircle color="white" size={20} style={{ zIndex: "100" }} />
+          </i>
         </div>
-        <h3>Delivers {handleDeliveryDate(deliveryDateTimestamp)}</h3>
+        <h3>
+          Delivers <br /> {handleDeliveryDate(deliveryDateTimestamp)}
+        </h3>
         <div className={styles.goatDetails}>
-          <div className={styles.descriptionTable}>
-            <table>
-              <tbody>
-                <tr>
-                  <td>Gender </td>
-                  <td>:</td>
-                  <td>{gender}</td>
-                </tr>
-                <tr>
-                  <td>Net weight </td>
-                  <td>:</td>
-                  <td>{netWeight}</td>
-                </tr>
-                <tr>
-                  <td>
-                    Meat weight <br />
-                    (Liver included)
-                  </td>
-                  <td>:</td>
-                  <td>{meatOnlyWeight}</td>
-                </tr>
-                <tr>
-                  <td>Total shares</td>
-                  <td>:</td>
-                  <td>{totalShares}</td>
-                </tr>
-                <tr>
-                  <td>Approx share size </td>
-                  <td>:</td>
-                  <td>{approxShareSize}</td>
-                </tr>
-                <tr>
-                  <td>Per share cost</td>
-                  <td>:</td>
-                  <td>₹ {perShareCost}/-</td>
-                </tr>
-                <tr>
-                  <td>Size</td>
-                  <td>:</td>
-                  <td>{cutSize}</td>
-                </tr>
-                <tr>
-                  <td>Total boti shares</td>
-                  <td>:</td>
-                  <td>{totalBotiShares}</td>
-                </tr>
-                <tr>
-                  <td>
-                    Extras Cost
-                    <br />
-                    (Tilli, Heart, Testicles, and Kidney)
-                  </td>
-                  <td>:</td>
-                  <td>₹ {extraCost}/-</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          {isVisible && (
+            <div
+              className={`${styles.descriptionTable} ${
+                !isVisible ? styles.hidden : ""
+              }`}
+            >
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Gender </td>
+                    <td>:</td>
+                    <td>{gender}</td>
+                  </tr>
+                  <tr>
+                    <td>Net weight </td>
+                    <td>:</td>
+                    <td>{netWeight}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Meat weight <br />
+                      (Liver included)
+                    </td>
+                    <td>:</td>
+                    <td>{meatOnlyWeight}</td>
+                  </tr>
+                  <tr>
+                    <td>Total shares</td>
+                    <td>:</td>
+                    <td>{totalShares}</td>
+                  </tr>
+                  <tr>
+                    <td>Approx share size </td>
+                    <td>:</td>
+                    <td>{approxShareSize}</td>
+                  </tr>
+                  <tr>
+                    <td>Per share cost</td>
+                    <td>:</td>
+                    <td>₹ {perShareCost}/-</td>
+                  </tr>
+                  <tr>
+                    <td>Size</td>
+                    <td>:</td>
+                    <td>{cutSize}</td>
+                  </tr>
+                  <tr>
+                    <td>Total boti shares</td>
+                    <td>:</td>
+                    <td>{totalBotiShares}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Extras Cost
+                      <br />
+                      (Tilli, Heart, Testicles, and Kidney)
+                    </td>
+                    <td>:</td>
+                    <td>₹ {extraCost}/-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
 
           {/* Interactive Quantity Controls */}
           <div className={styles.quantityControl}>
-            <p>Mutton : (₹{perShareCost})</p>
+            <p>
+              Mutton : (₹{perShareCost}) <br />
+              <span>
+               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat ab sit voluptate quis harum veniam?
+              </span>
+            </p>
+
             <div className={styles.quantityLabels}>
               <div className={styles.quantityButtons}>
                 <button
@@ -275,47 +302,13 @@ const Tile = ({
             </span>
           </div>
           <div className={styles.quantityControl}>
-            <p>Talkaya + Kaalu + Brain : (₹{headLegsBrainPrice})</p>
-            <div className={styles.quantityLabels}>
-              <div className={styles.quantityButtons}>
-                <button
-                  onClick={() =>
-                    handleDecrement(
-                      setHeadLegsBrainQuantity,
-                      headLegsBrainQuantity
-                    )
-                  }
-                >
-                  -
-                </button>
-                <input type="text" value={headLegsBrainQuantity} readOnly />
-                <button
-                  onClick={() =>
-                    handleIncrement(
-                      setHeadLegsBrainQuantity,
-                      headLegsBrainAvailability,
-                      headLegsBrainQuantity
-                    )
-                  }
-                  disabled={
-                    headQuantity > 0 || legsQuantity > 0 || brainQuantity > 0
-                  }
-                >
-                  +
-                </button>
-              </div>
-              <span>₹ {headLegsBrainPrice * headLegsBrainQuantity}/-</span>
-            </div>
-            <span className={styles.availableNote}>
-              (Available:{" "}
-              {headAvailability && legsAvailability && brainAvailability
-                ? 1
-                : 0}{" "}
-              set)
-            </span>
-          </div>
-          <div className={styles.quantityControl}>
-            <p>Talkaya: (₹{headPrice})</p>
+            <p>
+              Talkaya: (₹{headPrice})
+              <br />{" "}
+              <span>
+               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat ab sit voluptate quis harum veniam?
+              </span>
+            </p>
             <div className={styles.quantityLabels}>
               <div className={styles.quantityButtons}>
                 <button
@@ -344,7 +337,12 @@ const Tile = ({
             </span>
           </div>
           <div className={styles.quantityControl}>
-            <p>Kaalu: (₹{legsPrice})</p>
+            <p>
+              Kaalu: (₹{legsPrice}) <br />{" "}
+              <span>
+               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat ab sit voluptate quis harum veniam?
+              </span>
+            </p>
             <div className={styles.quantityLabels}>
               <div className={styles.quantityButtons}>
                 <button
@@ -373,7 +371,12 @@ const Tile = ({
             </span>
           </div>
           <div className={styles.quantityControl}>
-            <p>Brain: (₹{brainPrice})</p>
+            <p>
+              Brain: (₹{brainPrice}) <br />{" "}
+              <span>
+               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat ab sit voluptate quis harum veniam?
+              </span>
+            </p>
             <div className={styles.quantityLabels}>
               <div className={styles.quantityButtons}>
                 <button
@@ -404,7 +407,12 @@ const Tile = ({
             </span>
           </div>
           <div className={styles.quantityControl}>
-            <p>Boti: (₹{botiShareCost})</p>
+            <p>
+              Boti: (₹{botiShareCost}) <br />{" "}
+              <span>
+               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat ab sit voluptate quis harum veniam?
+              </span>
+            </p>
             <div className={styles.quantityLabels}>
               <div className={styles.quantityButtons}>
                 <button
@@ -432,7 +440,12 @@ const Tile = ({
             </span>
           </div>
           <div className={styles.quantityControl}>
-            <p>Extras: (₹{extraCost})</p>
+            <p>
+              Extras: (₹{extraCost}) <br />{" "}
+              <span>
+               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat ab sit voluptate quis harum veniam?
+              </span>
+            </p>
             <div className={styles.quantityLabels}>
               <div className={styles.quantityButtons}>
                 <button
