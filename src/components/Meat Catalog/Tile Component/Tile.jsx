@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./Tile.module.css";
 
 const Tile = ({
+  docId,
   goatImage,
   gender,
   netWeight,
@@ -33,8 +34,20 @@ const Tile = ({
   const [legsQuantity, setLegsQuantity] = useState(0);
   const [brainQuantity, setBrainQuantity] = useState(0);
   const [botiQuantity, setBotiQuantity] = useState(0);
+  const [extrasQuantity, setExtrasQuantity] = useState(0);
   const [headLegsBrainQuantity, setHeadLegsBrainQuantity] = useState(0);
+  const meat = {
+    goatId: docId,
+    numberOfMuttonShares: muttonQuantity,
+    numberOfHeadLegsBrainShares: headLegsBrainQuantity,
+    numberOfHeadShares: headQuantity,
+    numberOfLegsShares: legsQuantity,
+    numberOfBrainShares: brainQuantity,
+    numberOfBotiShares: botiQuantity,
+    numberOfExtras: extrasQuantity,
+  };
   const [addedToCart, setAddedToCart] = useState(false);
+  var extrasAvailability = 1;
 
   // Handlers to control quantity increment and decrement
   const handleIncrement = (setter, availability, quantity) => {
@@ -52,6 +65,86 @@ const Tile = ({
     return new Date(timestamp).toLocaleDateString("en-US", options);
   };
 
+  const updateCart = (newRequirement) => {
+    if (
+      headQuantity === 0 &&
+      legsQuantity === 0 &&
+      brainQuantity === 0 &&
+      headLegsBrainQuantity === 0 &&
+      botiQuantity === 0 &&
+      extrasQuantity === 0
+    ) {
+      alert("No items to add to cart!");
+      return;
+    }
+    setOrder((prevOrder) => {
+      // Find the existing requirement by ID
+      const existingRequirement = prevOrder.meatRequirements.find(
+        (req) => req.goatId === newRequirement.goatId
+      );
+
+      if (existingRequirement) {
+        // If found, map through and update the object
+        return {
+          ...prevOrder,
+          meatRequirements: prevOrder.meatRequirements.map((req) =>
+            req.goatId === newRequirement.goatId
+              ? { ...req, ...newRequirement }
+              : req
+          ),
+        };
+      } else {
+        // If not found, add the new requirement
+        return {
+          ...prevOrder,
+          meatRequirements: [...prevOrder.meatRequirements, newRequirement],
+        };
+      }
+    });
+    console.log(order);
+  };
+
+  const handleQuantitychange = (e) => {
+    const { id, value } = e.target;
+
+    if (
+      headQuantity === 0 &&
+      legsQuantity === 0 &&
+      brainQuantity === 0 &&
+      headLegsBrainQuantity === 0 &&
+      botiQuantity === 0 &&
+      extrasQuantity === 0
+    ) {
+      setOrder((prevOrder) => ({
+        ...prevOrder,
+        meatRequirements: prevOrder.meatRequirements.filter(
+          (item) => item.goatId === docId
+        ),
+      }));
+    } else {
+      setOrder((prevOrder) => {
+        const existingIndex = prevOrder.meatRequirements.findIndex(
+          (item) => item.goatId === docId
+        );
+
+        if (existingIndex !== -1) {
+          // Update existing item
+          const updatedRequirements = [...prevOrder.meatRequirements];
+          updatedRequirements[existingIndex] = meat; // Replace the existing item with the new meat object
+          return { ...prevOrder, meatRequirements: updatedRequirements };
+        } else {
+          // Add the new meat object since it doesn't exist
+          return {
+            ...prevOrder,
+            meatRequirements: [...prevOrder.meatRequirements, meat],
+          };
+        }
+      });
+    }
+
+    console.log("order quantiy : ", order);
+  };
+
   useEffect(() => {
     const updatedBill =
       muttonQuantity * perShareCost +
@@ -59,11 +152,12 @@ const Tile = ({
       legsQuantity * legsPrice +
       brainQuantity * brainPrice +
       headLegsBrainQuantity * headLegsBrainPrice +
-      botiQuantity * botiShareCost;
+      botiQuantity * botiShareCost +
+      extrasQuantity * extraCost;
 
     setOrder((prevOrder) => ({
       ...prevOrder,
-      totalBill: updatedBill, // Add updatedBill to the previous totalBill
+      totalBill: updatedBill,
     }));
     console.log(order);
   }, [
@@ -73,6 +167,7 @@ const Tile = ({
     brainQuantity,
     headLegsBrainQuantity,
     botiQuantity,
+    extrasQuantity,
   ]);
 
   return (
@@ -154,7 +249,13 @@ const Tile = ({
                 >
                   -
                 </button>
-                <input type="text" value={muttonQuantity} readOnly />
+                <input
+                  type="text"
+                  id="numberOfMuttonShares"
+                  onChange={handleQuantitychange}
+                  value={muttonQuantity}
+                  readOnly
+                />
                 <button
                   onClick={() =>
                     handleIncrement(
@@ -299,7 +400,7 @@ const Tile = ({
               <span>₹ {brainPrice * brainQuantity}/-</span>
             </div>
             <span className={styles.availableNote}>
-              (Available: {brainAvailability || 0} set)
+              (Available: {brainAvailability || 0} )
             </span>
           </div>
           <div className={styles.quantityControl}>
@@ -330,10 +431,45 @@ const Tile = ({
               (Available : {remainingBotiShares} shares)
             </span>
           </div>
+          <div className={styles.quantityControl}>
+            <p>Extras: (₹{extraCost})</p>
+            <div className={styles.quantityLabels}>
+              <div className={styles.quantityButtons}>
+                <button
+                  onClick={() =>
+                    handleDecrement(setExtrasQuantity, extrasQuantity)
+                  }
+                >
+                  -
+                </button>
+                <input type="text" value={extrasQuantity} readOnly />
+                <button
+                  onClick={() =>
+                    handleIncrement(
+                      setExtrasQuantity,
+                      extrasAvailability,
+                      extrasQuantity
+                    )
+                  }
+                >
+                  +
+                </button>
+              </div>
+              <span>₹ {extraCost * extrasQuantity}/-</span>
+            </div>
+            <span className={styles.availableNote}>
+              (Available : {extrasAvailability} sets)
+            </span>
+          </div>
 
           {/* Add to Cart Button */}
           <div className={styles.addToCartWrap}>
-            <button className={styles.addToCartButton}>
+            <button
+              className={styles.addToCartButton}
+              onClick={() => {
+                updateCart(meat);
+              }}
+            >
               {addedToCart ? "Added" : "Add Cart"}
             </button>
           </div>
