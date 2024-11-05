@@ -61,7 +61,9 @@ const Catalog = () => {
         <p>
           Total : <span> ₹ {order.totalBill}</span>
         </p>
-        <button onClick={() => setShowCheckOutForm(true)}>View Cart</button>
+        <button onClick={() => (window.location.href = "/cart")}>
+          View Cart
+        </button>
       </div>
       {showCheckOutForm && (
         <div className={styles.checkOutForm}>

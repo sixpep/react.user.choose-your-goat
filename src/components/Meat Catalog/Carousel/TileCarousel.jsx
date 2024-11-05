@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Tile from "../Tile Component/Tile";
+import { BsFillCaretLeftFill, BsFillCaretRightFill } from "react-icons/bs";
 
 const TileCarousel = ({ goatsData, order, setOrder }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -85,41 +86,15 @@ const TileCarousel = ({ goatsData, order, setOrder }) => {
                 remainingExtraShares={item.remainingExtraShares}
                 order={order}
                 setOrder={setOrder}
+                handlePrev={handlePrev}
+                handleNext={handleNext}
               />
             </div>
           );
         })}
-        <Tile
-          docId={sample.docId}
-          goatImage={sample.goatImage}
-          gender={sample.gender}
-          netWeight={sample.netWeight}
-          meatOnlyWeight={sample.meatOnlyWeight}
-          totalShares={sample.totalShares}
-          approxShareSize={sample.approxShareSize}
-          perShareCost={sample.perShareCost}
-          cutSize={sample.cutSize}
-          headLegsBrainPrice={sample.headLegsBrainPrice}
-          headPrice={sample.headPrice}
-          legsPrice={sample.legsPrice}
-          brainPrice={sample.brainPrice}
-          botiShareCost={sample.botiShareCost}
-          extraCost={sample.extraCost}
-          deliveryDateTimestamp={sample.deliveryDateTimestamp}
-          totalBotiShares={sample.totalBotiShares}
-          remainingBotiShares={sample.remainingBotiShares}
-          headLegsBrainAvailability={sample.headLegsBrainAvailability}
-          headAvailability={sample.headAvailability}
-          brainAvailability={sample.brainAvailability}
-          legsAvailability={sample.legsAvailability}
-          remainingShares={sample.remainingShares}
-          remainingExtraShares={sample.remainingExtraShares}
-          order={order}
-          setOrder={setOrder}
-        />
       </div>
 
-      <div className="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
+      <div className="absolute flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
         <button
           type="button"
           className="w-3 h-3 rounded-full"
@@ -157,58 +132,51 @@ const TileCarousel = ({ goatsData, order, setOrder }) => {
         ></button>
       </div>
 
-      <button
+      {/* <button
         type="button"
-        className="fixed top-24 start-0 flex justify-center h-min px-4 cursor-pointer group focus:outline-none"
+        className="absolute top-1/ start-8 flex justify-center h-min cursor-pointer group focus:outline-none"
         data-carousel-prev
         onClick={handlePrev}
+        style={{ zIndex: 5 }}
       >
-        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full  bg-gray-800 text-white border border-gray-600 shadow-lg bg-white/30">
-          <svg
-            className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 6 10"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M5 1 1 5l4 4"
-            />
-          </svg>
-          <span className="sr-only">Previous</span>
-        </span>
+        <i
+          className="inline-flex items-center justify-center w-10 h-10"
+          style={{ zIndex: 5 }}
+        >
+          <BsFillCaretLeftFill size={30} style={{ zIndex: "5" }} />
+        </i>
       </button>
+
       <button
         type="button"
-        className="fixed top-24 end-0 flex justify-center h-min px-4 cursor-pointer group focus:outline-none"
+        className="absolute top-64 end-8 flex justify-center h-min cursor-pointer group focus:outline-none"
         data-carousel-next
         onClick={handleNext}
       >
-        <span className="inline-flex items-center justify-center w-10 h-10 bg-gray-800 text-white rounded-full border border-gray-600 shadow-lg bg-white/30">
-          <svg
-            className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 6 10"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="m1 9 4-4-4-4"
-            />
-          </svg>
-          <span className="sr-only">Next</span>
-        </span>
-      </button>
+        <i className="inline-flex items-center justify-center w-10 h-10 ">
+          <BsFillCaretRightFill size={30} />
+        </i>
+      </button> */}
     </div>
   );
 };
 
 export default TileCarousel;
+
+{
+  /* <svg
+          className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 6 10"
+        >
+          <path
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M5 1 1 5l4 4"
+          />
+        </svg> */
+}

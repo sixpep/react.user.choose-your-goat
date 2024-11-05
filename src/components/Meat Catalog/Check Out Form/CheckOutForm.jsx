@@ -2,18 +2,73 @@ import React from "react";
 import styles from "../Tile Component/Tile.module.css";
 import { RxCross2 } from "react-icons/rx";
 
-const CheckOutForm = ({ setShowCheckOutForm }) => {
+const CheckOutForm = () => {
   return (
     <section className="bg-white py-4 antialiased dark:bg-gray-900 md:pb-16 shadow-inner max-h-[99vh] overflow-y-auto z-30">
       <form action="#" className="mx-auto max-w-screen-xl px-4 2xl:px-0">
-        <div className="flex justify-end">
-          <button onClick={() => setShowCheckOutForm(false)}>
-            <RxCross2 size={24} />
-          </button>
-        </div>
-
         <div className="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12 xl:gap-16">
-          {/* <div className="min-w-0 flex-1 space-y-8">
+          <div className="mt-6 w-full space-y-6 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
+            <div className="flow-root">
+              <div className="-my-3 divide-y divide-gray-200 dark:divide-gray-800">
+                <dl className="flex items-center justify-between gap-4 py-3">
+                  <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
+                    Total
+                  </dt>
+                  <dd className="text-base font-medium text-gray-900 dark:text-white">
+                    ₹2300.00
+                  </dd>
+                </dl>
+
+                <dl className="flex items-center justify-between gap-4 py-3">
+                  <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
+                    Discount
+                  </dt>
+                  <dd className="text-base font-medium text-gray-900 dark:text-white">
+                    0
+                  </dd>
+                </dl>
+
+                <dl className="flex items-center justify-between gap-4 py-3">
+                  <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
+                    Delivery Fee
+                  </dt>
+                  <dd className="text-base font-medium text-gray-900 dark:text-white">
+                    0
+                  </dd>
+                </dl>
+
+                <dl className="flex items-center justify-between gap-4 py-3">
+                  <dt className="text-base font-bold text-gray-900 dark:text-white">
+                    Grand Total
+                  </dt>
+                  <dd className="text-base font-bold text-gray-900 dark:text-white">
+                    ₹ 2300.00
+                  </dd>
+                </dl>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <button
+                onClick={() => console.log("enaljb")}
+                disabled
+                type="submit"
+                className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4  focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              >
+                Place Order
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </section>
+  );
+};
+
+export default CheckOutForm;
+
+{
+  /* <div className="min-w-0 flex-1 space-y-8">
             <div className="space-y-4">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                 Delivery Details
@@ -121,70 +176,5 @@ const CheckOutForm = ({ setShowCheckOutForm }) => {
                 </div>{" "}
               </div>{" "}
             </div>
-          </div> */}
-
-          <div className={styles.quantityControl}>
-            <p>
-              Extras: ₹ 200 <br />{" "}
-            </p>
-            <div className={styles.quantityLabels}>
-              <div className={styles.quantityButtons}>
-                <button>-</button>
-                <input type="text" readOnly value={1} />
-                <button>+</button>
-              </div>
-              <span>₹ 20/-</span>
-            </div>
-            <span className={styles.availableNote}>(Available : 1 sets)</span>
-          </div>
-
-          <div className="mt-6 w-full space-y-6 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
-            <div className="flow-root">
-              <div className="-my-3 divide-y divide-gray-200 dark:divide-gray-800">
-                <dl className="flex items-center justify-between gap-4 py-3">
-                  <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                    Subtotal
-                  </dt>
-                  <dd className="text-base font-medium text-gray-900 dark:text-white">
-                    $8,094.00
-                  </dd>
-                </dl>
-
-                <dl className="flex items-center justify-between gap-4 py-3">
-                  <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                    Store Pickup
-                  </dt>
-                  <dd className="text-base font-medium text-gray-900 dark:text-white">
-                    $99
-                  </dd>
-                </dl>
-
-                <dl className="flex items-center justify-between gap-4 py-3">
-                  <dt className="text-base font-bold text-gray-900 dark:text-white">
-                    Total
-                  </dt>
-                  <dd className="text-base font-bold text-gray-900 dark:text-white">
-                    $8,392.00
-                  </dd>
-                </dl>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <button
-                onClick={() => console.log("enaljb")}
-                disabled
-                type="submit"
-                className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4  focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-              >
-                Place Order
-              </button>
-            </div>
-          </div>
-        </div>
-      </form>
-    </section>
-  );
-};
-
-export default CheckOutForm;
+          </div> */
+}

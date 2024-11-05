@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import styles from "./Tile.module.css";
 import Carousel from "../Carousel/Carousel";
 import { FaInfoCircle } from "react-icons/fa";
+import { BsFillCaretLeftFill, BsFillCaretRightFill } from "react-icons/bs";
+import { RxCross2 } from "react-icons/rx";
 
 const Tile = ({
   docId,
@@ -29,6 +31,8 @@ const Tile = ({
   legsAvailability,
   order,
   setOrder,
+  handlePrev,
+  handleNext,
 }) => {
   // State to manage quantity for each item
   const [muttonQuantity, setMuttonQuantity] = useState(0);
@@ -38,7 +42,7 @@ const Tile = ({
   const [botiQuantity, setBotiQuantity] = useState(0);
   const [extrasQuantity, setExtrasQuantity] = useState(0);
   const [headLegsBrainQuantity, setHeadLegsBrainQuantity] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
+  const [goatDescriptionVisible, setGoatDescriptionVisible] = useState(false);
   const meat = {
     goatId: docId,
     numberOfMuttonShares: muttonQuantity,
@@ -174,9 +178,9 @@ const Tile = ({
   ]);
 
   const handleShowGoatInfo = () => {
-    setIsVisible(true);
+    setGoatDescriptionVisible(true);
     setTimeout(() => {
-      setIsVisible(false);
+      setGoatDescriptionVisible(false);
     }, 3000);
   };
 
@@ -184,97 +188,114 @@ const Tile = ({
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.tileImage}>
-          {/* <Carousel images={[goatImage, "/images/goat1.jpeg"]} /> */}
-          <Carousel
-            images={[
-              "/images/goat1.jpeg",
-              "/images/goat1.jpeg",
-            ]}
-          />
+          <Carousel images={[goatImage, "/images/goat1.jpeg"]} />
           <i onClick={handleShowGoatInfo}>
             <FaInfoCircle color="white" size={20} style={{ zIndex: "100" }} />
           </i>
-        </div>
-        <h3>
-          Delivers <br /> {handleDeliveryDate(deliveryDateTimestamp)}
-        </h3>
-        <div className={styles.goatDetails}>
-          {isVisible && (
-            <div
-              className={`${styles.descriptionTable} ${
-                !isVisible ? styles.hidden : ""
-              }`}
-            >
-              <table>
-                <tbody>
-                  <tr>
-                    <td>Gender </td>
-                    <td>:</td>
-                    <td>{gender}</td>
-                  </tr>
-                  <tr>
-                    <td>Net weight </td>
-                    <td>:</td>
-                    <td>{netWeight}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Meat weight <br />
-                      (Liver included)
-                    </td>
-                    <td>:</td>
-                    <td>{meatOnlyWeight}</td>
-                  </tr>
-                  <tr>
-                    <td>Total shares</td>
-                    <td>:</td>
-                    <td>{totalShares}</td>
-                  </tr>
-                  <tr>
-                    <td>Approx share size </td>
-                    <td>:</td>
-                    <td>{approxShareSize}</td>
-                  </tr>
-                  <tr>
-                    <td>Per share cost</td>
-                    <td>:</td>
-                    <td>₹ {perShareCost}/-</td>
-                  </tr>
-                  <tr>
-                    <td>Size</td>
-                    <td>:</td>
-                    <td>{cutSize}</td>
-                  </tr>
-                  <tr>
-                    <td>Total boti shares</td>
-                    <td>:</td>
-                    <td>{totalBotiShares}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Extras Cost
-                      <br />
-                      (Tilli, Heart, Testicles, and Kidney)
-                    </td>
-                    <td>:</td>
-                    <td>₹ {extraCost}/-</td>
-                  </tr>
-                </tbody>
-              </table>
+          {goatDescriptionVisible && (
+            <div className={styles.descriptionPopupOverlay}>
+              <div className={styles.descriptionTable}>
+                <i
+                  className={styles.closeIcon}
+                  onClick={() => setGoatDescriptionVisible(false)}
+                >
+                  <RxCross2 color="black" size={24} />
+                </i>
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>Gender </td>
+                      <td>:</td>
+                      <td>{gender}</td>
+                    </tr>
+                    <tr>
+                      <td>Net weight </td>
+                      <td>:</td>
+                      <td>{netWeight}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        Meat weight <br />
+                        (Liver included)
+                      </td>
+                      <td>:</td>
+                      <td>{meatOnlyWeight}</td>
+                    </tr>
+                    <tr>
+                      <td>Total shares</td>
+                      <td>:</td>
+                      <td>{totalShares}</td>
+                    </tr>
+                    <tr>
+                      <td>Approx share size </td>
+                      <td>:</td>
+                      <td>{approxShareSize}</td>
+                    </tr>
+                    <tr>
+                      <td>Per share cost</td>
+                      <td>:</td>
+                      <td>₹ {perShareCost}/-</td>
+                    </tr>
+                    <tr>
+                      <td>Size</td>
+                      <td>:</td>
+                      <td>{cutSize}</td>
+                    </tr>
+                    <tr>
+                      <td>Total boti shares</td>
+                      <td>:</td>
+                      <td>{totalBotiShares}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        Extras Cost
+                        <br />
+                        (Tilli, Heart, Testicles, and Kidney)
+                      </td>
+                      <td>:</td>
+                      <td>₹ {extraCost}/-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
+        </div>
+        <div className={styles.deliveryDesc}>
+          <button
+            type="button"
+            className="relative flex justify-center h-min cursor-pointer group focus:outline-none"
+            data-carousel-prev
+            onClick={handlePrev}
+            style={{ zIndex: 5 }}
+          >
+            <i
+              className="inline-flex items-center justify-center w-10 h-10"
+              style={{ zIndex: 5 }}
+            >
+              <BsFillCaretLeftFill size={30} style={{ zIndex: "5" }} />
+            </i>
+          </button>
+          <h3>
+            Delivers <br /> {handleDeliveryDate(deliveryDateTimestamp)}
+          </h3>
+          <button
+            type="button"
+            className="relative flex justify-center h-min cursor-pointer group focus:outline-none"
+            data-carousel-next
+            onClick={handleNext}
+          >
+            <i className="inline-flex items-center justify-center w-10 h-10 ">
+              <BsFillCaretRightFill size={30} />
+            </i>
+          </button>
+        </div>
 
+        <div className={styles.goatDetails}>
           {/* Interactive Quantity Controls */}
           <div className={styles.quantityControl}>
-            <p>
-              Mutton : (₹{perShareCost}) <br />
-              <span>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Repellat ab sit voluptate quis harum veniam?
-              </span>
-            </p>
-
-            <div className={styles.quantityLabels}>
+            <div className={styles.label}>
+              <p>Mutton </p>
               <div className={styles.quantityButtons}>
                 <button
                   onClick={() =>
@@ -302,22 +323,24 @@ const Tile = ({
                   +
                 </button>
               </div>
-              <span>₹ {perShareCost * muttonQuantity}/-</span>
             </div>
+
+            <span>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
+              ab sit voluptate quis harum veniam?
+            </span>
+
+            {/* <div className={styles.quantityLabels}>
+              <span>₹ {perShareCost * muttonQuantity}/-</span>
+            </div> */}
             <span className={styles.availableNote}>
               (Available: {remainingShares || 0} shares)
             </span>
           </div>
+
           <div className={styles.quantityControl}>
-            <p>
-              Talkaya: (₹{headPrice})
-              <br />{" "}
-              <span>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Repellat ab sit voluptate quis harum veniam?
-              </span>
-            </p>
-            <div className={styles.quantityLabels}>
+            <div className={styles.label}>
+              <p>Talkaya</p>
               <div className={styles.quantityButtons}>
                 <button
                   onClick={() => handleDecrement(setHeadQuantity, headQuantity)}
@@ -338,21 +361,22 @@ const Tile = ({
                   +
                 </button>
               </div>
-              <span>₹ {headPrice * headQuantity}/-</span>
             </div>
+            <span>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
+              ab sit voluptate quis harum veniam?
+            </span>
+            {/* <div className={styles.quantityLabels}>
+              <span>₹ {headPrice * headQuantity}/-</span>
+            </div> */}
             <span className={styles.availableNote}>
               (Available: {headAvailability || 0})
             </span>
           </div>
+
           <div className={styles.quantityControl}>
-            <p>
-              Kaalu: (₹{legsPrice}) <br />{" "}
-              <span>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Repellat ab sit voluptate quis harum veniam?
-              </span>
-            </p>
-            <div className={styles.quantityLabels}>
+            <div className={styles.label}>
+              <p>Kaalu</p>
               <div className={styles.quantityButtons}>
                 <button
                   onClick={() => handleDecrement(setLegsQuantity, legsQuantity)}
@@ -373,21 +397,22 @@ const Tile = ({
                   +
                 </button>
               </div>
-              <span>₹ {legsPrice * legsQuantity}/-</span>
             </div>
+            <span>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
+              ab sit voluptate quis harum veniam?
+            </span>
+            {/* <div className={styles.quantityLabels}>
+              <span>₹ {legsPrice * legsQuantity}/-</span>
+            </div> */}
             <span className={styles.availableNote}>
               (Available: {headLegsBrainAvailability || 0} set)
             </span>
           </div>
+
           <div className={styles.quantityControl}>
-            <p>
-              Brain: (₹{brainPrice}) <br />{" "}
-              <span>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Repellat ab sit voluptate quis harum veniam?
-              </span>
-            </p>
-            <div className={styles.quantityLabels}>
+            <div className={styles.label}>
+              <p>Brain</p>
               <div className={styles.quantityButtons}>
                 <button
                   onClick={() =>
@@ -410,21 +435,21 @@ const Tile = ({
                   +
                 </button>
               </div>
-              <span>₹ {brainPrice * brainQuantity}/-</span>
             </div>
+            <span>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
+              ab sit voluptate quis harum veniam?
+            </span>
+            {/* <div className={styles.quantityLabels}>
+              <span>₹ {brainPrice * brainQuantity}/-</span>
+            </div> */}
             <span className={styles.availableNote}>
               (Available: {brainAvailability || 0} )
             </span>
           </div>
           <div className={styles.quantityControl}>
-            <p>
-              Boti: (₹{botiShareCost}) <br />{" "}
-              <span>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Repellat ab sit voluptate quis harum veniam?
-              </span>
-            </p>
-            <div className={styles.quantityLabels}>
+            <div className={styles.label}>
+              <p>Boti</p>
               <div className={styles.quantityButtons}>
                 <button
                   onClick={() => handleDecrement(setBotiQuantity, botiQuantity)}
@@ -444,21 +469,21 @@ const Tile = ({
                   +
                 </button>
               </div>
-              <span>₹ {botiShareCost * botiQuantity}/-</span>
             </div>
+            <span>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
+              ab sit voluptate quis harum veniam?
+            </span>
+            {/* <div className={styles.quantityLabels}>
+              <span>₹ {botiShareCost * botiQuantity}/-</span>
+            </div> */}
             <span className={styles.availableNote}>
               (Available : {remainingBotiShares} shares)
             </span>
           </div>
           <div className={styles.quantityControl}>
-            <p>
-              Extras: (₹{extraCost}) <br />{" "}
-              <span>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Repellat ab sit voluptate quis harum veniam?
-              </span>
-            </p>
-            <div className={styles.quantityLabels}>
+            <div className={styles.label}>
+              <p>Extras</p>
               <div className={styles.quantityButtons}>
                 <button
                   onClick={() =>
@@ -480,15 +505,21 @@ const Tile = ({
                   +
                 </button>
               </div>
-              <span>₹ {extraCost * extrasQuantity}/-</span>
             </div>
+            <span>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
+              ab sit voluptate quis harum veniam?
+            </span>
+            {/* <div className={styles.quantityLabels}>
+              <span>₹ {extraCost * extrasQuantity}/-</span>
+            </div> */}
             <span className={styles.availableNote}>
               (Available : {extrasAvailability} sets)
             </span>
           </div>
 
           {/* Add to Cart Button */}
-          <div className={styles.addToCartWrap}>
+          {/* <div className={styles.addToCartWrap}>
             <button
               className={styles.addToCartButton}
               onClick={() => {
@@ -497,7 +528,7 @@ const Tile = ({
             >
               {addedToCart ? "Added" : "Add Cart"}
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

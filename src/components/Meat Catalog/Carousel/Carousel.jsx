@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSwipeable } from "react-swipeable";
 
 const Carousel = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -14,11 +15,18 @@ const Carousel = ({ images }) => {
       prevIndex === images.length - 1 ? 0 : prevIndex + 1
     );
   };
+
+  const handlers = useSwipeable({
+    onSwipedLeft: handleNext,
+    onSwipedRight: handlePrev,
+    trackMouse: true,
+  });
   return (
     <div
       id="default-carousel"
       className="relative w-full overflow-hidden"
       data-carousel="slide"
+      {...handlers}
     >
       <div
         className="flex transition-transform duration-700 ease-in-out"
@@ -61,7 +69,7 @@ const Carousel = ({ images }) => {
         })}
       </div>
 
-      <button
+      {/* <button
         type="button"
         className="absolute top-1/2 start-0 z-30 flex items-center justify-center h-min px-4 cursor-pointer group focus:outline-none"
         data-carousel-prev
@@ -110,7 +118,7 @@ const Carousel = ({ images }) => {
           </svg>
           <span className="sr-only">Next</span>
         </span>
-      </button>
+      </button> */}
     </div>
   );
 };

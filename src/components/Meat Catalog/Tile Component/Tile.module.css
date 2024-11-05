@@ -9,7 +9,8 @@
   position: relative;
   margin-bottom: 4rem;
   overflow: visible;
-  padding-top: 4rem;
+  /* padding-top: 4rem; */
+  z-index: 10;
 }
 
 .content {
@@ -20,7 +21,6 @@
 }
 
 .content h3 {
-  position: absolute;
   display: inline-block;
   background-color: #ffedcd;
   font-weight: 400;
@@ -31,19 +31,26 @@
   width: 60%;
   align-self: center;
   top: 0rem;
-  z-index: 1000;
+}
+
+.deliveryDesc {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .tileImage {
-  display: flex;
-  justify-content: center;
+  aspect-ratio: 16/9;
   width: 100%;
   position: relative;
 }
 
 .tileImage img {
   display: flex;
+  position: relative;
+  object-fit: cover;
   width: 100%;
+  height: 100%;
 }
 
 .tileImage i {
@@ -57,25 +64,54 @@
   /* padding: 1rem; */
 }
 
-.descriptionTable {
-  position: absolute;
-  top: 17rem;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  z-index: 10;
-  transition: opacity 0.5s ease;
+.descriptionPopupOverlay {
+  /* visibility: hidden;
+   */
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgb(55, 68, 82, 0.4);
+}
+
+.visible {
   opacity: 1;
-  width: 92%;
+}
+
+.descriptionTable {
+  display: flex;
+  flex-direction: column;
+  height: min-content;
+  position: relative;
+  border-radius: 8px;
+  width: 90%;
+  padding: 20px;
+  padding-top: 3rem;
+  z-index: 1000;
+  top: 3rem;
+  background-color: #fff;
+  opacity: 1;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.5s ease;
+}
+
+.closeIcon {
+  position: absolute;
+  right: 0;
+  top: 1rem;
+  display: flex;
 }
 
 .descriptionTable table {
-  max-width: 100%;
+  border-collapse: collapse;
+  width: 100%;
 }
 
 .descriptionTable table tbody tr td {
-  /* padding-bottom: 0.8rem; */
+  padding-bottom: 0.8rem;
   /* align-content: baseline; */
 }
 
@@ -86,7 +122,7 @@
 }
 
 .descriptionTable td:nth-child(1) {
-  width: 60%;
+  width: 70%;
 }
 
 .goatDetails span {
@@ -103,7 +139,12 @@
   padding-bottom: 0.3rem;
 }
 
-.quantityControl p span {
+.label {
+  display: flex;
+  justify-content: space-between;
+}
+
+.quantityControl span {
   font-size: 12px;
   font-weight: 400;
 }
@@ -120,13 +161,17 @@
 }
 
 .quantityButtons button {
+  display: flex;
+  justify-content: center;
+  width: 22px;
+  text-align: center;
   background-color: #f0f0f0;
   border: 1px solid #ccc;
-  padding: 4px 8px;
   cursor: pointer;
   font-size: 14px;
   color: #333;
   border-radius: 50%;
+  box-sizing: border-box;
 }
 
 .quantityButtons button:hover {
