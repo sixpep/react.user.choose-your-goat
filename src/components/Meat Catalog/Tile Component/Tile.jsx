@@ -184,7 +184,9 @@ const Tile = ({
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.tileImage}>
-          <Carousel images={[goatImage, "/images/goat1.jpeg"]} />
+          <Carousel
+            images={["/images/goat1.jpeg", "/images/goat1.jpeg"]}
+          />
           <i onClick={handleShowGoatInfo}>
             <FaInfoCircle color="white" size={20} style={{ zIndex: "100" }} />
           </i>
@@ -263,7 +265,8 @@ const Tile = ({
             <p>
               Mutton : (₹{perShareCost}) <br />
               <span>
-               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat ab sit voluptate quis harum veniam?
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                Repellat ab sit voluptate quis harum veniam?
               </span>
             </p>
 
@@ -306,7 +309,8 @@ const Tile = ({
               Talkaya: (₹{headPrice})
               <br />{" "}
               <span>
-               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat ab sit voluptate quis harum veniam?
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                Repellat ab sit voluptate quis harum veniam?
               </span>
             </p>
             <div className={styles.quantityLabels}>
@@ -340,7 +344,8 @@ const Tile = ({
             <p>
               Kaalu: (₹{legsPrice}) <br />{" "}
               <span>
-               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat ab sit voluptate quis harum veniam?
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                Repellat ab sit voluptate quis harum veniam?
               </span>
             </p>
             <div className={styles.quantityLabels}>
@@ -374,7 +379,8 @@ const Tile = ({
             <p>
               Brain: (₹{brainPrice}) <br />{" "}
               <span>
-               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat ab sit voluptate quis harum veniam?
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                Repellat ab sit voluptate quis harum veniam?
               </span>
             </p>
             <div className={styles.quantityLabels}>
@@ -410,7 +416,8 @@ const Tile = ({
             <p>
               Boti: (₹{botiShareCost}) <br />{" "}
               <span>
-               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat ab sit voluptate quis harum veniam?
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                Repellat ab sit voluptate quis harum veniam?
               </span>
             </p>
             <div className={styles.quantityLabels}>
@@ -443,7 +450,8 @@ const Tile = ({
             <p>
               Extras: (₹{extraCost}) <br />{" "}
               <span>
-               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat ab sit voluptate quis harum veniam?
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                Repellat ab sit voluptate quis harum veniam?
               </span>
             </p>
             <div className={styles.quantityLabels}>
