@@ -3,10 +3,13 @@ import styles from "./Catalog.module.css";
 import { io } from "socket.io-client";
 import CheckOutForm from "./Check Out Form/CheckOutForm";
 import TileCarousel from "./Carousel/TileCarousel";
+import { useNavigate } from "react-router-dom";
 
 const socket = io("http://localhost:3000");
 
 const Catalog = () => {
+  const navigate = useNavigate();
+
   const [goatsData, setGoatsData] = useState([]);
   const [order, setOrder] = useState({
     meatRequirements: [],
@@ -61,9 +64,7 @@ const Catalog = () => {
         <p>
           Total : <span> ₹ {order.totalBill}</span>
         </p>
-        <button onClick={() => (window.location.href = "/cart")}>
-          View Cart
-        </button>
+        <button onClick={() => navigate("/cart")}>View Cart</button>
       </div>
       {showCheckOutForm && (
         <div className={styles.checkOutForm}>

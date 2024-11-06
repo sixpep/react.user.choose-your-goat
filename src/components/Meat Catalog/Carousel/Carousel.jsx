@@ -52,10 +52,11 @@ const Carousel = ({ images }) => {
         })}
       </div>
 
-      <div className="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
+      {/* <div className="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
         {images.map((_, ind) => {
           return (
             <button
+              key={ind}
               type="button"
               className={`w-3 h-3 rounded-full ${
                 ind === currentIndex ? "bg-gray-800" : "bg-gray-400"
@@ -67,7 +68,7 @@ const Carousel = ({ images }) => {
             ></button>
           );
         })}
-      </div>
+      </div> */}
 
       {/* <button
         type="button"

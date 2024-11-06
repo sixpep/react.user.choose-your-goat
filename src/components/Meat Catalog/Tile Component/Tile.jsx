@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "./Tile.module.css";
 import Carousel from "../Carousel/Carousel";
 import { FaInfoCircle } from "react-icons/fa";
 import { BsFillCaretLeftFill, BsFillCaretRightFill } from "react-icons/bs";
 import { RxCross2 } from "react-icons/rx";
+import { Context } from "../../../App";
 
 const Tile = ({
   docId,
@@ -29,41 +30,95 @@ const Tile = ({
   remainingShares,
   headAvailability,
   legsAvailability,
-  order,
-  setOrder,
   handlePrev,
   handleNext,
 }) => {
-  // State to manage quantity for each item
-  const [muttonQuantity, setMuttonQuantity] = useState(0);
-  const [headQuantity, setHeadQuantity] = useState(0);
-  const [legsQuantity, setLegsQuantity] = useState(0);
-  const [brainQuantity, setBrainQuantity] = useState(0);
-  const [botiQuantity, setBotiQuantity] = useState(0);
-  const [extrasQuantity, setExtrasQuantity] = useState(0);
-  const [headLegsBrainQuantity, setHeadLegsBrainQuantity] = useState(0);
   const [goatDescriptionVisible, setGoatDescriptionVisible] = useState(false);
-  const meat = {
-    goatId: docId,
-    numberOfMuttonShares: muttonQuantity,
-    numberOfHeadLegsBrainShares: headLegsBrainQuantity,
-    numberOfHeadShares: headQuantity,
-    numberOfLegsShares: legsQuantity,
-    numberOfBrainShares: brainQuantity,
-    numberOfBotiShares: botiQuantity,
-    numberOfExtras: extrasQuantity,
-  };
-  const [addedToCart, setAddedToCart] = useState(false);
-  var extrasAvailability = 1;
+  const { order, setOrder } = useContext(Context);
 
-  // Handlers to control quantity increment and decrement
-  const handleIncrement = (setter, availability, quantity) => {
-    if (quantity < availability) setter((prev) => prev + 1);
+  const currentGoatDoc = order.meatRequirements.find(
+    (item) => item.goatId === docId
+  );
+
+  const {
+    numberOfMuttonShares,
+    numberOfHeadLegsBrainShares,
+    numberOfHeadShares,
+    numberOfLegsShares,
+    numberOfBrainShares,
+    numberOfBotiShares,
+    numberOfExtras,
+  } = currentGoatDoc || {};
+
+  const handleShareCount = () => {
+    setOrder((prev) => ({
+      ...prev,
+    }));
   };
 
-  const handleDecrement = (setter, quantity) => {
-    if (quantity > 0) {
-      setter((prev) => prev - 1);
+  const handleIncrement = (keyName, availability) => {
+    if (currentGoatDoc) {
+      const currentValue = currentGoatDoc[keyName] || 0;
+      if (currentGoatDoc[keyName] && currentGoatDoc[keyName] < availability) {
+        setOrder((prev) => ({
+          ...prev,
+          meatRequirements: prev.meatRequirements.map((item) =>
+            item.goatId === docId
+              ? { ...item, [keyName]: currentValue + 1 }
+              : item
+          ),
+        }));
+      } else if (!currentGoatDoc[keyName]) {
+        setOrder((prev) => ({
+          ...prev,
+          meatRequirements: prev.meatRequirements.map((item) =>
+            item.goatId === docId ? { ...item, [keyName]: 1 } : item
+          ),
+        }));
+      }
+    } else {
+      setOrder((prev) => ({
+        ...prev,
+        meatRequirements: [
+          ...prev.meatRequirements,
+          { goatId: docId, [keyName]: 1 },
+        ],
+      }));
+    }
+  };
+
+  const handleDecrement = (keyName) => {
+    if (currentGoatDoc && currentGoatDoc[keyName]) {
+      const currentValue = currentGoatDoc[keyName];
+      const newValue = currentValue - 1;
+      if (newValue > 0) {
+        setOrder((prev) => ({
+          ...prev,
+          meatRequirements: prev.meatRequirements.map((item) =>
+            item.goatId === docId
+              ? { ...item, [keyName]: currentValue - 1 }
+              : item
+          ),
+        }));
+      } else {
+        setOrder((prev) => ({
+          ...prev,
+          meatRequirements: prev.meatRequirements.map((item) => {
+            if (item.goatId === docId) {
+              const { [keyName]: removedKey, ...rest } = item;
+              return rest;
+            }
+            return item;
+          }),
+        }));
+
+        setOrder((prev) => ({
+          ...prev,
+          meatRequirements: prev.meatRequirements.filter((item) => {
+            return !(Object.keys(item).length < 2);
+          }),
+        }));
+      }
     }
   };
 
@@ -71,111 +126,6 @@ const Tile = ({
     const options = { weekday: "long", month: "short", day: "numeric" };
     return new Date(timestamp).toLocaleDateString("en-US", options);
   };
-
-  const updateCart = (newRequirement) => {
-    if (
-      headQuantity === 0 &&
-      legsQuantity === 0 &&
-      brainQuantity === 0 &&
-      headLegsBrainQuantity === 0 &&
-      botiQuantity === 0 &&
-      extrasQuantity === 0
-    ) {
-      alert("No items to add to cart!");
-      return;
-    }
-    setOrder((prevOrder) => {
-      // Find the existing requirement by ID
-      const existingRequirement = prevOrder.meatRequirements.find(
-        (req) => req.goatId === newRequirement.goatId
-      );
-
-      if (existingRequirement) {
-        // If found, map through and update the object
-        return {
-          ...prevOrder,
-          meatRequirements: prevOrder.meatRequirements.map((req) =>
-            req.goatId === newRequirement.goatId
-              ? { ...req, ...newRequirement }
-              : req
-          ),
-        };
-      } else {
-        // If not found, add the new requirement
-        return {
-          ...prevOrder,
-          meatRequirements: [...prevOrder.meatRequirements, newRequirement],
-        };
-      }
-    });
-    console.log(order);
-  };
-
-  const handleQuantitychange = (e) => {
-    const { id, value } = e.target;
-
-    if (
-      headQuantity === 0 &&
-      legsQuantity === 0 &&
-      brainQuantity === 0 &&
-      headLegsBrainQuantity === 0 &&
-      botiQuantity === 0 &&
-      extrasQuantity === 0
-    ) {
-      setOrder((prevOrder) => ({
-        ...prevOrder,
-        meatRequirements: prevOrder.meatRequirements.filter(
-          (item) => item.goatId === docId
-        ),
-      }));
-    } else {
-      setOrder((prevOrder) => {
-        const existingIndex = prevOrder.meatRequirements.findIndex(
-          (item) => item.goatId === docId
-        );
-
-        if (existingIndex !== -1) {
-          // Update existing item
-          const updatedRequirements = [...prevOrder.meatRequirements];
-          updatedRequirements[existingIndex] = meat; // Replace the existing item with the new meat object
-          return { ...prevOrder, meatRequirements: updatedRequirements };
-        } else {
-          // Add the new meat object since it doesn't exist
-          return {
-            ...prevOrder,
-            meatRequirements: [...prevOrder.meatRequirements, meat],
-          };
-        }
-      });
-    }
-
-    console.log("order quantiy : ", order);
-  };
-
-  useEffect(() => {
-    const updatedBill =
-      muttonQuantity * perShareCost +
-      headQuantity * headPrice +
-      legsQuantity * legsPrice +
-      brainQuantity * brainPrice +
-      headLegsBrainQuantity * headLegsBrainPrice +
-      botiQuantity * botiShareCost +
-      extrasQuantity * extraCost;
-
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      totalBill: updatedBill,
-    }));
-    console.log("order variable in catalog", order);
-  }, [
-    muttonQuantity,
-    headQuantity,
-    legsQuantity,
-    brainQuantity,
-    headLegsBrainQuantity,
-    botiQuantity,
-    extrasQuantity,
-  ]);
 
   const handleShowGoatInfo = () => {
     setGoatDescriptionVisible(true);
@@ -267,7 +217,9 @@ const Tile = ({
             className="relative flex justify-center h-min cursor-pointer group focus:outline-none"
             data-carousel-prev
             onClick={handlePrev}
-            style={{ zIndex: 5 }}
+            style={{
+              visibility: goatDescriptionVisible ? "hidden" : "visible",
+            }}
           >
             <i
               className="inline-flex items-center justify-center w-10 h-10"
@@ -284,6 +236,9 @@ const Tile = ({
             className="relative flex justify-center h-min cursor-pointer group focus:outline-none"
             data-carousel-next
             onClick={handleNext}
+            style={{
+              visibility: goatDescriptionVisible ? "hidden" : "visible",
+            }}
           >
             <i className="inline-flex items-center justify-center w-10 h-10 ">
               <BsFillCaretRightFill size={30} />
@@ -297,27 +252,18 @@ const Tile = ({
             <div className={styles.label}>
               <p>Mutton </p>
               <div className={styles.quantityButtons}>
-                <button
-                  onClick={() =>
-                    handleDecrement(setMuttonQuantity, muttonQuantity)
-                  }
-                >
+                <button onClick={() => handleDecrement("numberOfMuttonShares")}>
                   -
                 </button>
                 <input
                   type="text"
                   id="numberOfMuttonShares"
-                  onChange={handleQuantitychange}
-                  value={muttonQuantity}
                   readOnly
+                  value={numberOfMuttonShares || 0}
                 />
                 <button
                   onClick={() =>
-                    handleIncrement(
-                      setMuttonQuantity,
-                      remainingShares,
-                      muttonQuantity
-                    )
+                    handleIncrement("numberOfMuttonShares", remainingShares)
                   }
                 >
                   +
@@ -342,21 +288,14 @@ const Tile = ({
             <div className={styles.label}>
               <p>Talkaya</p>
               <div className={styles.quantityButtons}>
-                <button
-                  onClick={() => handleDecrement(setHeadQuantity, headQuantity)}
-                >
+                <button onClick={() => handleDecrement("numberOfHeadShares")}>
                   -
                 </button>
-                <input type="text" value={headQuantity} readOnly />
+                <input type="text" readOnly value={numberOfHeadShares || 0} />
                 <button
                   onClick={() =>
-                    handleIncrement(
-                      setHeadQuantity,
-                      headAvailability,
-                      headQuantity
-                    )
+                    handleIncrement("numberOfHeadShares", headAvailability)
                   }
-                  disabled={headLegsBrainQuantity > 0}
                 >
                   +
                 </button>
@@ -378,21 +317,14 @@ const Tile = ({
             <div className={styles.label}>
               <p>Kaalu</p>
               <div className={styles.quantityButtons}>
-                <button
-                  onClick={() => handleDecrement(setLegsQuantity, legsQuantity)}
-                >
+                <button onClick={() => handleDecrement("numberOfLegsShares")}>
                   -
                 </button>
-                <input type="text" value={legsQuantity} readOnly />
+                <input type="text" readOnly value={numberOfLegsShares || 0} />
                 <button
                   onClick={() =>
-                    handleIncrement(
-                      setLegsQuantity,
-                      legsAvailability,
-                      legsQuantity
-                    )
+                    handleIncrement("numberOfLegsShares", legsAvailability)
                   }
-                  disabled={headLegsBrainQuantity > 0}
                 >
                   +
                 </button>
@@ -414,23 +346,14 @@ const Tile = ({
             <div className={styles.label}>
               <p>Brain</p>
               <div className={styles.quantityButtons}>
-                <button
-                  onClick={() =>
-                    handleDecrement(setBrainQuantity, brainQuantity)
-                  }
-                >
+                <button onClick={() => handleDecrement("numberOfBrainShares")}>
                   -
                 </button>
-                <input type="text" value={brainQuantity} readOnly />
+                <input type="text" readOnly value={numberOfBrainShares || 0} />
                 <button
                   onClick={() =>
-                    handleIncrement(
-                      setBrainQuantity,
-                      brainAvailability,
-                      brainQuantity
-                    )
+                    handleIncrement("numberOfBrainShares", brainAvailability)
                   }
-                  disabled={headLegsBrainQuantity > 0}
                 >
                   +
                 </button>
@@ -447,23 +370,18 @@ const Tile = ({
               (Available: {brainAvailability || 0} )
             </span>
           </div>
+
           <div className={styles.quantityControl}>
             <div className={styles.label}>
               <p>Boti</p>
               <div className={styles.quantityButtons}>
-                <button
-                  onClick={() => handleDecrement(setBotiQuantity, botiQuantity)}
-                >
+                <button onClick={() => handleDecrement("numberOfBotiShares")}>
                   -
                 </button>
-                <input type="text" value={botiQuantity} readOnly />
+                <input type="text" readOnly value={numberOfBotiShares || 0} />
                 <button
                   onClick={() =>
-                    handleIncrement(
-                      setBotiQuantity,
-                      remainingBotiShares,
-                      botiQuantity
-                    )
+                    handleIncrement("numberOfBotiShares", remainingBotiShares)
                   }
                 >
                   +
@@ -481,27 +399,16 @@ const Tile = ({
               (Available : {remainingBotiShares} shares)
             </span>
           </div>
+
           <div className={styles.quantityControl}>
             <div className={styles.label}>
               <p>Extras</p>
               <div className={styles.quantityButtons}>
-                <button
-                  onClick={() =>
-                    handleDecrement(setExtrasQuantity, extrasQuantity)
-                  }
-                >
+                <button onClick={() => handleDecrement("numberOfExtras")}>
                   -
                 </button>
-                <input type="text" value={extrasQuantity} readOnly />
-                <button
-                  onClick={() =>
-                    handleIncrement(
-                      setExtrasQuantity,
-                      extrasAvailability,
-                      extrasQuantity
-                    )
-                  }
-                >
+                <input type="text" readOnly value={numberOfExtras || 0} />
+                <button onClick={() => handleIncrement("numberOfExtras", 1)}>
                   +
                 </button>
               </div>
@@ -513,9 +420,7 @@ const Tile = ({
             {/* <div className={styles.quantityLabels}>
               <span>₹ {extraCost * extrasQuantity}/-</span>
             </div> */}
-            <span className={styles.availableNote}>
-              (Available : {extrasAvailability} sets)
-            </span>
+            <span className={styles.availableNote}>(Available : sets)</span>
           </div>
 
           {/* Add to Cart Button */}
@@ -536,3 +441,139 @@ const Tile = ({
 };
 
 export default Tile;
+
+//  const [muttonQuantity, setMuttonQuantity] = useState(0);
+//  const [headQuantity, setHeadQuantity] = useState(0);
+//  const [legsQuantity, setLegsQuantity] = useState(0);
+//  const [brainQuantity, setBrainQuantity] = useState(0);
+//  const [botiQuantity, setBotiQuantity] = useState(0);
+//  const [extrasQuantity, setExtrasQuantity] = useState(0);
+//  const [headLegsBrainQuantity, setHeadLegsBrainQuantity] = useState(0);
+//  const meat = {
+//    goatId: docId,
+//    numberOfMuttonShares: muttonQuantity,
+//    numberOfHeadLegsBrainShares: headLegsBrainQuantity,
+//    numberOfHeadShares: headQuantity,
+//    numberOfLegsShares: legsQuantity,
+//    numberOfBrainShares: brainQuantity,
+//    numberOfBotiShares: botiQuantity,
+//    numberOfExtras: extrasQuantity,
+//  };
+//  const [addedToCart, setAddedToCart] = useState(false);
+//  var extrasAvailability = 1;
+
+//  // Handlers to control quantity increment and decrement
+//  const handleIncrement = (setter, availability, quantity) => {
+//    if (quantity < availability) setter((prev) => prev + 1);
+//  };
+
+//  const handleDecrement = (setter, quantity) => {
+//    if (quantity > 0) {
+//      setter((prev) => prev - 1);
+//    }
+//  };
+
+//   const updateCart = (newRequirement) => {
+//     if (
+//       headQuantity === 0 &&
+//       legsQuantity === 0 &&
+//       brainQuantity === 0 &&
+//       headLegsBrainQuantity === 0 &&
+//       botiQuantity === 0 &&
+//       extrasQuantity === 0
+//     ) {
+//       alert("No items to add to cart!");
+//       return;
+//     }
+//     setOrder((prevOrder) => {
+//       // Find the existing requirement by ID
+//       const existingRequirement = prevOrder.meatRequirements.find(
+//         (req) => req.goatId === newRequirement.goatId
+//       );
+
+//       if (existingRequirement) {
+//         // If found, map through and update the object
+//         return {
+//           ...prevOrder,
+//           meatRequirements: prevOrder.meatRequirements.map((req) =>
+//             req.goatId === newRequirement.goatId
+//               ? { ...req, ...newRequirement }
+//               : req
+//           ),
+//         };
+//       } else {
+//         // If not found, add the new requirement
+//         return {
+//           ...prevOrder,
+//           meatRequirements: [...prevOrder.meatRequirements, newRequirement],
+//         };
+//       }
+//     });
+//     console.log(order);
+//   };
+
+//   const handleQuantitychange = (e) => {
+//     const { id, value } = e.target;
+
+//     if (
+//       headQuantity === 0 &&
+//       legsQuantity === 0 &&
+//       brainQuantity === 0 &&
+//       headLegsBrainQuantity === 0 &&
+//       botiQuantity === 0 &&
+//       extrasQuantity === 0
+//     ) {
+//       setOrder((prevOrder) => ({
+//         ...prevOrder,
+//         meatRequirements: prevOrder.meatRequirements.filter(
+//           (item) => item.goatId === docId
+//         ),
+//       }));
+//     } else {
+//       setOrder((prevOrder) => {
+//         const existingIndex = prevOrder.meatRequirements.findIndex(
+//           (item) => item.goatId === docId
+//         );
+
+//         if (existingIndex !== -1) {
+//           // Update existing item
+//           const updatedRequirements = [...prevOrder.meatRequirements];
+//           updatedRequirements[existingIndex] = meat; // Replace the existing item with the new meat object
+//           return { ...prevOrder, meatRequirements: updatedRequirements };
+//         } else {
+//           // Add the new meat object since it doesn't exist
+//           return {
+//             ...prevOrder,
+//             meatRequirements: [...prevOrder.meatRequirements, meat],
+//           };
+//         }
+//       });
+//     }
+
+//     console.log("order quantiy : ", order);
+//   };
+
+//   useEffect(() => {
+//     const updatedBill =
+//       muttonQuantity * perShareCost +
+//       headQuantity * headPrice +
+//       legsQuantity * legsPrice +
+//       brainQuantity * brainPrice +
+//       headLegsBrainQuantity * headLegsBrainPrice +
+//       botiQuantity * botiShareCost +
+//       extrasQuantity * extraCost;
+
+//     setOrder((prevOrder) => ({
+//       ...prevOrder,
+//       totalBill: updatedBill,
+//     }));
+//     console.log("order variable in catalog", order);
+//   }, [
+//     muttonQuantity,
+//     headQuantity,
+//     legsQuantity,
+//     brainQuantity,
+//     headLegsBrainQuantity,
+//     botiQuantity,
+//     extrasQuantity,
+//   ]);
