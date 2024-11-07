@@ -14,7 +14,7 @@ const Tile = ({
   meatOnlyWeight,
   totalShares,
   approxShareSize,
-  perShareCost,
+  muttonShareCost,
   cutSize,
   headLegsBrainPrice,
   headPrice,
@@ -26,12 +26,13 @@ const Tile = ({
   deliveryDateTimestamp,
   headLegsBrainAvailability,
   remainingBotiShares,
-  brainAvailability,
-  remainingShares,
-  headAvailability,
-  legsAvailability,
+  remainingBrains,
+  remainingMuttonShares,
+  remainingHeads,
+  remainingLegs,
   handlePrev,
   handleNext,
+  remainingExtras,
 }) => {
   const [goatDescriptionVisible, setGoatDescriptionVisible] = useState(false);
   const { order, setOrder } = useContext(Context);
@@ -41,13 +42,13 @@ const Tile = ({
   );
 
   const {
-    numberOfMuttonShares,
-    numberOfHeadLegsBrainShares,
-    numberOfHeadShares,
-    numberOfLegsShares,
-    numberOfBrainShares,
-    numberOfBotiShares,
-    numberOfExtras,
+    numberOfMuttonShares = 0,
+    numberOfHeadLegsBrainShares = 0,
+    numberOfHeadShares = 0,
+    numberOfLegsShares = 0,
+    numberOfBrainShares = 0,
+    numberOfBotiShares = 0,
+    numberOfExtras = 0,
   } = currentGoatDoc || {};
 
   const handleShareCount = () => {
@@ -134,6 +135,28 @@ const Tile = ({
     }, 3000);
   };
 
+  useEffect(() => {
+    const updatedBill =
+      numberOfMuttonShares * muttonShareCost +
+      numberOfHeadShares * headPrice +
+      numberOfLegsShares * legsPrice +
+      numberOfBrainShares * brainPrice +
+      numberOfBotiShares * botiShareCost +
+      numberOfExtras * extraCost;
+
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      totalBill: updatedBill,
+    }));
+  }, [
+    numberOfMuttonShares,
+    numberOfHeadShares,
+    numberOfLegsShares,
+    numberOfBrainShares,
+    numberOfBotiShares,
+    numberOfExtras,
+  ]);
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -184,7 +207,7 @@ const Tile = ({
                     <tr>
                       <td>Per share cost</td>
                       <td>:</td>
-                      <td>₹ {perShareCost}/-</td>
+                      <td>₹ {muttonShareCost}/-</td>
                     </tr>
                     <tr>
                       <td>Size</td>
@@ -263,7 +286,10 @@ const Tile = ({
                 />
                 <button
                   onClick={() =>
-                    handleIncrement("numberOfMuttonShares", remainingShares)
+                    handleIncrement(
+                      "numberOfMuttonShares",
+                      remainingMuttonShares
+                    )
                   }
                 >
                   +
@@ -277,10 +303,10 @@ const Tile = ({
             </span>
 
             {/* <div className={styles.quantityLabels}>
-              <span>₹ {perShareCost * muttonQuantity}/-</span>
+              <span>₹ {muttonShareCost * muttonQuantity}/-</span>
             </div> */}
             <span className={styles.availableNote}>
-              (Available: {remainingShares || 0} shares)
+              (Available: {remainingMuttonShares || 0} shares)
             </span>
           </div>
 
@@ -294,7 +320,7 @@ const Tile = ({
                 <input type="text" readOnly value={numberOfHeadShares || 0} />
                 <button
                   onClick={() =>
-                    handleIncrement("numberOfHeadShares", headAvailability)
+                    handleIncrement("numberOfHeadShares", remainingHeads)
                   }
                 >
                   +
@@ -309,7 +335,7 @@ const Tile = ({
               <span>₹ {headPrice * headQuantity}/-</span>
             </div> */}
             <span className={styles.availableNote}>
-              (Available: {headAvailability || 0})
+              (Available: {remainingHeads || 0})
             </span>
           </div>
 
@@ -323,7 +349,7 @@ const Tile = ({
                 <input type="text" readOnly value={numberOfLegsShares || 0} />
                 <button
                   onClick={() =>
-                    handleIncrement("numberOfLegsShares", legsAvailability)
+                    handleIncrement("numberOfLegsShares", remainingLegs)
                   }
                 >
                   +
@@ -352,7 +378,7 @@ const Tile = ({
                 <input type="text" readOnly value={numberOfBrainShares || 0} />
                 <button
                   onClick={() =>
-                    handleIncrement("numberOfBrainShares", brainAvailability)
+                    handleIncrement("numberOfBrainShares", remainingBrains)
                   }
                 >
                   +
@@ -367,7 +393,7 @@ const Tile = ({
               <span>₹ {brainPrice * brainQuantity}/-</span>
             </div> */}
             <span className={styles.availableNote}>
-              (Available: {brainAvailability || 0} )
+              (Available: {remainingBrains || 0} )
             </span>
           </div>
 
@@ -420,7 +446,9 @@ const Tile = ({
             {/* <div className={styles.quantityLabels}>
               <span>₹ {extraCost * extrasQuantity}/-</span>
             </div> */}
-            <span className={styles.availableNote}>(Available : sets)</span>
+            <span className={styles.availableNote}>
+              (Available : {remainingExtras} shares)
+            </span>
           </div>
 
           {/* Add to Cart Button */}
@@ -555,7 +583,7 @@ export default Tile;
 
 //   useEffect(() => {
 //     const updatedBill =
-//       muttonQuantity * perShareCost +
+//       muttonQuantity * muttonShareCost +
 //       headQuantity * headPrice +
 //       legsQuantity * legsPrice +
 //       brainQuantity * brainPrice +

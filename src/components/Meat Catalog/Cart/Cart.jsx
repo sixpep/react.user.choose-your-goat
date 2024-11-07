@@ -1,11 +1,31 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styles from "./Cart.module.css";
 import { LuMoveLeft } from "react-icons/lu";
 import CheckOutForm from "../Check Out Form/CheckOutForm";
 import { Context } from "../../../App";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { auth } from "../../firebase/setup";
+import { SiTicktick } from "react-icons/si";
+import { db } from "../../firebase/setup";
+import { set, ref } from "firebase/database";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  updateDoc,
+  getDoc,
+} from "firebase/firestore";
 
 const Cart = () => {
-  const { order, setOrder } = useContext(Context);
+  const { order, goatsData } = useContext(Context);
+
+  const [showOtpInputPopup, setShowOtpInputPopup] = useState(false);
+  const [showVerificationLoading, setShowVerificationLoading] = useState(false);
+  const [showConfirmationLoading, setShowConfirmationLoading] = useState(false);
+  const [orderConfirmation, setOrderConfirmation] = useState(false);
+  const [newlyFetchedGoatsData, setNewlyFetchedGoatsData] = useState([]);
+  const [showOtpError, setShowOtpError] = useState("");
 
   const keyNames = {
     numberOfMuttonShares: "Mutton",
@@ -16,83 +36,171 @@ const Cart = () => {
     numberOfExtras: "Extras",
   };
 
-  // const currentGoatDoc = order.meatRequirements.find(
-  //   (item) => item.goatId === docId
-  // );
+  const priceNames = {
+    numberOfMuttonShares: "muttonShareCost",
+    numberOfHeadShares: "headPrice",
+    numberOfLegsShares: "legsPrice",
+    numberOfBrainShares: "brainPrice",
+    numberOfBotiShares: "botiShareCost",
+    numberOfExtras: "extraCost",
+  };
 
-  // const handleIncrement = (keyName, availability) => {
-  //   if (currentGoatDoc) {
-  //     const currentValue = currentGoatDoc[keyName] || 0;
-  //     if (currentGoatDoc[keyName] && currentGoatDoc[keyName] < availability) {
-  //       setOrder((prev) => ({
-  //         ...prev,
-  //         meatRequirements: prev.meatRequirements.map((item) =>
-  //           item.goatId === docId
-  //             ? { ...item, [keyName]: currentValue + 1 }
-  //             : item
-  //         ),
-  //       }));
-  //     } else if (!currentGoatDoc[keyName]) {
-  //       setOrder((prev) => ({
-  //         ...prev,
-  //         meatRequirements: prev.meatRequirements.map((item) =>
-  //           item.goatId === docId ? { ...item, [keyName]: 1 } : item
-  //         ),
-  //       }));
-  //     }
-  //   } else {
-  //     setOrder((prev) => ({
-  //       ...prev,
-  //       meatRequirements: [
-  //         ...prev.meatRequirements,
-  //         { goatId: docId, [keyName]: 1 },
-  //       ],
-  //     }));
-  //   }
-  // };
+  const mapping = {
+    numberOfMuttonShares: "remainingMuttonShares",
+    numberOfHeadShares: "remainingHeads",
+    numberOfLegsShares: "remainingLegs",
+    numberOfBrainShares: "remainingBrains",
+    numberOfBotiShares: "remainingBotiShares",
+    numberOfExtras: "remainingExtras",
+  };
 
-  // const handleDecrement = (keyName) => {
-  //   if (currentGoatDoc && currentGoatDoc[keyName]) {
-  //     const currentValue = currentGoatDoc[keyName];
-  //     const newValue = currentValue - 1;
-  //     if (newValue > 0) {
-  //       setOrder((prev) => ({
-  //         ...prev,
-  //         meatRequirements: prev.meatRequirements.map((item) =>
-  //           item.goatId === docId
-  //             ? { ...item, [keyName]: currentValue - 1 }
-  //             : item
-  //         ),
-  //       }));
-  //     } else {
-  //       setOrder((prev) => ({
-  //         ...prev,
-  //         meatRequirements: prev.meatRequirements.map((item) => {
-  //           if (item.goatId === docId) {
-  //             const { [keyName]: removedKey, ...rest } = item;
-  //             return rest;
-  //           }
-  //           return item;
-  //         }),
-  //       }));
+  // Phone Auth
+  const [confirmation, setConfirmation] = useState();
 
-  //       setOrder((prev) => ({
-  //         ...prev,
-  //         meatRequirements: prev.meatRequirements.filter((item) => {
-  //           return !(Object.keys(item).length < 2);
-  //         }),
-  //       }));
-  //     }
-  //   }
-  // };
+  const updateGoatDataQuantities = async () => {
+    for (const requirement of order.meatRequirements) {
+      // const goatRef = db.collection("goats").doc(requirement.goatId);
+      const goatRef = doc(db, "goats", requirement.goatId);
+      try {
+        const goatDoc = await getDoc(goatRef);
 
-  const handleIncrement = (goatId, keyName) => {
-    order.meatRequirements.find((item) => item.goatId === goatId);
+        if (!goatDoc) {
+          alert(`Goat with ID ${requirement.goatId} not found.`);
+          return false;
+        }
+
+        const goatData = goatDoc.data();
+
+        const isAvailable = Object.keys(requirement).every((key) => {
+          if (key !== "goatId" && requirement[key] !== undefined) {
+            const goatField = mapping[key];
+            if (goatField) {
+              // Check if the availability is sufficient for this key
+              return goatData[goatField] >= requirement[key];
+            }
+          }
+          return true;
+        });
+
+        if (isAvailable) {
+          // Create the object for updates
+          const updateData = {};
+
+          Object.keys(requirement).forEach((key) => {
+            if (key !== "goatId" && mapping[key]) {
+              const goatField = mapping[key];
+              const updatedValue = goatData[goatField] - requirement[key];
+
+              if (!isNaN(updatedValue)) {
+                updateData[goatField] = updatedValue;
+              }
+            }
+          });
+
+          if (Object.keys(updateData).length > 0) {
+            await updateDoc(goatRef, updateData);
+          } else {
+            console.error("No valid fields to update.");
+            return false;
+          }
+        } else {
+          console.error("Not enough availability for the requested order.");
+          return false;
+        }
+      } catch (error) {
+        console.error(
+          `Error updating goat data for docId: ${requirement.goatId}`,
+          error
+        );
+        return false;
+      }
+    }
+
+    console.log("All quantities successfully updated.");
+    return true;
+  };
+
+  const placeOrder = async () => {
+    setShowConfirmationLoading(true);
+    try {
+      sendOtp();
+      if (updateGoatDataQuantities()) {
+        const docRef = await addDoc(collection(db, "orders"), order);
+        console.log("Document written with ID: ", docRef.id);
+        setShowConfirmationLoading(false);
+        setOrderConfirmation(true);
+      } else {
+        alert("No shares left");
+      }
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  };
+
+  const sendOtp = async (e) => {
+    try {
+      e.preventDefault();
+      const recaptcha = new RecaptchaVerifier(auth, "recaptcha", {
+        size: "invisible",
+      });
+      const confirmation = await signInWithPhoneNumber(
+        auth,
+        "+91 " + order.customerPhoneNumber,
+        recaptcha
+      );
+      console.log("confirmation", confirmation);
+      setConfirmation(confirmation);
+      setShowOtpInputPopup(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const verifyOtp = async () => {
+    setShowOtpInputPopup(false);
+    setShowOtpInputPopup(true);
+    try {
+      const otpValue = otp.join("");
+      await confirmation.confirm(otpValue);
+      setShowOtpInputPopup(false);
+      placeOrder();
+    } catch (error) {
+      setShowOtpInputPopup(true);
+      setShowOtpError(true);
+      console.log(error);
+    }
+  };
+
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const inputRefs = useRef([]);
+
+  const handleChange = (e, index) => {
+    const value = e.target.value;
+    if (/^\d$/.test(value) || value === "") {
+      // Update the OTP array
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+
+      // Move to the next input if a digit was entered
+      if (value !== "" && index < otp.length - 1) {
+        inputRefs.current[index + 1].focus();
+      }
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace" && otp[index] === "" && index > 0) {
+      // Move focus to the previous input if it's empty
+      inputRefs.current[index - 1].focus();
+    }
   };
 
   useEffect(() => {
-    console.log(order);
-  }, []);
+    if (order.meatRequirements.length <= 0) {
+      window.location.href = "/";
+    }
+  });
 
   return (
     <div className={styles.container}>
@@ -108,7 +216,6 @@ const Cart = () => {
             <p>Back</p>
           </div>
         </div>
-
         <div className={styles.carts}>
           {order.meatRequirements.map((goatObj, index) => (
             <div className={styles.cartItemsWrap} key={index}>
@@ -116,9 +223,11 @@ const Cart = () => {
                 if (keyNames[keyName]) {
                   return (
                     <div className={styles.cartItem} key={keyName}>
-                      <p>{keyNames[keyName]}</p>
                       <div className={styles.priceValues}>
-                        <div className={styles.quantityButtons}>
+                        <p>
+                          {keyNames[keyName]} ( {goatObj[keyName]} shares )
+                        </p>
+                        {/* <div className={styles.quantityButtons}>
                           <button>-</button>
                           <input
                             type="text"
@@ -127,9 +236,20 @@ const Cart = () => {
                             value={goatObj[keyName]}
                           />
                           <button>+</button>
-                        </div>
-                        <p>₹ {2 * 400}/-</p>
+                        </div> */}
                       </div>
+                      <p>
+                        ₹
+                        {goatObj[keyName] *
+                          (goatsData.find(
+                            (item) => item.docId === goatObj.goatId
+                          )
+                            ? goatsData.find(
+                                (item) => item.docId === goatObj.goatId
+                              )[priceNames[keyName]]
+                            : 0)}
+                        /-
+                      </p>
                     </div>
                   );
                 }
@@ -137,6 +257,17 @@ const Cart = () => {
               })}
             </div>
           ))}
+
+          <div className=" w-full divide-y divide-gray-200 px-4 dark:divide-gray-800">
+            <dl className="flex items-center justify-between gap-4 py-3">
+              <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
+                Subtotal
+              </dt>
+              <dd className="text-base font-medium text-gray-900 dark:text-white">
+                ₹ {order.totalBill}
+              </dd>
+            </dl>
+          </div>
 
           {/* <div className={styles.cartItemsWrap}>
             <div className={styles.cartItem}>
@@ -171,8 +302,84 @@ const Cart = () => {
             </div>
           </div> */}
         </div>
-        <CheckOutForm />
+        {/* <div className="-my-3 divide-y divide-gray-200 px-4 dark:divide-gray-800">
+          <dl className="flex items-center justify-between gap-4 py-3">
+            <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
+              Subtotal
+            </dt>
+            <dd className="text-base font-medium text-gray-900 dark:text-white">
+              ₹ {order.totalBill}
+            </dd>
+          </dl>
+        </div> */}
+        <div id="recaptcha"></div>
+
+        <CheckOutForm sendOtp={sendOtp} placeOrder={placeOrder} />
       </div>
+
+      {/* <div className={styles.form}>
+        <button onClick={sendOtp}>Send OTP</button>
+        <div id="recaptcha"></div>
+        <button onClick={verifyOtp}>Verify OTP</button>
+      </div> */}
+
+      {showOtpInputPopup && (
+        <div className={styles.verifyOtpContainer}>
+          <h6>Verify your mobile number</h6>
+          <div className={styles.otpInputContainer}>
+            {otp.map((digit, index) => (
+              <input
+                key={index}
+                type="text"
+                maxLength="1"
+                value={digit}
+                onChange={(e) => handleChange(e, index)}
+                onKeyDown={(e) => handleKeyDown(e, index)}
+                ref={(el) => (inputRefs.current[index] = el)}
+                className={styles.otpInput}
+              />
+            ))}
+          </div>
+          {showOtpError && <span>Please enter a valid OTP</span>}
+          <button onClick={verifyOtp} className={styles.verifyButton}>
+            Verify
+          </button>
+        </div>
+      )}
+
+      {showVerificationLoading && (
+        <div className={styles.verifyOtpContainer}>
+          <div className={styles.loader}></div>
+
+          <h6>Please Wait While We Verify You Mobile Number!</h6>
+        </div>
+      )}
+
+      {showConfirmationLoading && (
+        <div className={styles.verifyOtpContainer}>
+          <div className={styles.loader}></div>
+
+          <h6>Confirming Your Order!</h6>
+        </div>
+      )}
+
+      {orderConfirmation && (
+        <div class={styles.verifyOtpContainer}>
+          <div class={styles.popupContent}>
+            <div class={styles.checkmark}>
+              <SiTicktick color="green" size={40} />
+            </div>
+            <h1>Your order is confirmed!</h1>
+            <p>Thank you for your order</p>
+            <button
+              class={styles.goHomeBtn}
+              onClick={() => (window.location.href = "/")}
+            >
+              Go Home
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

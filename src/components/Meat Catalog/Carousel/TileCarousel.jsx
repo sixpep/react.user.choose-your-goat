@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Tile from "../Tile Component/Tile";
-import { BsFillCaretLeftFill, BsFillCaretRightFill } from "react-icons/bs";
+import { Context } from "../../../App";
 
-const TileCarousel = ({ goatsData, order, setOrder }) => {
+const TileCarousel = ({ order, setOrder }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { goatsData } = useContext(Context);
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>
@@ -25,7 +26,7 @@ const TileCarousel = ({ goatsData, order, setOrder }) => {
     meatOnlyWeight: 25,
     totalShares: 100,
     approxShareSize: 250,
-    perShareCost: 500,
+    muttonShareCost: 500,
     cutSize: "Medium",
     headLegsBrainPrice: 200,
     headPrice: 100,
@@ -37,11 +38,11 @@ const TileCarousel = ({ goatsData, order, setOrder }) => {
     totalBotiShares: 20,
     remainingBotiShares: 15,
     headLegsBrainAvailability: true,
-    headAvailability: true,
-    brainAvailability: true,
-    legsAvailability: true,
-    remainingShares: 40,
-    remainingExtraShares: 5,
+    remainingHeads: true,
+    remainingBrains: true,
+    remainingLegs: true,
+    remainingMuttonShares: 40,
+    remainingExtras: 5,
   };
 
   return (
@@ -67,7 +68,7 @@ const TileCarousel = ({ goatsData, order, setOrder }) => {
                 meatOnlyWeight={item.meatOnlyWeight}
                 totalShares={item.totalShares}
                 approxShareSize={item.approxShareSize}
-                perShareCost={item.perShareCost}
+                muttonShareCost={item.muttonShareCost}
                 cutSize={item.cutSize}
                 headLegsBrainPrice={item.headLegsBrainPrice}
                 headPrice={item.headPrice}
@@ -79,11 +80,11 @@ const TileCarousel = ({ goatsData, order, setOrder }) => {
                 totalBotiShares={item.totalBotiShares}
                 remainingBotiShares={item.remainingBotiShares}
                 headLegsBrainAvailability={item.headLegsBrainAvailability}
-                headAvailability={item.headAvailability}
-                brainAvailability={item.brainAvailability}
-                legsAvailability={item.legsAvailability}
-                remainingShares={item.remainingShares}
-                remainingExtraShares={item.remainingExtraShares}
+                remainingHeads={item.remainingHeads}
+                remainingBrains={item.remainingBrains}
+                remainingLegs={item.remainingLegs}
+                remainingMuttonShares={item.remainingMuttonShares}
+                remainingExtras={item.remainingExtras}
                 order={order}
                 setOrder={setOrder}
                 handlePrev={handlePrev}
