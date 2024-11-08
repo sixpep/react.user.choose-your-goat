@@ -160,21 +160,22 @@ const Cart = () => {
     setShowOtpInputPopup(true);
     try {
       const otpValue = otp.join("");
-      const resp = await confirmation.confirm(otpValue);
-      console.log("otp verification resp", resp);
+      const otpConfirmation = await confirmation.confirm(otpValue);
+      console.log("otp verification resp", otpConfirmation);
+
       window.localStorage.setItem(
         "choose-your-goat-token",
-        resp.user.accessToken
+        otpConfirmation.user.accessToken
       );
 
       setShowOtpInputPopup(false);
 
-      setUser(resp.user.uid, {
+      setUser(otpConfirmation.user.uid, {
         userName: order.userName,
         userPhoneNumber: order.userPhoneNumber,
       });
 
-      setUserAddress(resp.user.uid, {
+      setUserAddress({
         userId: order.userId,
         userAddress: order.userAddress,
       });
@@ -196,10 +197,13 @@ const Cart = () => {
     }
   };
 
-  const setUserAddress = async (userId, userData) => {
+  const setUserAddress = async (userData) => {
     try {
-      const resp = await setDoc(doc(collection(db, "addresses")), userData);
-    } catch (error) {}
+      await setDoc(doc(collection(db, "addresses")), userData);
+      console.log("Address set successfully!")
+    } catch (error) {
+      console.log("error in setting user address");
+    }
   };
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
