@@ -241,7 +241,10 @@ const Tile = ({
             data-carousel-prev
             onClick={handlePrev}
             style={{
-              visibility: goatDescriptionVisible ? "hidden" : "visible",
+              visibility:
+                goatDescriptionVisible || order.meatRequirements.length < 2
+                  ? "hidden"
+                  : "visible",
             }}
           >
             <i
@@ -251,16 +254,21 @@ const Tile = ({
               <BsFillCaretLeftFill size={30} style={{ zIndex: "5" }} />
             </i>
           </button>
+
           <h3>
             Delivers <br /> {handleDeliveryDate(deliveryDateTimestamp)}
           </h3>
+
           <button
             type="button"
             className="relative flex justify-center h-min cursor-pointer group focus:outline-none"
             data-carousel-next
             onClick={handleNext}
             style={{
-              visibility: goatDescriptionVisible ? "hidden" : "visible",
+              visibility:
+                goatDescriptionVisible || order.meatRequirements.length < 2
+                  ? "hidden"
+                  : "visible",
             }}
           >
             <i className="inline-flex items-center justify-center w-10 h-10 ">

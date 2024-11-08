@@ -8,6 +8,7 @@ import { auth } from "../../firebase/setup";
 import { SiTicktick } from "react-icons/si";
 import { db } from "../../firebase/setup";
 import { set, ref } from "firebase/database";
+import { useNavigate } from "react-router-dom";
 import {
   addDoc,
   collection,
@@ -20,13 +21,14 @@ import {
 
 const Cart = () => {
   const { order, setOrder, goatsData } = useContext(Context);
-
   const [showOtpInputPopup, setShowOtpInputPopup] = useState(false);
   const [showVerificationLoading, setShowVerificationLoading] = useState(false);
   const [showConfirmationLoading, setShowConfirmationLoading] = useState(false);
   const [orderConfirmation, setOrderConfirmation] = useState(false);
   const [newlyFetchedGoatsData, setNewlyFetchedGoatsData] = useState([]);
   const [showOtpError, setShowOtpError] = useState("");
+
+  const navigate = useNavigate();
 
   const keyNames = {
     numberOfMuttonShares: "Mutton",
@@ -179,7 +181,7 @@ const Cart = () => {
         userId: order.userId,
         userAddress: order.userAddress,
       });
-
+      console.log("Setted!!!!!!");
       placeOrder();
     } catch (error) {
       setShowOtpInputPopup(true);
@@ -200,9 +202,8 @@ const Cart = () => {
   const setUserAddress = async (userData) => {
     try {
       await setDoc(doc(collection(db, "addresses")), userData);
-      console.log("Address set successfully!")
     } catch (error) {
-      console.log("error in setting user address");
+      console.log("error in setting user address", error);
     }
   };
 
@@ -241,10 +242,7 @@ const Cart = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.backBar}>
-          <div
-            className={styles.backBtn}
-            onClick={() => (window.location.href = "/")}
-          >
+          <div className={styles.backBtn} onClick={() => navigate("/")}>
             <i>
               <LuMoveLeft size={20} />
             </i>
