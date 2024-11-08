@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useSwipeable } from "react-swipeable";
+import { Context } from "../../../App";
 
-const Carousel = ({ images }) => {
+const Carousel = ({ images, goatDescriptionVisible }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const { order } = useContext(Context);
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>
@@ -51,16 +54,15 @@ const Carousel = ({ images }) => {
           );
         })}
       </div>
-
-      {/* <div className="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
+      <div className="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
         {images.map((_, ind) => {
           return (
             <button
               key={ind}
               type="button"
               className={`w-3 h-3 rounded-full ${
-                ind === currentIndex ? "bg-gray-800" : "bg-gray-400"
-              }`}
+                goatDescriptionVisible ? "invisible" : "visible"
+              } ${ind === currentIndex ? "bg-gray-800" : "bg-gray-400"}`}
               aria-current={ind === currentIndex}
               aria-label={`Slide ${ind + 1}`}
               data-carousel-slide-to="0"
@@ -68,8 +70,7 @@ const Carousel = ({ images }) => {
             ></button>
           );
         })}
-      </div> */}
-
+      </div>{" "}
       {/* <button
         type="button"
         className="absolute top-1/2 start-0 z-30 flex items-center justify-center h-min px-4 cursor-pointer group focus:outline-none"

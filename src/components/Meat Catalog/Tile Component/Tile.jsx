@@ -161,7 +161,10 @@ const Tile = ({
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.tileImage}>
-          <Carousel images={[goatImage, "/images/goat1.jpeg"]} />
+          <Carousel
+            images={[goatImage, "/images/goat1.jpeg"]}
+            goatDescriptionVisible={goatDescriptionVisible}
+          />
           <i onClick={handleShowGoatInfo}>
             <FaInfoCircle color="white" size={20} style={{ zIndex: "100" }} />
           </i>
