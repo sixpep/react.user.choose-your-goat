@@ -364,7 +364,7 @@ const Tile = ({
               <span>₹ {legsPrice * legsQuantity}/-</span>
             </div> */}
             <span className={styles.availableNote}>
-              (Available: {headLegsBrainAvailability || 0} set)
+              (Available: {remainingLegs || 0} set)
             </span>
           </div>
 
