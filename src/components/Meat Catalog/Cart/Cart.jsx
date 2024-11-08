@@ -15,6 +15,7 @@ import {
   onSnapshot,
   updateDoc,
   getDoc,
+  setDoc,
 } from "firebase/firestore";
 
 const Cart = () => {
@@ -121,7 +122,6 @@ const Cart = () => {
   };
 
   const placeOrder = async () => {
-    setShowConfirmationLoading(true);
     try {
       sendOtp();
       if (updateGoatDataQuantities()) {
@@ -139,13 +139,12 @@ const Cart = () => {
 
   const sendOtp = async (e) => {
     try {
-      e.preventDefault();
       const recaptcha = new RecaptchaVerifier(auth, "recaptcha", {
         size: "invisible",
       });
       const confirmation = await signInWithPhoneNumber(
         auth,
-        "+91 " + order.customerPhoneNumber,
+        "+91 " + order.userPhoneNumber,
         recaptcha
       );
       console.log("confirmation", confirmation);
@@ -161,14 +160,47 @@ const Cart = () => {
     setShowOtpInputPopup(true);
     try {
       const otpValue = otp.join("");
-      await confirmation.confirm(otpValue);
+      const resp = await confirmation.confirm(otpValue);
+      console.log("otp verification resp", resp);
+      window.localStorage.setItem(
+        "choose-your-goat-token",
+        resp.user.accessToken
+      );
+
       setShowOtpInputPopup(false);
+      setShowConfirmationLoading(true);
+
+      setUser(resp.user.uid, {
+        userName: order.userName,
+        userPhoneNumber: order.userPhoneNumber,
+      });
+
+      setUserAddress(resp.user.uid, {
+        userId: order.userId,
+        userAddress: order.userAddress,
+      });
+
       placeOrder();
     } catch (error) {
       setShowOtpInputPopup(true);
       setShowOtpError(true);
       console.log(error);
     }
+  };
+
+  const setUser = async (userId, userData) => {
+    try {
+      await setDoc(doc(collection(db, "users"), userId), userData);
+      console.log("User created successfully");
+    } catch (error) {
+      console.log("error in creating user", error);
+    }
+  };
+
+  const setUserAddress = async (userId, userData) => {
+    try {
+      const resp = await setDoc(doc(collection(db, "addresses")), userData);
+    } catch (error) {}
   };
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);

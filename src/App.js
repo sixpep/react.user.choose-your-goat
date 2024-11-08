@@ -5,7 +5,8 @@ import Catalog from "./components/Meat Catalog/Catalog";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Cart from "./components/Meat Catalog/Cart/Cart";
 import { db } from "./components/firebase/setup";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
+import { jwtDecode } from "jwt-decode";
 
 export const Context = React.createContext();
 
@@ -13,12 +14,22 @@ const App = () => {
   const [goatsData, setGoatsData] = useState([]);
   const [order, setOrder] = useState({
     meatRequirements: [],
-    customerName: "",
-    customerPhoneNumber: "",
-    customerAddress: "",
+    userName: "",
+    userPhoneNumber: "",
+    userAddress: "",
     gpsLocation: "",
     totalBill: 0,
   });
+
+  const getUser = async (userId) => {
+    try {
+      const userDoc = (await getDoc(doc(db, "users", userId))).data();
+      console.log("userDoc", userDoc);
+      return userDoc;
+    } catch (error) {
+      return error;
+    }
+  };
 
   useEffect(() => {
     // Setting up a real-time listener on the "goats" collection
@@ -31,7 +42,33 @@ const App = () => {
       console.log(updatedGoatsData);
     });
 
-    // Clean up the listener when the component unmounts
+    const fetchUserData = async () => {
+      const userToken = localStorage.getItem("choose-your-goat-token");
+
+      if (userToken) {
+        const decodedToken = jwtDecode(userToken);
+        console.log("user token exists in local");
+
+        try {
+          const user = await getUser(decodedToken.sub);
+          console.log("user", user);
+
+          setOrder((prev) => ({
+            ...prev,
+            userId: decodedToken.sub,
+            userPhoneNumber: user.userPhoneNumber,
+            userName: user.userName,
+          }));
+        } catch (error) {
+          console.error("Failed to fetch user:", error);
+        }
+
+        console.log("decodedToken", decodedToken);
+      }
+    };
+
+    fetchUserData();
+
     return () => unsubscribe();
   }, []);
 

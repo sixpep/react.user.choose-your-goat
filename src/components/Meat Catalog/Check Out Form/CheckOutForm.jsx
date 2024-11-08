@@ -1,24 +1,47 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../../../App";
 
 const CheckOutForm = ({ sendOtp }) => {
   const { order, setOrder } = useContext(Context);
+  const [checkFormInputs, setCheckformInputs] = useState(false);
+  const [tokenExists, setTokenExists] = useState(true);
+
+  const handleFormValidations = (e) => {
+    e.preventDefault();
+    setCheckformInputs(true);
+    if (
+      order.userName.length < 1 ||
+      order.userPhoneNumber < 10 ||
+      order.userAddress < 1
+    ) {
+      return;
+    } else {
+      sendOtp();
+    }
+  };
 
   const handleChangeInput = (e) => {
     const { id, value } = e.target;
-
     setOrder((prev) => ({
       ...prev,
       [id]: value,
     }));
   };
 
+  const accessToken = localStorage.getItem("choose-your-goat-token");
+
+  useEffect(() => {
+    if (!accessToken) {
+      setTokenExists(false);
+    }
+  }, [accessToken]);
+
   return (
     <section className="bg-white py-4 antialiased dark:bg-gray-900 md:pb-16 shadow-inner max-h-[99vh] overflow-y-auto z-30">
       <form
         action="#"
         className="mx-auto max-w-screen-xl px-4 2xl:px-0"
-        onSubmit={sendOtp}
+        onSubmit={handleFormValidations}
       >
         {/* <div className="flex justify-end">
           <button onClick={() => setShowCheckOutForm(false)}>
@@ -43,12 +66,20 @@ const CheckOutForm = ({ sendOtp }) => {
                   </label>
                   <input
                     type="text"
-                    id="customerName"
+                    id="userName"
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                     placeholder="Bonnie Green"
                     onChange={handleChangeInput}
+                    readOnly={tokenExists}
+                    value={order.userName}
                   />
+                  {checkFormInputs && order.userName.length < 1 && (
+                    <span className="text-sm text-red-500 ps-1">
+                      Enter a valid name
+                    </span>
+                  )}
                 </div>
+
                 <div>
                   <label
                     htmlFor="phone-input-3"
@@ -61,15 +92,23 @@ const CheckOutForm = ({ sendOtp }) => {
                     <div className="relative w-full">
                       <input
                         type="number"
-                        id="customerPhoneNumber"
+                        id="userPhoneNumber"
                         className="z-20 block w-full rounded-lg border  border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:border-s-gray-700  dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500"
                         pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                         placeholder="123-456-7890"
                         onChange={handleChangeInput}
+                        readOnly={tokenExists}
+                        value={order.userPhoneNumber}
                       />
+                      {checkFormInputs && order.userPhoneNumber.length < 10 && (
+                        <span className="text-sm text-red-500 ps-1">
+                          Enter a valid phone number
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
+
                 <div>
                   <label
                     htmlFor="company_name"
@@ -80,11 +119,16 @@ const CheckOutForm = ({ sendOtp }) => {
                   </label>
                   <input
                     type="text"
-                    id="customerAddress"
+                    id="userAddress"
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                     placeholder="Flowbite LLC"
                     onChange={handleChangeInput}
                   />
+                  {checkFormInputs && order.userAddress.length < 1 && (
+                    <span className="text-sm text-red-500 ps-1">
+                      Enter a valid address
+                    </span>
+                  )}
                 </div>
 
                 <div className="space-y-3">
