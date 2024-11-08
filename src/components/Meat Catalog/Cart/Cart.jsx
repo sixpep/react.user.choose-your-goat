@@ -19,7 +19,7 @@ import {
 } from "firebase/firestore";
 
 const Cart = () => {
-  const { order, goatsData } = useContext(Context);
+  const { order, setOrder, goatsData } = useContext(Context);
 
   const [showOtpInputPopup, setShowOtpInputPopup] = useState(false);
   const [showVerificationLoading, setShowVerificationLoading] = useState(false);
@@ -122,8 +122,8 @@ const Cart = () => {
   };
 
   const placeOrder = async () => {
+    setShowConfirmationLoading(true);
     try {
-      sendOtp();
       if (updateGoatDataQuantities()) {
         const docRef = await addDoc(collection(db, "orders"), order);
         console.log("Document written with ID: ", docRef.id);
@@ -168,7 +168,6 @@ const Cart = () => {
       );
 
       setShowOtpInputPopup(false);
-      setShowConfirmationLoading(true);
 
       setUser(resp.user.uid, {
         userName: order.userName,

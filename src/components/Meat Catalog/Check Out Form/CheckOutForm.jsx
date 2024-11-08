@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../../../App";
 
-const CheckOutForm = ({ sendOtp }) => {
+const CheckOutForm = ({ sendOtp, placeOrder }) => {
   const { order, setOrder } = useContext(Context);
   const [checkFormInputs, setCheckformInputs] = useState(false);
   const [tokenExists, setTokenExists] = useState(true);
@@ -15,6 +15,8 @@ const CheckOutForm = ({ sendOtp }) => {
       order.userAddress < 1
     ) {
       return;
+    } else if (localStorage.getItem("choose-your-goat-token")) {
+      placeOrder();
     } else {
       sendOtp();
     }
