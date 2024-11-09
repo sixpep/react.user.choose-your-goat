@@ -21,8 +21,11 @@ const Catalog = () => {
         <button
           onClick={() => navigate("/cart")}
           disabled={order.totalBill <= 0}
+          style={{
+            backgroundColor: order.meatRequirements.length < 1 ? "grey" : "",
+          }}
         >
-          View Cart
+          Continue
         </button>
       </div>
       {showCheckOutForm && (
