@@ -61,7 +61,9 @@ const Carousel = ({ images, goatDescriptionVisible }) => {
               key={ind}
               type="button"
               className={`w-3 h-3 rounded-full ${
-                goatDescriptionVisible ? "invisible" : "visible"
+                goatDescriptionVisible || images.length < 2
+                  ? "invisible"
+                  : "visible"
               } ${ind === currentIndex ? "bg-gray-800" : "bg-gray-400"}`}
               aria-current={ind === currentIndex}
               aria-label={`Slide ${ind + 1}`}
