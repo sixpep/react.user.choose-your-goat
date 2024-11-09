@@ -159,7 +159,7 @@ const Tile = ({
       <div className={styles.content}>
         <div className={styles.tileImage}>
           <Carousel
-            images={[goatImage, "/images/goat1.jpeg"]}
+            images={[goatImage]}
             goatDescriptionVisible={goatDescriptionVisible}
           />
           <i onClick={handleShowGoatInfo}>
@@ -369,7 +369,7 @@ const Tile = ({
               <span>₹ {legsPrice * legsQuantity}/-</span>
             </div> */}
             <span className={styles.availableNote}>
-              (Available: {remainingLegs || 0} set)
+              (Available: {remainingLegs || 0} share)
             </span>
           </div>
 
@@ -390,10 +390,10 @@ const Tile = ({
                 </button>
               </div>
             </div>
-            <span>
+            {/* <span>
               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
               ab sit voluptate quis harum veniam?
-            </span>
+            </span> */}
             {/* <div className={styles.quantityLabels}>
               <span>₹ {brainPrice * brainQuantity}/-</span>
             </div> */}
@@ -453,7 +453,7 @@ const Tile = ({
               <span>₹ {extraCost * extrasQuantity}/-</span>
             </div> */}
             <span className={styles.availableNote}>
-              (Available : {remainingExtras} shares)
+              (Available : {remainingExtras} share)
             </span>
           </div>
 

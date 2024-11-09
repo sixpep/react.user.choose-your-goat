@@ -55,8 +55,8 @@ const App = () => {
           setOrder((prev) => ({
             ...prev,
             userId: decodedToken.sub,
-            userPhoneNumber: user.userPhoneNumber,
-            userName: user.userName,
+            userPhoneNumber: user?.userPhoneNumber,
+            userName: user?.userName,
           }));
         } catch (error) {
           console.error("Failed to fetch user:", error);
