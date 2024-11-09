@@ -32,7 +32,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    // Setting up a real-time listener on the "goats" collection
     const unsubscribe = onSnapshot(collection(db, "goats"), (snapshot) => {
       const updatedGoatsData = snapshot.docs.map((doc) => ({
         docId: doc.id,
