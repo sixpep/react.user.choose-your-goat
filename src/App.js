@@ -5,8 +5,15 @@ import Catalog from "./components/Meat Catalog/Catalog";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Cart from "./components/Meat Catalog/Cart/Cart";
 import { db } from "./components/firebase/setup";
-import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+} from "firebase/firestore";
 import { jwtDecode } from "jwt-decode";
+import UserOrders from "./components/UserOrders/UserOrders";
 
 export const Context = React.createContext();
 
@@ -33,6 +40,22 @@ const App = () => {
     }
   };
 
+  const getUserAddress = async (userId) => {
+    try {
+      const addresses = [];
+      const addressesQuery = await getDocs(collection(db, "addresses"));
+      addressesQuery.forEach((doc) => {
+        addresses.push(doc.data());
+      });
+
+      const addressDoc = addresses.filter((item) => item.userId === userId);
+      console.log("addressDoc", addressDoc);
+      return addressDoc;
+    } catch (error) {
+      return error;
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "goats"), (snapshot) => {
       const updatedGoatsData = snapshot.docs.map((doc) => ({
@@ -52,13 +75,17 @@ const App = () => {
 
         try {
           const user = await getUser(decodedToken.sub);
-          console.log("user", user);
+          const userAddress = await getUserAddress(decodedToken.sub);
+
+          console.log("userAddress", userAddress);
 
           setOrder((prev) => ({
             ...prev,
             userId: decodedToken.sub,
             userPhoneNumber: user?.userPhoneNumber,
             userName: user?.userName,
+            userAddress: userAddress[0].userAddress,
+            landmark: userAddress[0].landmark,
           }));
         } catch (error) {
           console.error("Failed to fetch user:", error);
@@ -81,6 +108,7 @@ const App = () => {
           <Routes>
             <Route path="/" index element={<Catalog />} />
             <Route path="cart" element={<Cart />} />
+            <Route path="orders" element={<UserOrders />} />
           </Routes>
         </BrowserRouter>
       </div>

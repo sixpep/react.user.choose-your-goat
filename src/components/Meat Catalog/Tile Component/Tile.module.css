@@ -138,6 +138,12 @@
   padding-bottom: 0.3rem;
 }
 
+.controlPrices {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
 .label {
   display: flex;
   justify-content: space-between;
@@ -183,6 +189,11 @@
   border: none;
   margin: 0 4px;
   font-size: 14px;
+}
+
+.price {
+  text-align: right;
+  width: 4rem;
 }
 
 .addToCartWrap {

@@ -18,33 +18,6 @@ const TileCarousel = ({ order, setOrder }) => {
     );
   };
 
-  const sample = {
-    docId: "sampleDoc123",
-    goatImage: "/images/goat1.jpeg",
-    gender: "Male",
-    netWeight: 30,
-    meatOnlyWeight: 25,
-    totalShares: 100,
-    approxShareSize: 250,
-    muttonShareCost: 500,
-    cutSize: "Medium",
-    headLegsBrainPrice: 200,
-    headPrice: 100,
-    legsPrice: 100,
-    brainPrice: 80,
-    botiShareCost: 150,
-    extraCost: 50,
-    deliveryDateTimestamp: Date.now(),
-    totalBotiShares: 20,
-    remainingBotiShares: 15,
-    headLegsBrainAvailability: true,
-    remainingHeads: true,
-    remainingBrains: true,
-    remainingLegs: true,
-    remainingMuttonShares: 40,
-    remainingExtras: 5,
-  };
-
   return (
     <div
       id="default-carousel"
@@ -58,6 +31,14 @@ const TileCarousel = ({ order, setOrder }) => {
         }}
       >
         {goatsData.map((item, index) => {
+          // if (
+          //   item.remainingMuttonShares > 0 ||
+          //   item.remainingBotiShares > 0 ||
+          //   item.remainingHeads > 0 ||
+          //   item.remainingLegs > 0 ||
+          //   item.remainingBrains > 0 ||
+          //   item.remainingExtras > 0
+          // )
           return (
             <div className="min-w-full" data-carousel-item key={index}>
               <Tile
@@ -93,44 +74,6 @@ const TileCarousel = ({ order, setOrder }) => {
             </div>
           );
         })}
-      </div>
-
-      <div className="absolute flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
-        <button
-          type="button"
-          className="w-3 h-3 rounded-full"
-          aria-current="true"
-          aria-label="Slide 1"
-          data-carousel-slide-to="0"
-        ></button>
-        <button
-          type="button"
-          className="w-3 h-3 rounded-full"
-          aria-current="false"
-          aria-label="Slide 2"
-          data-carousel-slide-to="1"
-        ></button>
-        <button
-          type="button"
-          className="w-3 h-3 rounded-full"
-          aria-current="false"
-          aria-label="Slide 3"
-          data-carousel-slide-to="2"
-        ></button>
-        <button
-          type="button"
-          className="w-3 h-3 rounded-full"
-          aria-current="false"
-          aria-label="Slide 4"
-          data-carousel-slide-to="3"
-        ></button>
-        <button
-          type="button"
-          className="w-3 h-3 rounded-full"
-          aria-current="false"
-          aria-label="Slide 5"
-          data-carousel-slide-to="4"
-        ></button>
       </div>
 
       {/* <button

@@ -118,7 +118,6 @@ const Cart = () => {
         return false;
       }
     }
-
     console.log("All quantities successfully updated.");
     return true;
   };
@@ -127,7 +126,10 @@ const Cart = () => {
     setShowConfirmationLoading(true);
     try {
       if (updateGoatDataQuantities()) {
-        const docRef = await addDoc(collection(db, "orders"), order);
+        const docRef = await addDoc(collection(db, "orders"), {
+          ...order,
+          userId: localStorage.getItem("choose-your-goat-userId"),
+        });
         console.log("Document written with ID: ", docRef.id);
         setShowConfirmationLoading(false);
         setOrderConfirmation(true);
@@ -163,17 +165,14 @@ const Cart = () => {
     try {
       const otpValue = otp.join("");
       const otpConfirmation = await confirmation.confirm(otpValue);
+      localStorage.setItem("choose-your-goat-userId", otpConfirmation.user.uid);
       console.log("otp verification resp", otpConfirmation);
+      console.log("uid : ", otpConfirmation.user.uid);
 
       window.localStorage.setItem(
         "choose-your-goat-token",
         otpConfirmation.user.accessToken
       );
-
-      setOrder((prev) => ({
-        ...prev,
-        userId: otpConfirmation.user.uid,
-      }));
 
       setShowOtpInputPopup(false);
 
@@ -185,11 +184,12 @@ const Cart = () => {
       setUserAddress({
         userId: otpConfirmation.user.uid,
         userAddress: order.userAddress,
-        userLandmark: order.landmark,
+        landmark: order.landmark,
         city: "Sangareddy",
       });
 
       console.log("Setted!!!!!!");
+      console.log("order after user id", order);
       placeOrder();
     } catch (error) {
       setShowOtpInputPopup(true);
@@ -197,6 +197,18 @@ const Cart = () => {
       console.log(error);
     }
   };
+
+  // const setNewUserId = (id) => {
+  //   return new Promise((resolve) => {
+  //     setOrder((prev) => {
+  //       console.log("Setting userId in order");
+  //       resolve({
+  //         ...prev,
+  //         userId: id,
+  //       });
+  //     });
+  //   });
+  // };
 
   const setUser = async (userId, userData) => {
     try {
@@ -376,12 +388,13 @@ const Cart = () => {
             {otp.map((digit, index) => (
               <input
                 key={index}
-                type="text"
+                type="number"
                 maxLength="1"
                 value={digit}
                 onChange={(e) => handleChange(e, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 ref={(el) => (inputRefs.current[index] = el)}
+                inputMode="numeric"
                 className={styles.otpInput}
               />
             ))}

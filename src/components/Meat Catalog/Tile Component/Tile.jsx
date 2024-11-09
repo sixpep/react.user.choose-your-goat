@@ -51,15 +51,11 @@ const Tile = ({
     numberOfExtras = 0,
   } = currentGoatDoc || {};
 
-  const handleShareCount = () => {
-    setOrder((prev) => ({
-      ...prev,
-    }));
-  };
-
   const handleIncrement = (keyName, availability) => {
+    if (availability === 0) return;
     if (currentGoatDoc) {
       const currentValue = currentGoatDoc[keyName] || 0;
+
       if (currentGoatDoc[keyName] && currentGoatDoc[keyName] < availability) {
         setOrder((prev) => ({
           ...prev,
@@ -282,26 +278,33 @@ const Tile = ({
           <div className={styles.quantityControl}>
             <div className={styles.label}>
               <p>Mutton </p>
-              <div className={styles.quantityButtons}>
-                <button onClick={() => handleDecrement("numberOfMuttonShares")}>
-                  -
-                </button>
-                <input
-                  type="text"
-                  id="numberOfMuttonShares"
-                  readOnly
-                  value={numberOfMuttonShares || 0}
-                />
-                <button
-                  onClick={() =>
-                    handleIncrement(
-                      "numberOfMuttonShares",
-                      remainingMuttonShares
-                    )
-                  }
-                >
-                  +
-                </button>
+              <div className={styles.controlPrices}>
+                <div className={styles.quantityButtons}>
+                  <button
+                    onClick={() => handleDecrement("numberOfMuttonShares")}
+                  >
+                    -
+                  </button>
+                  <input
+                    type="text"
+                    id="numberOfMuttonShares"
+                    readOnly
+                    value={numberOfMuttonShares || 0}
+                  />
+                  <button
+                    onClick={() =>
+                      handleIncrement(
+                        "numberOfMuttonShares",
+                        remainingMuttonShares
+                      )
+                    }
+                  >
+                    +
+                  </button>
+                </div>
+                <div className={styles.price}>
+                  <p>₹ {muttonShareCost * numberOfMuttonShares}</p>
+                </div>
               </div>
             </div>
 
@@ -321,18 +324,23 @@ const Tile = ({
           <div className={styles.quantityControl}>
             <div className={styles.label}>
               <p>Head (తలకాయ) </p>
-              <div className={styles.quantityButtons}>
-                <button onClick={() => handleDecrement("numberOfHeadShares")}>
-                  -
-                </button>
-                <input type="text" readOnly value={numberOfHeadShares || 0} />
-                <button
-                  onClick={() =>
-                    handleIncrement("numberOfHeadShares", remainingHeads)
-                  }
-                >
-                  +
-                </button>
+              <div className={styles.controlPrices}>
+                <div className={styles.quantityButtons}>
+                  <button onClick={() => handleDecrement("numberOfHeadShares")}>
+                    -
+                  </button>
+                  <input type="text" readOnly value={numberOfHeadShares || 0} />
+                  <button
+                    onClick={() =>
+                      handleIncrement("numberOfHeadShares", remainingHeads)
+                    }
+                  >
+                    +
+                  </button>
+                </div>
+                <div className={styles.price}>
+                  <p>₹ {headPrice * numberOfHeadShares}</p>
+                </div>
               </div>
             </div>
             {/* <span>
@@ -350,18 +358,23 @@ const Tile = ({
           <div className={styles.quantityControl}>
             <div className={styles.label}>
               <p>Legs (కాలు)</p>
-              <div className={styles.quantityButtons}>
-                <button onClick={() => handleDecrement("numberOfLegsShares")}>
-                  -
-                </button>
-                <input type="text" readOnly value={numberOfLegsShares || 0} />
-                <button
-                  onClick={() =>
-                    handleIncrement("numberOfLegsShares", remainingLegs)
-                  }
-                >
-                  +
-                </button>
+              <div className={styles.controlPrices}>
+                <div className={styles.quantityButtons}>
+                  <button onClick={() => handleDecrement("numberOfLegsShares")}>
+                    -
+                  </button>
+                  <input type="text" readOnly value={numberOfLegsShares || 0} />
+                  <button
+                    onClick={() =>
+                      handleIncrement("numberOfLegsShares", remainingLegs)
+                    }
+                  >
+                    +
+                  </button>
+                </div>
+                <div className={styles.price}>
+                  <p>₹ {legsPrice * numberOfLegsShares}</p>
+                </div>
               </div>
             </div>
             <span>Each share includes four legs.</span>
@@ -376,18 +389,29 @@ const Tile = ({
           <div className={styles.quantityControl}>
             <div className={styles.label}>
               <p>Brain (మెదడు)</p>
-              <div className={styles.quantityButtons}>
-                <button onClick={() => handleDecrement("numberOfBrainShares")}>
-                  -
-                </button>
-                <input type="text" readOnly value={numberOfBrainShares || 0} />
-                <button
-                  onClick={() =>
-                    handleIncrement("numberOfBrainShares", remainingBrains)
-                  }
-                >
-                  +
-                </button>
+              <div className={styles.controlPrices}>
+                <div className={styles.quantityButtons}>
+                  <button
+                    onClick={() => handleDecrement("numberOfBrainShares")}
+                  >
+                    -
+                  </button>
+                  <input
+                    type="text"
+                    readOnly
+                    value={numberOfBrainShares || 0}
+                  />
+                  <button
+                    onClick={() =>
+                      handleIncrement("numberOfBrainShares", remainingBrains)
+                    }
+                  >
+                    +
+                  </button>
+                </div>
+                <div className={styles.price}>
+                  <p>₹ {brainPrice * numberOfBrainShares}</p>
+                </div>
               </div>
             </div>
             {/* <span>
@@ -405,18 +429,23 @@ const Tile = ({
           <div className={styles.quantityControl}>
             <div className={styles.label}>
               <p>Boti (బోటి)</p>
-              <div className={styles.quantityButtons}>
-                <button onClick={() => handleDecrement("numberOfBotiShares")}>
-                  -
-                </button>
-                <input type="text" readOnly value={numberOfBotiShares || 0} />
-                <button
-                  onClick={() =>
-                    handleIncrement("numberOfBotiShares", remainingBotiShares)
-                  }
-                >
-                  +
-                </button>
+              <div className={styles.controlPrices}>
+                <div className={styles.quantityButtons}>
+                  <button onClick={() => handleDecrement("numberOfBotiShares")}>
+                    -
+                  </button>
+                  <input type="text" readOnly value={numberOfBotiShares || 0} />
+                  <button
+                    onClick={() =>
+                      handleIncrement("numberOfBotiShares", remainingBotiShares)
+                    }
+                  >
+                    +
+                  </button>
+                </div>
+                <div className={styles.price}>
+                  <p>₹ {botiShareCost * numberOfBotiShares}</p>
+                </div>
               </div>
             </div>
             <span>Each share of boti weighs between 600 and 750 grams.</span>
@@ -431,18 +460,23 @@ const Tile = ({
           <div className={styles.quantityControl}>
             <div className={styles.label}>
               <p>Gizzards</p>
-              <div className={styles.quantityButtons}>
-                <button onClick={() => handleDecrement("numberOfExtras")}>
-                  -
-                </button>
-                <input type="text" readOnly value={numberOfExtras || 0} />
-                <button
-                  onClick={() =>
-                    handleIncrement("numberOfExtras", remainingExtras)
-                  }
-                >
-                  +
-                </button>
+              <div className={styles.controlPrices}>
+                <div className={styles.quantityButtons}>
+                  <button onClick={() => handleDecrement("numberOfExtras")}>
+                    -
+                  </button>
+                  <input type="text" readOnly value={numberOfExtras || 0} />
+                  <button
+                    onClick={() =>
+                      handleIncrement("numberOfExtras", remainingExtras)
+                    }
+                  >
+                    +
+                  </button>
+                </div>
+                <div className={styles.price}>
+                  <p>₹ {extraCost * numberOfExtras}</p>
+                </div>
               </div>
             </div>
             <span>

@@ -11,6 +11,7 @@
 .content {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 1rem 0;
   width: 95%;
 }
@@ -35,4 +36,31 @@
 .logoImageContainer img {
   width: 38px;
   border-radius: 50%;
+}
+
+.navButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 0.3rem;
+}
+
+.navButtons button {
+  background-color: #f2f2f2;
+  color: #133e87;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #133e87;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color, color 0.3s;
+}
+
+.navButtons button:active {
+  background-color: #133e87;
+  color: #ffffff;
+}
+
+.navButtons button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(19, 62, 135, 0.5);
 }

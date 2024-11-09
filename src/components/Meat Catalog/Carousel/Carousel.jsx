@@ -1,11 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useSwipeable } from "react-swipeable";
-import { Context } from "../../../App";
 
 const Carousel = ({ images, goatDescriptionVisible }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  const { order } = useContext(Context);
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>
