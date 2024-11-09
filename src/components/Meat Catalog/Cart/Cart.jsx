@@ -170,6 +170,11 @@ const Cart = () => {
         otpConfirmation.user.accessToken
       );
 
+      setOrder((prev) => ({
+        ...prev,
+        userId: otpConfirmation.user.uid,
+      }));
+
       setShowOtpInputPopup(false);
 
       setUser(otpConfirmation.user.uid, {
@@ -178,7 +183,7 @@ const Cart = () => {
       });
 
       setUserAddress({
-        userId: order.userId,
+        userId: otpConfirmation.user.uid,
         userAddress: order.userAddress,
         userLandmark: order.landmark,
         city: "Sangareddy",
@@ -203,7 +208,8 @@ const Cart = () => {
 
   const setUserAddress = async (userData) => {
     try {
-      await setDoc(doc(collection(db, "addresses")), userData);
+      await addDoc(collection(db, "addresses"), userData);
+      console.log("Address doc written");
     } catch (error) {
       console.log("error in setting user address", error);
     }

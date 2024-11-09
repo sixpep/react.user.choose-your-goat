@@ -14,9 +14,11 @@ const App = () => {
   const [goatsData, setGoatsData] = useState([]);
   const [order, setOrder] = useState({
     meatRequirements: [],
+    userId: "",
     userName: "",
     userPhoneNumber: "",
     userAddress: "",
+    landmark: "",
     gpsLocation: "",
     totalBill: 0,
   });
