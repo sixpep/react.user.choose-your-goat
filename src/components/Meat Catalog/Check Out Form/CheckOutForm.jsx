@@ -11,7 +11,7 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
     setCheckformInputs(true);
     if (
       order.userName.length < 1 ||
-      order.userPhoneNumber < 10 ||
+      order.userPhoneNumber.length !== 10 ||
       order.userAddress < 1
     ) {
       return;
@@ -102,18 +102,19 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                         readOnly={tokenExists}
                         value={order.userPhoneNumber}
                       />
-                      {checkFormInputs && order.userPhoneNumber.length < 10 && (
-                        <span className="text-sm text-red-500 ps-1">
-                          Enter a valid phone number
-                        </span>
-                      )}
+                      {checkFormInputs &&
+                        order.userPhoneNumber.length !== 10 && (
+                          <span className="text-sm text-red-500 ps-1">
+                            Enter a valid phone number
+                          </span>
+                        )}
                     </div>
                   </div>
                 </div>
 
                 <div>
                   <label
-                    htmlFor="company_name"
+                    htmlFor="userAddress"
                     className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                   >
                     {" "}
@@ -131,6 +132,50 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                       Enter a valid address
                     </span>
                   )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="landMark"
+                    className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    {" "}
+                    Landmark*{" "}
+                  </label>
+                  <input
+                    type="text"
+                    id="landMark"
+                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                    placeholder="Flowbite LLC"
+                    onChange={handleChangeInput}
+                  />
+                  {checkFormInputs && order.landMark.length < 1 && (
+                    <span className="text-sm text-red-500 ps-1">
+                      Enter a valid landmark
+                    </span>
+                  )}
+                </div>
+                <div>
+                  <label
+                    htmlFor="city"
+                    className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    {" "}
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    id="city"
+                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                    placeholder="Flowbite LLC"
+                    readOnly
+                    value={"Sangareddy"}
+                  />
+                  {/* {checkFormInputs && order..length < 1 && (
+                    <span className="text-sm text-red-500 ps-1">
+                      Enter a valid address
+                    </span>
+                  )} */}
                 </div>
 
                 <div className="space-y-3">

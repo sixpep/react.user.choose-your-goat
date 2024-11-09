@@ -180,6 +180,8 @@ const Cart = () => {
       setUserAddress({
         userId: order.userId,
         userAddress: order.userAddress,
+        userLandmark: order.landmark,
+        city: "Sangareddy",
       });
       console.log("Setted!!!!!!");
       placeOrder();
@@ -237,6 +239,10 @@ const Cart = () => {
       window.location.href = "/";
     }
   });
+
+  useEffect(() => {
+    console.log("order changes", order);
+  }, [order]);
 
   return (
     <div className={styles.container}>

@@ -130,9 +130,6 @@ const Tile = ({
 
   const handleShowGoatInfo = () => {
     setGoatDescriptionVisible(true);
-    setTimeout(() => {
-      setGoatDescriptionVisible(false);
-    }, 3000);
   };
 
   useEffect(() => {
@@ -309,8 +306,8 @@ const Tile = ({
             </div>
 
             <span>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
-              ab sit voluptate quis harum veniam?
+              Each share weighs between 480 and 520 grams and includes one
+              nalli, liver, and all cuts of the meat.
             </span>
 
             {/* <div className={styles.quantityLabels}>
@@ -323,7 +320,7 @@ const Tile = ({
 
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              <p>Talkaya</p>
+              <p>Head (తలకాయ) </p>
               <div className={styles.quantityButtons}>
                 <button onClick={() => handleDecrement("numberOfHeadShares")}>
                   -
@@ -338,21 +335,21 @@ const Tile = ({
                 </button>
               </div>
             </div>
-            <span>
+            {/* <span>
               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
               ab sit voluptate quis harum veniam?
-            </span>
+            </span> */}
             {/* <div className={styles.quantityLabels}>
               <span>₹ {headPrice * headQuantity}/-</span>
             </div> */}
             <span className={styles.availableNote}>
-              (Available: {remainingHeads || 0})
+              (Available: {remainingHeads || 0} share)
             </span>
           </div>
 
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              <p>Kaalu</p>
+              <p>Legs (కాలు)</p>
               <div className={styles.quantityButtons}>
                 <button onClick={() => handleDecrement("numberOfLegsShares")}>
                   -
@@ -367,10 +364,7 @@ const Tile = ({
                 </button>
               </div>
             </div>
-            <span>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
-              ab sit voluptate quis harum veniam?
-            </span>
+            <span>Each share includes four legs.</span>
             {/* <div className={styles.quantityLabels}>
               <span>₹ {legsPrice * legsQuantity}/-</span>
             </div> */}
@@ -381,7 +375,7 @@ const Tile = ({
 
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              <p>Brain</p>
+              <p>Brain (మెదడు)</p>
               <div className={styles.quantityButtons}>
                 <button onClick={() => handleDecrement("numberOfBrainShares")}>
                   -
@@ -410,7 +404,7 @@ const Tile = ({
 
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              <p>Boti</p>
+              <p>Boti (బోటి)</p>
               <div className={styles.quantityButtons}>
                 <button onClick={() => handleDecrement("numberOfBotiShares")}>
                   -
@@ -425,10 +419,7 @@ const Tile = ({
                 </button>
               </div>
             </div>
-            <span>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
-              ab sit voluptate quis harum veniam?
-            </span>
+            <span>Each share of boti weighs between 600 and 750 grams.</span>
             {/* <div className={styles.quantityLabels}>
               <span>₹ {botiShareCost * botiQuantity}/-</span>
             </div> */}
@@ -439,20 +430,24 @@ const Tile = ({
 
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              <p>Extras</p>
+              <p>Gizzards</p>
               <div className={styles.quantityButtons}>
                 <button onClick={() => handleDecrement("numberOfExtras")}>
                   -
                 </button>
                 <input type="text" readOnly value={numberOfExtras || 0} />
-                <button onClick={() => handleIncrement("numberOfExtras", 1)}>
+                <button
+                  onClick={() =>
+                    handleIncrement("numberOfExtras", remainingExtras)
+                  }
+                >
                   +
                 </button>
               </div>
             </div>
             <span>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
-              ab sit voluptate quis harum veniam?
+              Kidneys, Tilli, Heart, Testicles and 2-3 pieces of liver, weighs
+              around 300-400 grams
             </span>
             {/* <div className={styles.quantityLabels}>
               <span>₹ {extraCost * extrasQuantity}/-</span>
