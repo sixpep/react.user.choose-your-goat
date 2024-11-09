@@ -26,7 +26,6 @@
   background-color: #ffedcd;
   font-weight: 400;
   font-size: 16px;
-  font-family: Arial, Helvetica, sans-serif;
   padding: 0.2rem 0;
   text-align: center;
   width: 60%;
@@ -62,7 +61,6 @@
 
 .goatDetails {
   color: #374452;
-  /* padding: 1rem; */
 }
 
 .descriptionPopupOverlay {
