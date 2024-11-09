@@ -188,6 +188,7 @@ const Cart = () => {
         userLandmark: order.landmark,
         city: "Sangareddy",
       });
+
       console.log("Setted!!!!!!");
       placeOrder();
     } catch (error) {

@@ -6,14 +6,15 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
   const [checkFormInputs, setCheckformInputs] = useState(false);
   const [tokenExists, setTokenExists] = useState(true);
 
-  const handleFormValidations = (e) => {
-    e.preventDefault();
+  const indianMobileNumberRegex = /^[6-9]\d{9}$/;
+  const handleFormValidations = () => {
     setCheckformInputs(true);
     if (
-      order.userName.length < 1 ||
-      order.userPhoneNumber.length !== 10 ||
-      order.userAddress < 1
+      order.userName === "" ||
+      !indianMobileNumberRegex.test(order.userPhoneNumber) ||
+      order.userAddress === ""
     ) {
+      console.log("true");
       return;
     } else if (localStorage.getItem("choose-your-goat-token")) {
       placeOrder();
@@ -40,11 +41,7 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
 
   return (
     <section className="bg-white py-4 antialiased dark:bg-gray-900 md:pb-16 shadow-inner max-h-[99vh] overflow-y-auto z-30">
-      <form
-        action="#"
-        className="mx-auto max-w-screen-xl px-4 2xl:px-0"
-        onSubmit={handleFormValidations}
-      >
+      <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
         {/* <div className="flex justify-end">
           <button onClick={() => setShowCheckOutForm(false)}>
             <RxCross2 size={24} />
@@ -63,8 +60,7 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                     htmlFor="your_name"
                     className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    {" "}
-                    Your name*{" "}
+                    Your name*
                   </label>
                   <input
                     type="text"
@@ -103,7 +99,9 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                         value={order.userPhoneNumber}
                       />
                       {checkFormInputs &&
-                        order.userPhoneNumber.length !== 10 && (
+                        !indianMobileNumberRegex.test(
+                          order.userPhoneNumber
+                        ) && (
                           <span className="text-sm text-red-500 ps-1">
                             Enter a valid phone number
                           </span>
@@ -136,7 +134,7 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
 
                 <div>
                   <label
-                    htmlFor="landMark"
+                    htmlFor="landmark"
                     className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                   >
                     {" "}
@@ -144,17 +142,18 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                   </label>
                   <input
                     type="text"
-                    id="landMark"
+                    id="landmark"
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                     placeholder="Flowbite LLC"
                     onChange={handleChangeInput}
                   />
-                  {checkFormInputs && order.landMark.length < 1 && (
+                  {checkFormInputs && order?.landmark.length < 1 && (
                     <span className="text-sm text-red-500 ps-1">
                       Enter a valid landmark
                     </span>
                   )}
                 </div>
+
                 <div>
                   <label
                     htmlFor="city"
@@ -171,16 +170,16 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                     readOnly
                     value={"Sangareddy"}
                   />
-                  {/* {checkFormInputs && order..length < 1 && (
+                  {checkFormInputs && order.length < 1 && (
                     <span className="text-sm text-red-500 ps-1">
                       Enter a valid address
                     </span>
-                  )} */}
+                  )}
                 </div>
 
                 <div className="space-y-3">
                   <button
-                    type="submit"
+                    onClick={handleFormValidations}
                     className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4  focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                   >
                     Place Order
@@ -190,7 +189,7 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
             </div>
           </div>
         </div>
-      </form>
+      </div>
     </section>
   );
 };

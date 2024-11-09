@@ -6,10 +6,9 @@ const Navbar = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.logoContainer}>
-          <div className={styles.logoImageContainer}>
+          {/* <div className={styles.logoImageContainer}>
             <img src="/images/goatLogo.jpeg" alt="" />
-          </div>
-
+          </div> */}
           <h6>Choose Your Goat</h6>
         </div>
       </div>
