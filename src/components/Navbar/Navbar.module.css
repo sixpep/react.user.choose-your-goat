@@ -55,6 +55,9 @@
   transition: background-color, color 0.3s;
 }
 
+.navButtons button:last-child {
+  padding: 0.5rem;
+}
 .navButtons button:active {
   background-color: #133e87;
   color: #ffffff;

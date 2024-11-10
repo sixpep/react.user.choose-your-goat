@@ -279,7 +279,12 @@ const Tile = ({
             <div className={styles.label}>
               <p>Mutton </p>
               <div className={styles.controlPrices}>
-                <div className={styles.quantityButtons}>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    backgroundColor: remainingMuttonShares > 0 ? "" : "grey",
+                  }}
+                >
                   <button
                     onClick={() => handleDecrement("numberOfMuttonShares")}
                   >
@@ -316,7 +321,10 @@ const Tile = ({
             {/* <div className={styles.quantityLabels}>
               <span>₹ {muttonShareCost * muttonQuantity}/-</span>
             </div> */}
-            <span className={styles.availableNote}>
+            <span
+              className={styles.availableNote}
+              style={{ color: remainingMuttonShares > 0 ? "green" : "red" }}
+            >
               (Available: {remainingMuttonShares || 0} shares)
             </span>
           </div>
@@ -325,7 +333,12 @@ const Tile = ({
             <div className={styles.label}>
               <p>Head (తలకాయ) </p>
               <div className={styles.controlPrices}>
-                <div className={styles.quantityButtons}>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingHeads > 0 ? 1 : 0.5,
+                  }}
+                >
                   <button onClick={() => handleDecrement("numberOfHeadShares")}>
                     -
                   </button>
@@ -350,7 +363,10 @@ const Tile = ({
             {/* <div className={styles.quantityLabels}>
               <span>₹ {headPrice * headQuantity}/-</span>
             </div> */}
-            <span className={styles.availableNote}>
+            <span
+              className={styles.availableNote}
+              style={{ color: remainingHeads > 0 ? "green" : "red" }}
+            >
               (Available: {remainingHeads || 0} share)
             </span>
           </div>
@@ -359,7 +375,12 @@ const Tile = ({
             <div className={styles.label}>
               <p>Legs (కాలు)</p>
               <div className={styles.controlPrices}>
-                <div className={styles.quantityButtons}>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingLegs > 0 ? 1 : 0.5,
+                  }}
+                >
                   <button onClick={() => handleDecrement("numberOfLegsShares")}>
                     -
                   </button>
@@ -381,7 +402,10 @@ const Tile = ({
             {/* <div className={styles.quantityLabels}>
               <span>₹ {legsPrice * legsQuantity}/-</span>
             </div> */}
-            <span className={styles.availableNote}>
+            <span
+              className={styles.availableNote}
+              style={{ color: remainingLegs > 0 ? "green" : "red" }}
+            >
               (Available: {remainingLegs || 0} share)
             </span>
           </div>
@@ -390,7 +414,12 @@ const Tile = ({
             <div className={styles.label}>
               <p>Brain (మెదడు)</p>
               <div className={styles.controlPrices}>
-                <div className={styles.quantityButtons}>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingLegs > 0 ? 1 : 0.5,
+                  }}
+                >
                   <button
                     onClick={() => handleDecrement("numberOfBrainShares")}
                   >
@@ -421,7 +450,10 @@ const Tile = ({
             {/* <div className={styles.quantityLabels}>
               <span>₹ {brainPrice * brainQuantity}/-</span>
             </div> */}
-            <span className={styles.availableNote}>
+            <span
+              className={styles.availableNote}
+              style={{ color: remainingBrains > 0 ? "green" : "red" }}
+            >
               (Available: {remainingBrains || 0} )
             </span>
           </div>
@@ -430,7 +462,12 @@ const Tile = ({
             <div className={styles.label}>
               <p>Boti (బోటి)</p>
               <div className={styles.controlPrices}>
-                <div className={styles.quantityButtons}>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingBotiShares > 0 ? 1 : 0.5,
+                  }}
+                >
                   <button onClick={() => handleDecrement("numberOfBotiShares")}>
                     -
                   </button>
@@ -452,7 +489,10 @@ const Tile = ({
             {/* <div className={styles.quantityLabels}>
               <span>₹ {botiShareCost * botiQuantity}/-</span>
             </div> */}
-            <span className={styles.availableNote}>
+            <span
+              className={styles.availableNote}
+              style={{ color: remainingBotiShares > 0 ? "green" : "red" }}
+            >
               (Available : {remainingBotiShares} shares)
             </span>
           </div>
@@ -461,7 +501,12 @@ const Tile = ({
             <div className={styles.label}>
               <p>Gizzards</p>
               <div className={styles.controlPrices}>
-                <div className={styles.quantityButtons}>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingExtras > 0 ? 1 : 0.5,
+                  }}
+                >
                   <button onClick={() => handleDecrement("numberOfExtras")}>
                     -
                   </button>
@@ -486,7 +531,10 @@ const Tile = ({
             {/* <div className={styles.quantityLabels}>
               <span>₹ {extraCost * extrasQuantity}/-</span>
             </div> */}
-            <span className={styles.availableNote}>
+            <span
+              className={styles.availableNote}
+              style={{ color: remainingExtras > 0 ? "green" : "red" }}
+            >
               (Available : {remainingExtras} share)
             </span>
           </div>

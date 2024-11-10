@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./Navbar.module.css";
+import { IoIosLogOut } from "react-icons/io";
 
 const Navbar = () => {
   const handleLogOut = () => {
@@ -14,16 +15,17 @@ const Navbar = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.logoContainer}>
-          {/* <div className={styles.logoImageContainer}>
-            <img src="/images/goatLogo.jpeg" alt="" />
-          </div> */}
           <h6>Choose Your Goat</h6>
         </div>
 
-        <div className={styles.navButtons}>
-          <button onClick={handleLogOut}>Log Out</button>
-          <button onClick={handleOrdersButton}>Orders</button>
-        </div>
+        {localStorage.getItem("choose-your-goat-token") && (
+          <div className={styles.navButtons}>
+            <button onClick={handleOrdersButton}>Orders</button>
+            <button onClick={handleLogOut}>
+              <IoIosLogOut size={24} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
