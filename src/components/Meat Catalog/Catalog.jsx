@@ -11,10 +11,6 @@ const Catalog = () => {
   const { order, setOrder } = useContext(Context);
   const [showCheckOutForm, setShowCheckOutForm] = useState(false);
 
-  useEffect(() => {
-    console.log(order);
-  }, [order]);
-
   return (
     <div className={styles.container}>
       <TileCarousel order={order} setOrder={setOrder} />

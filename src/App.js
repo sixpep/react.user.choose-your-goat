@@ -33,7 +33,6 @@ const App = () => {
   const getUser = async (userId) => {
     try {
       const userDoc = (await getDoc(doc(db, "users", userId))).data();
-      console.log("userDoc", userDoc);
       return userDoc;
     } catch (error) {
       return error;
@@ -49,7 +48,6 @@ const App = () => {
       });
 
       const addressDoc = addresses.filter((item) => item.userId === userId);
-      console.log("addressDoc", addressDoc);
       return addressDoc;
     } catch (error) {
       return error;
@@ -63,7 +61,6 @@ const App = () => {
         ...doc.data(),
       }));
       setGoatsData(updatedGoatsData);
-      console.log(updatedGoatsData);
     });
 
     const fetchUserData = async () => {
@@ -71,13 +68,10 @@ const App = () => {
 
       if (userToken) {
         const decodedToken = jwtDecode(userToken);
-        console.log("user token exists in local");
 
         try {
           const user = await getUser(decodedToken.sub);
           const userAddress = await getUserAddress(decodedToken.sub);
-
-          console.log("userAddress", userAddress);
 
           setOrder((prev) => ({
             ...prev,
@@ -90,8 +84,6 @@ const App = () => {
         } catch (error) {
           console.error("Failed to fetch user:", error);
         }
-
-        console.log("decodedToken", decodedToken);
       }
     };
 

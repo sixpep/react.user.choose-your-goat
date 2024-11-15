@@ -15,7 +15,6 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
       order.userAddress === "" ||
       order.landmark === ""
     ) {
-      console.log("true");
       return;
     } else if (localStorage.getItem("choose-your-goat-token")) {
       placeOrder();

@@ -7,13 +7,11 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { auth } from "../../firebase/setup";
 import { SiTicktick } from "react-icons/si";
 import { db } from "../../firebase/setup";
-import { set, ref } from "firebase/database";
 import { useNavigate } from "react-router-dom";
 import {
   addDoc,
   collection,
   doc,
-  onSnapshot,
   updateDoc,
   getDoc,
   setDoc,
@@ -25,6 +23,7 @@ const Cart = () => {
   const [showVerificationLoading, setShowVerificationLoading] = useState(false);
   const [showConfirmationLoading, setShowConfirmationLoading] = useState(false);
   const [orderConfirmation, setOrderConfirmation] = useState(false);
+  const [showSendingOtpLoading, setShowSendingOtpLoading] = useState(false);
   const [newlyFetchedGoatsData, setNewlyFetchedGoatsData] = useState([]);
   const [showOtpError, setShowOtpError] = useState("");
 
@@ -57,7 +56,6 @@ const Cart = () => {
     numberOfExtras: "remainingExtras",
   };
 
-  // Phone Auth
   const [confirmation, setConfirmation] = useState();
 
   const updateGoatDataQuantities = async () => {
@@ -122,15 +120,50 @@ const Cart = () => {
     return true;
   };
 
-  const placeOrder = async () => {
+  const placeOrder2 = async () => {
+    setShowVerificationLoading(false);
     setShowConfirmationLoading(true);
     try {
       if (updateGoatDataQuantities()) {
-        const docRef = await addDoc(collection(db, "orders"), {
-          ...order,
-          userId: localStorage.getItem("choose-your-goat-userId"),
-        });
-        console.log("Document written with ID: ", docRef.id);
+        for (let requirement of order.meatRequirements) {
+          const goat = goatsData.find(
+            (data) => data.goatId === requirement.goatId
+          );
+
+          console.log("goat", goat);
+
+          let toal = 0;
+
+          Object.keys(requirement).map((key) => {
+            if (key !== "goatId") {
+              // Number of items *
+              const priceKey = priceNames[key];
+              console.log("goat[priceKey]", goat[priceKey]);
+              // toal += requirement[key] * goat[priceNames[key]];
+            }
+          });
+
+          console.log("toal", toal);
+
+          // const docRef = await addDoc(collection(db, "orders"), {
+          //   ...requirement,
+          //   userName: order.userName,
+          //   userPhoneNumber: order.userPhoneNumber,
+          //   userAddress: order.userAddress,
+          //   landmark: order.landmark,
+          //   deliveryDate: goat.deliveryDateTimestamp,
+          //   userId: localStorage.getItem("choose-your-goat-userId"),
+          //   totalBill:
+          //     requirement.numberOfMuttonShares * goat.muttonShareCost +
+          //     requirement.numberOfHeadShares * goat.headPrice +
+          //     requirement.numberOfLegsShares * goat.legsPrice +
+          //     requirement.numberOfBrainShares * goat.brainPrice +
+          //     requirement.numberOfBotiShares * goat.botiShareCost +
+          //     requirement.numberOfExtras * goat.extraCost,
+          // });
+          // console.log("Document written with ID: ", docRef.id);
+        }
+
         setShowConfirmationLoading(false);
         setOrderConfirmation(true);
       } else {
@@ -141,7 +174,63 @@ const Cart = () => {
     }
   };
 
+  const placeOrder = async () => {
+    setShowVerificationLoading(false);
+    setShowConfirmationLoading(true);
+    try {
+      const isUpdated = updateGoatDataQuantities();
+
+      if (isUpdated) {
+        for (let requirement of order.meatRequirements) {
+          const goat = goatsData.find(
+            (goatItem) => goatItem.docId === requirement.goatId
+          );
+          const billCalculated = calculateTotalBill(requirement, goat);
+
+          const docRef = await addDoc(collection(db, "orders"), {
+            ...requirement,
+            userName: order.userName,
+            userPhoneNumber: order.userPhoneNumber,
+            userAddress: order.userAddress,
+            landmark: order.landmark,
+            deliveryDate: goat.deliveryDateTimestamp,
+            userId: localStorage.getItem("choose-your-goat-userId"),
+            totalBill: billCalculated,
+          });
+          setShowConfirmationLoading(false);
+          setOrderConfirmation(true);
+
+          // const orderData = {
+          //   ...requirement,
+          //   userName: order.userName,
+          //   userPhoneNumber: order.userPhoneNumber,
+          //   userAddress: order.userAddress,
+          //   landmark: order.landmark,
+          //   deliveryDate: goat.deliveryDateTimestamp,
+          //   userId: localStorage.getItem("choose-your-goat-userId"),
+          // };
+        }
+      }
+    } catch (error) {
+      console.log("Error in placing order", error);
+    }
+  };
+
+  const calculateTotalBill = (requirements, goat) => {
+    let totalBill = 0;
+
+    Object.keys(requirements).map((requirementKey) => {
+      if (requirementKey !== "goatId") {
+        const priceKey = priceNames[requirementKey];
+        totalBill += requirements[requirementKey] * goat[priceKey];
+      }
+    });
+
+    return totalBill;
+  };
+
   const sendOtp = async (e) => {
+    setShowSendingOtpLoading(true);
     try {
       const recaptcha = new RecaptchaVerifier(auth, "recaptcha", {
         size: "invisible",
@@ -151,8 +240,8 @@ const Cart = () => {
         "+91 " + order.userPhoneNumber,
         recaptcha
       );
-      console.log("confirmation", confirmation);
       setConfirmation(confirmation);
+      setShowSendingOtpLoading(false);
       setShowOtpInputPopup(true);
     } catch (error) {
       console.log(error);
@@ -160,14 +249,12 @@ const Cart = () => {
   };
 
   const verifyOtp = async () => {
+    setShowVerificationLoading(true);
     setShowOtpInputPopup(false);
-    setShowOtpInputPopup(true);
     try {
       const otpValue = otp.join("");
       const otpConfirmation = await confirmation.confirm(otpValue);
       localStorage.setItem("choose-your-goat-userId", otpConfirmation.user.uid);
-      console.log("otp verification resp", otpConfirmation);
-      console.log("uid : ", otpConfirmation.user.uid);
 
       window.localStorage.setItem(
         "choose-your-goat-token",
@@ -188,8 +275,6 @@ const Cart = () => {
         city: "Sangareddy",
       });
 
-      console.log("Setted!!!!!!");
-      console.log("order after user id", order);
       placeOrder();
     } catch (error) {
       setShowOtpInputPopup(true);
@@ -213,7 +298,6 @@ const Cart = () => {
   const setUser = async (userId, userData) => {
     try {
       await setDoc(doc(collection(db, "users"), userId), userData);
-      console.log("User created successfully");
     } catch (error) {
       console.log("error in creating user", error);
     }
@@ -257,11 +341,9 @@ const Cart = () => {
     if (order.meatRequirements.length <= 0) {
       window.location.href = "/";
     }
-  });
 
-  useEffect(() => {
-    console.log("order changes", order);
-  }, [order]);
+    console.log("goatsData in cart", goatsData);
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -380,6 +462,14 @@ const Cart = () => {
         <div id="recaptcha"></div>
         <button onClick={verifyOtp}>Verify OTP</button>
       </div> */}
+
+      {showSendingOtpLoading && (
+        <div className={styles.verifyOtpContainer}>
+          <div className={styles.loader}></div>
+
+          <h6>Sending OTP to your phone number</h6>
+        </div>
+      )}
 
       {showOtpInputPopup && (
         <div className={styles.verifyOtpContainer}>
