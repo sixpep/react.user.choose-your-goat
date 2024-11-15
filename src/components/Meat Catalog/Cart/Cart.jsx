@@ -522,9 +522,9 @@ const Cart = () => {
             <p>Thank you for your order</p>
             <button
               class={styles.goHomeBtn}
-              onClick={() => (window.location.href = "/")}
+              onClick={() => (window.location.href = "/orders")}
             >
-              Go Home
+              My Orders
             </button>
           </div>
         </div>

@@ -69,7 +69,6 @@ const UserOrders = () => {
           <p>Back</p>
         </div>
       </div>
-      <h2>User Orders</h2>
       {showFetchingOrdersLoading && (
         <div className={styles.verifyOtpContainer}>
           <div className={styles.loader}></div>
