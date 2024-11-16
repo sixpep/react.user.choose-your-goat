@@ -101,6 +101,12 @@ const UserOrders = () => {
             </div>
 
             <div className={styles.orderDetails}>
+              <p>
+                Delivery Date :{" "}
+                {new Date(order.deliveryDate).toLocaleDateString()}
+              </p>
+            </div>
+            <div className={styles.orderDetails}>
               <p>Total Bill : {order.totalBill}</p>
             </div>
           </div>

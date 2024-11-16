@@ -20,9 +20,7 @@ const Navbar = () => {
 
         {localStorage.getItem("choose-your-goat-token") && (
           <div className={styles.navButtons}>
-            {!window.location.href === "/orders" && (
-              <button onClick={handleOrdersButton}>Orders</button>
-            )}
+            <button onClick={handleOrdersButton}>Orders</button>
             <button onClick={handleLogOut}>
               <IoIosLogOut size={24} />
             </button>
