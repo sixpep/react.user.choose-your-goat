@@ -60,6 +60,8 @@ const App = () => {
         docId: doc.id,
         ...doc.data(),
       }));
+
+      console.log(updatedGoatsData);
       setGoatsData(updatedGoatsData);
     });
 

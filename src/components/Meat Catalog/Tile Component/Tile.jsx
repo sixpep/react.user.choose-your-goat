@@ -35,7 +35,7 @@ const Tile = ({
   remainingExtras,
 }) => {
   const [goatDescriptionVisible, setGoatDescriptionVisible] = useState(false);
-  const { order, setOrder } = useContext(Context);
+  const { order, setOrder, goatsData } = useContext(Context);
 
   const currentGoatDoc = order.meatRequirements.find(
     (item) => item.goatId === docId
@@ -125,7 +125,7 @@ const Tile = ({
   };
 
   const handleShowGoatInfo = () => {
-    setGoatDescriptionVisible(true);
+    setGoatDescriptionVisible(!goatDescriptionVisible);
   };
 
   useEffect(() => {
@@ -152,6 +152,74 @@ const Tile = ({
 
   return (
     <div className={styles.container}>
+      {goatDescriptionVisible && (
+        <div className={styles.descriptionPopupOverlay}>
+          <div className={styles.descriptionTable}>
+            <i
+              className={styles.closeIcon}
+              onClick={() => setGoatDescriptionVisible(false)}
+            >
+              <RxCross2 color="black" size={24} />
+            </i>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Gender </td>
+                  <td>:</td>
+                  <td>{gender}</td>
+                </tr>
+                <tr>
+                  <td>Net weight </td>
+                  <td>:</td>
+                  <td>{netWeight}</td>
+                </tr>
+                <tr>
+                  <td>
+                    Meat weight <br />
+                    (Liver included)
+                  </td>
+                  <td>:</td>
+                  <td>{meatOnlyWeight}</td>
+                </tr>
+                <tr>
+                  <td>Total shares</td>
+                  <td>:</td>
+                  <td>{totalShares}</td>
+                </tr>
+                <tr>
+                  <td>Approx share size </td>
+                  <td>:</td>
+                  <td>{approxShareSize}</td>
+                </tr>
+                <tr>
+                  <td>Per share cost</td>
+                  <td>:</td>
+                  <td>₹ {muttonShareCost}/-</td>
+                </tr>
+                <tr>
+                  <td>Size</td>
+                  <td>:</td>
+                  <td>{cutSize}</td>
+                </tr>
+                <tr>
+                  <td>Total boti shares</td>
+                  <td>:</td>
+                  <td>{totalBotiShares}</td>
+                </tr>
+                <tr>
+                  <td>
+                    Extras Cost
+                    <br />
+                    (Tilli, Heart, Testicles, and Kidney)
+                  </td>
+                  <td>:</td>
+                  <td>₹ {extraCost}/-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
       <div className={styles.content}>
         <div className={styles.tileImage}>
           <Carousel
@@ -161,74 +229,6 @@ const Tile = ({
           <i onClick={handleShowGoatInfo}>
             <FaInfoCircle color="white" size={20} style={{ zIndex: "100" }} />
           </i>
-          {goatDescriptionVisible && (
-            <div className={styles.descriptionPopupOverlay}>
-              <div className={styles.descriptionTable}>
-                <i
-                  className={styles.closeIcon}
-                  onClick={() => setGoatDescriptionVisible(false)}
-                >
-                  <RxCross2 color="black" size={24} />
-                </i>
-                <table>
-                  <tbody>
-                    <tr>
-                      <td>Gender </td>
-                      <td>:</td>
-                      <td>{gender}</td>
-                    </tr>
-                    <tr>
-                      <td>Net weight </td>
-                      <td>:</td>
-                      <td>{netWeight}</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        Meat weight <br />
-                        (Liver included)
-                      </td>
-                      <td>:</td>
-                      <td>{meatOnlyWeight}</td>
-                    </tr>
-                    <tr>
-                      <td>Total shares</td>
-                      <td>:</td>
-                      <td>{totalShares}</td>
-                    </tr>
-                    <tr>
-                      <td>Approx share size </td>
-                      <td>:</td>
-                      <td>{approxShareSize}</td>
-                    </tr>
-                    <tr>
-                      <td>Per share cost</td>
-                      <td>:</td>
-                      <td>₹ {muttonShareCost}/-</td>
-                    </tr>
-                    <tr>
-                      <td>Size</td>
-                      <td>:</td>
-                      <td>{cutSize}</td>
-                    </tr>
-                    <tr>
-                      <td>Total boti shares</td>
-                      <td>:</td>
-                      <td>{totalBotiShares}</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        Extras Cost
-                        <br />
-                        (Tilli, Heart, Testicles, and Kidney)
-                      </td>
-                      <td>:</td>
-                      <td>₹ {extraCost}/-</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
         </div>
         <div className={styles.deliveryDesc}>
           <button
@@ -238,7 +238,7 @@ const Tile = ({
             onClick={handlePrev}
             style={{
               visibility:
-                goatDescriptionVisible || order.meatRequirements.length < 2
+                goatDescriptionVisible || goatsData.length < 2
                   ? "hidden"
                   : "visible",
             }}
@@ -262,7 +262,7 @@ const Tile = ({
             onClick={handleNext}
             style={{
               visibility:
-                goatDescriptionVisible || order.meatRequirements.length < 2
+                goatDescriptionVisible || goatsData.length < 2
                   ? "hidden"
                   : "visible",
             }}

@@ -12,6 +12,7 @@
   /* padding-top: 4rem; */
   z-index: 10;
   margin-bottom: 5rem;
+  position: relative;
 }
 
 .content {
@@ -64,11 +65,9 @@
 }
 
 .descriptionPopupOverlay {
-  /* visibility: hidden;
-   */
   display: flex;
   justify-content: center;
-  position: fixed;
+  position: absolute;
   left: 0;
   top: 0;
   height: 100%;
@@ -99,7 +98,7 @@
 
 .closeIcon {
   position: absolute;
-  right: 0;
+  right: 1rem;
   top: 1rem;
   display: flex;
 }

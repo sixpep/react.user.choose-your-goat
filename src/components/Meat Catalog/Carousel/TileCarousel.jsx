@@ -31,14 +31,6 @@ const TileCarousel = ({ order, setOrder }) => {
         }}
       >
         {goatsData.map((item, index) => {
-          // if (
-          //   item.remainingMuttonShares > 0 ||
-          //   item.remainingBotiShares > 0 ||
-          //   item.remainingHeads > 0 ||
-          //   item.remainingLegs > 0 ||
-          //   item.remainingBrains > 0 ||
-          //   item.remainingExtras > 0
-          // )
           return (
             <div className="min-w-full" data-carousel-item key={index}>
               <Tile
