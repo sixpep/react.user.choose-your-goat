@@ -277,7 +277,7 @@ const Tile = ({
           {/* Interactive Quantity Controls */}
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              <p>Mutton </p>
+              <p>Mutton (₹ {muttonShareCost}) </p>
               <div className={styles.controlPrices}>
                 <div
                   className={styles.quantityButtons}
@@ -308,7 +308,8 @@ const Tile = ({
                   </button>
                 </div>
                 <div className={styles.price}>
-                  <p>₹ {muttonShareCost * numberOfMuttonShares}</p>
+                  <p>₹ {muttonShareCost}</p>
+                  {/* <p>₹ {muttonShareCost * numberOfMuttonShares}</p> */}
                 </div>
               </div>
             </div>
@@ -352,7 +353,8 @@ const Tile = ({
                   </button>
                 </div>
                 <div className={styles.price}>
-                  <p>₹ {headPrice * numberOfHeadShares}</p>
+                  <p>₹ {headPrice }</p>
+                  {/* <p>₹ {headPrice * numberOfHeadShares}</p> */}
                 </div>
               </div>
             </div>
@@ -394,7 +396,8 @@ const Tile = ({
                   </button>
                 </div>
                 <div className={styles.price}>
-                  <p>₹ {legsPrice * numberOfLegsShares}</p>
+                  <p>₹ {legsPrice }</p>
+                  {/* <p>₹ {legsPrice * numberOfLegsShares}</p> */}
                 </div>
               </div>
             </div>
@@ -439,7 +442,8 @@ const Tile = ({
                   </button>
                 </div>
                 <div className={styles.price}>
-                  <p>₹ {brainPrice * numberOfBrainShares}</p>
+                  <p>₹ {brainPrice }</p>
+                  {/* <p>₹ {brainPrice * numberOfBrainShares}</p> */}
                 </div>
               </div>
             </div>
@@ -481,7 +485,8 @@ const Tile = ({
                   </button>
                 </div>
                 <div className={styles.price}>
-                  <p>₹ {botiShareCost * numberOfBotiShares}</p>
+                  <p>₹ {botiShareCost}</p>
+                  {/* <p>₹ {botiShareCost * numberOfBotiShares}</p> */}
                 </div>
               </div>
             </div>
@@ -520,7 +525,8 @@ const Tile = ({
                   </button>
                 </div>
                 <div className={styles.price}>
-                  <p>₹ {extraCost * numberOfExtras}</p>
+                  <p>₹ {extraCost }</p>
+                  {/* <p>₹ {extraCost * numberOfExtras}</p> */}
                 </div>
               </div>
             </div>
