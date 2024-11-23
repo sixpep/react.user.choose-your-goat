@@ -277,7 +277,7 @@ const Tile = ({
           {/* Interactive Quantity Controls */}
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              <p>Mutton (₹ {muttonShareCost}) </p>
+              <p>Mutton </p>
               <div className={styles.controlPrices}>
                 <div
                   className={styles.quantityButtons}
@@ -353,7 +353,7 @@ const Tile = ({
                   </button>
                 </div>
                 <div className={styles.price}>
-                  <p>₹ {headPrice }</p>
+                  <p>₹ {headPrice}</p>
                   {/* <p>₹ {headPrice * numberOfHeadShares}</p> */}
                 </div>
               </div>
@@ -396,7 +396,7 @@ const Tile = ({
                   </button>
                 </div>
                 <div className={styles.price}>
-                  <p>₹ {legsPrice }</p>
+                  <p>₹ {legsPrice}</p>
                   {/* <p>₹ {legsPrice * numberOfLegsShares}</p> */}
                 </div>
               </div>
@@ -442,7 +442,7 @@ const Tile = ({
                   </button>
                 </div>
                 <div className={styles.price}>
-                  <p>₹ {brainPrice }</p>
+                  <p>₹ {brainPrice}</p>
                   {/* <p>₹ {brainPrice * numberOfBrainShares}</p> */}
                 </div>
               </div>
@@ -525,7 +525,7 @@ const Tile = ({
                   </button>
                 </div>
                 <div className={styles.price}>
-                  <p>₹ {extraCost }</p>
+                  <p>₹ {extraCost}</p>
                   {/* <p>₹ {extraCost * numberOfExtras}</p> */}
                 </div>
               </div>
