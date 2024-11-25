@@ -164,3 +164,30 @@
     background: #000;
   }
 }
+
+/* HTML: <div class="loader"></div> */
+.loginLoader {
+  width: 12px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: l6 1s infinite linear alternate;
+}
+
+@keyframes l6 {
+  0% {
+    box-shadow: 20px 0 #fff, -20px 0 #ffffff20;
+    background: #fff;
+  }
+  33% {
+    box-shadow: 20px 0 #fff, -20px 0 #ffffff20;
+    background: #ffffff20;
+  }
+  66% {
+    box-shadow: 20px 0 #ffffff20, -20px 0 #fff;
+    background: #ffffff20;
+  }
+  100% {
+    box-shadow: 20px 0 #ffffff20, -20px 0 #fff;
+    background: #fff;
+  }
+}

@@ -283,7 +283,7 @@ const Tile = ({
                 <div
                   className={styles.quantityButtons}
                   style={{
-                    opacity: remainingHeads > 0 ? 1 : 0.5,
+                    opacity: remainingMuttonShares > 0 ? 1 : 0.5,
                   }}  
                 >
                   <button

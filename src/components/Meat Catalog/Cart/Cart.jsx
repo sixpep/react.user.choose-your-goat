@@ -181,6 +181,7 @@ const Cart = () => {
       const recaptcha = new RecaptchaVerifier(auth, "recaptcha", {
         size: "invisible",
       });
+
       const confirmation = await signInWithPhoneNumber(
         auth,
         "+91 " + order.userPhoneNumber,
