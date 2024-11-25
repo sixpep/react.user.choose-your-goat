@@ -220,6 +220,7 @@ const Tile = ({
           </div>
         </div>
       )}
+
       <div className={styles.content}>
         <div className={styles.tileImage}>
           <Carousel
@@ -282,8 +283,8 @@ const Tile = ({
                 <div
                   className={styles.quantityButtons}
                   style={{
-                    backgroundColor: remainingMuttonShares > 0 ? "" : "grey",
-                  }}
+                    opacity: remainingHeads > 0 ? 1 : 0.5,
+                  }}  
                 >
                   <button
                     onClick={() => handleDecrement("numberOfMuttonShares")}
@@ -490,7 +491,7 @@ const Tile = ({
                 </div>
               </div>
             </div>
-            <span>Each share of boti weighs between 600 and 750 grams.</span>
+            <span>Each share of boti weighs between 1.25 and 1.5 kgs.</span>
             {/* <div className={styles.quantityLabels}>
               <span>₹ {botiShareCost * botiQuantity}/-</span>
             </div> */}

@@ -62,7 +62,10 @@ const UserOrders = () => {
   return (
     <div className={styles.container}>
       <div className={styles.backBar}>
-        <div className={styles.backBtn} onClick={() => navigate("/")}>
+        <div
+          className={styles.backBtn}
+          onClick={() => navigate("/goats-catalog")}
+        >
           <i>
             <LuMoveLeft size={20} />
           </i>

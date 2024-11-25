@@ -14,6 +14,7 @@ import {
 } from "firebase/firestore";
 import { jwtDecode } from "jwt-decode";
 import UserOrders from "./components/UserOrders/UserOrders";
+import LoginPage from "./components/LoginPage/LoginPage";
 
 export const Context = React.createContext();
 
@@ -100,7 +101,8 @@ const App = () => {
         <Navbar />
         <BrowserRouter>
           <Routes>
-            <Route path="/" index element={<Catalog />} />
+            <Route path="/" index element={<LoginPage />} />
+            <Route path="/goats-catalog" element={<Catalog />} />
             <Route path="cart" element={<Cart />} />
             <Route path="orders" element={<UserOrders />} />
           </Routes>
