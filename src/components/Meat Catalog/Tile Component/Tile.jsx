@@ -503,7 +503,7 @@ const Tile = ({
             </span>
           </div>
 
-          <div className={styles.quantityControl}>
+          {/* <div className={styles.quantityControl}>
             <div className={styles.label}>
               <p>Gizzards</p>
               <div className={styles.controlPrices}>
@@ -527,7 +527,7 @@ const Tile = ({
                 </div>
                 <div className={styles.price}>
                   <p>₹ {extraCost}</p>
-                  {/* <p>₹ {extraCost * numberOfExtras}</p> */}
+                  <p>₹ {extraCost * numberOfExtras}</p>
                 </div>
               </div>
             </div>
@@ -535,16 +535,16 @@ const Tile = ({
               Kidneys, Tilli, Heart, Testicles and 2-3 pieces of liver, weighs
               around 300-400 grams
             </span>
-            {/* <div className={styles.quantityLabels}>
+            <div className={styles.quantityLabels}>
               <span>₹ {extraCost * extrasQuantity}/-</span>
-            </div> */}
+            </div>
             <span
               className={styles.availableNote}
               style={{ color: remainingExtras > 0 ? "green" : "red" }}
             >
               (Available : {remainingExtras} share)
             </span>
-          </div>
+          </div> */}
 
           {/* Add to Cart Button */}
           {/* <div className={styles.addToCartWrap}>

@@ -120,60 +120,6 @@ const Cart = () => {
     return true;
   };
 
-  const placeOrder2 = async () => {
-    setShowVerificationLoading(false);
-    setShowConfirmationLoading(true);
-    try {
-      if (updateGoatDataQuantities()) {
-        for (let requirement of order.meatRequirements) {
-          const goat = goatsData.find(
-            (data) => data.goatId === requirement.goatId
-          );
-
-          console.log("goat", goat);
-
-          let toal = 0;
-
-          Object.keys(requirement).map((key) => {
-            if (key !== "goatId") {
-              // Number of items *
-              const priceKey = priceNames[key];
-              console.log("goat[priceKey]", goat[priceKey]);
-              // toal += requirement[key] * goat[priceNames[key]];
-            }
-          });
-
-          console.log("toal", toal);
-
-          // const docRef = await addDoc(collection(db, "orders"), {
-          //   ...requirement,
-          //   userName: order.userName,
-          //   userPhoneNumber: order.userPhoneNumber,
-          //   userAddress: order.userAddress,
-          //   landmark: order.landmark,
-          //   deliveryDate: goat.deliveryDateTimestamp,
-          //   userId: localStorage.getItem("choose-your-goat-userId"),
-          //   totalBill:
-          //     requirement.numberOfMuttonShares * goat.muttonShareCost +
-          //     requirement.numberOfHeadShares * goat.headPrice +
-          //     requirement.numberOfLegsShares * goat.legsPrice +
-          //     requirement.numberOfBrainShares * goat.brainPrice +
-          //     requirement.numberOfBotiShares * goat.botiShareCost +
-          //     requirement.numberOfExtras * goat.extraCost,
-          // });
-          // console.log("Document written with ID: ", docRef.id);
-        }
-
-        setShowConfirmationLoading(false);
-        setOrderConfirmation(true);
-      } else {
-        alert("No shares left");
-      }
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
-  };
-
   const placeOrder = async () => {
     setShowVerificationLoading(false);
     setShowConfirmationLoading(true);
