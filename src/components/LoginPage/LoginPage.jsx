@@ -7,6 +7,7 @@ const LoginPage = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [mobileNumberError, setMobileNumberError] = useState("");
   const [otp, setOtp] = useState("");
+  const [otpError, setOtpError] = useState("");
   const [confirmation, setConfirmation] = useState();
   const [showOtpBuffer, setShowOtpBuffer] = useState(false);
 
@@ -47,14 +48,17 @@ const LoginPage = () => {
     try {
       const otpVerification = await confirmation.confirm(otp);
       console.log("otpVerification", otpVerification);
-      setShowOtpBuffer(false);
       localStorage.setItem(
         "choose-your-goat-token",
         otpVerification.user.accessToken
       );
       localStorage.setItem("choose-your-goat-userId", otpVerification.user.uid);
-      window.location.href = "/goats-catalog";
+      setShowOtpBuffer(false);
+      setOtpError("");
+      window.location.href = "/";
     } catch (error) {
+      setShowOtpBuffer(false);
+      setOtpError("Enter a valid OTP");
       console.log("error in verifying otp", error);
     }
   };
@@ -62,7 +66,7 @@ const LoginPage = () => {
   return (
     <section className="bg-gray-50 dark:bg-gray-900 overflow-hidden">
       <div id="recaptcha"></div>
-      <div className="min-h-screen flex flex-col items-center px-4 py-12 mx-auto md:h-screen lg:py-0">
+      <div className="mt-4 min-h-screen flex flex-col items-center px-4 py-12 mx-auto md:h-screen lg:py-0">
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
@@ -108,6 +112,11 @@ const LoginPage = () => {
                     required=""
                     onChange={(e) => setOtp(e.target.value)}
                   />
+                  {otpError && (
+                    <span className="text-sm text-red-500 ps-1">
+                      {otpError}
+                    </span>
+                  )}
                 </div>
               )}
 

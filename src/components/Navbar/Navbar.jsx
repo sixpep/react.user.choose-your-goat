@@ -18,11 +18,17 @@ const Navbar = () => {
           <h6>Choose Your Goat</h6>
         </div>
 
-        {localStorage.getItem("choose-your-goat-token") && (
+        {localStorage.getItem("choose-your-goat-token") ? (
           <div className={styles.navButtons}>
             <button onClick={handleOrdersButton}>Orders</button>
             <button onClick={handleLogOut}>
               <IoIosLogOut size={24} />
+            </button>
+          </div>
+        ) : (
+          <div className={styles.navButtons}>
+            <button onClick={() => (window.location.href = "/login")}>
+              Log In
             </button>
           </div>
         )}

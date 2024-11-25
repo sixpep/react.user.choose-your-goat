@@ -81,8 +81,8 @@ const App = () => {
             userId: decodedToken.sub,
             userPhoneNumber: user?.userPhoneNumber,
             userName: user?.userName,
-            userAddress: userAddress[0].userAddress,
-            landmark: userAddress[0].landmark,
+            userAddress: userAddress[0]?.userAddress,
+            landmark: userAddress[0]?.landmark,
           }));
         } catch (error) {
           console.error("Failed to fetch user:", error);
@@ -101,8 +101,8 @@ const App = () => {
         <Navbar />
         <BrowserRouter>
           <Routes>
-            <Route path="/" index element={<LoginPage />} />
-            <Route path="/goats-catalog" element={<Catalog />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/" index element={<Catalog />} />
             <Route path="cart" element={<Cart />} />
             <Route path="orders" element={<UserOrders />} />
           </Routes>
