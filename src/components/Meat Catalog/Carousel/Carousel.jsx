@@ -51,7 +51,7 @@ const Carousel = ({ images, goatDescriptionVisible }) => {
           );
         })}
       </div>
-      <div className="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
+      {/* <div className="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
         {images.map((_, ind) => {
           return (
             <button
@@ -69,7 +69,7 @@ const Carousel = ({ images, goatDescriptionVisible }) => {
             ></button>
           );
         })}
-      </div>{" "}
+      </div> */}
       {/* <button
         type="button"
         className="absolute top-1/2 start-0 z-30 flex items-center justify-center h-min px-4 cursor-pointer group focus:outline-none"

@@ -222,6 +222,19 @@ const Tile = ({
       )}
 
       <div className={styles.content}>
+        <div className={styles.tileHeader}>
+          <div className={styles.greeting}>
+            <p>
+              Hello <span>Meat Lover</span>
+              <img src="/images/handWaveSymbol.png" alt="" />
+            </p>
+            <p>It's Meat Time!</p>
+          </div>
+          <div className={styles.deliveryDateWrap}>
+            <p> Delivery by</p>
+            <span>{handleDeliveryDate(deliveryDateTimestamp)}</span>
+          </div>
+        </div>
         <div className={styles.tileImage}>
           <Carousel
             images={[goatImage]}
@@ -231,132 +244,145 @@ const Tile = ({
             <FaInfoCircle color="white" size={20} style={{ zIndex: "100" }} />
           </i>
         </div>
-        <div className={styles.deliveryDesc}>
-          <button
-            type="button"
-            className="relative flex justify-center h-min cursor-pointer group focus:outline-none"
-            data-carousel-prev
-            onClick={handlePrev}
-            style={{
-              visibility:
-                goatDescriptionVisible || goatsData.length < 2
-                  ? "hidden"
-                  : "visible",
-            }}
-          >
-            <i
-              className="inline-flex items-center justify-center w-10 h-10"
-              style={{ zIndex: 5 }}
+        {goatsData.length > 1 && (
+          <div className={styles.tileCarouselBtns}>
+            <button
+              type="button"
+              className="relative flex justify-center h-min cursor-pointer group focus:outline-none"
+              data-carousel-prev
+              onClick={handlePrev}
+              style={{
+                visibility:
+                  goatDescriptionVisible || goatsData.length < 2
+                    ? "hidden"
+                    : "visible",
+              }}
             >
-              <BsFillCaretLeftFill size={30} style={{ zIndex: "5" }} />
-            </i>
-          </button>
+              <i
+                className="inline-flex items-center justify-center w-10 h-10"
+                style={{ zIndex: 5 }}
+              >
+                <BsFillCaretLeftFill size={30} style={{ zIndex: "5" }} />
+              </i>
+            </button>
 
-          <h3>
-            Delivers <br /> {handleDeliveryDate(deliveryDateTimestamp)}
-          </h3>
-
-          <button
-            type="button"
-            className="relative flex justify-center h-min cursor-pointer group focus:outline-none"
-            data-carousel-next
-            onClick={handleNext}
-            style={{
-              visibility:
-                goatDescriptionVisible || goatsData.length < 2
-                  ? "hidden"
-                  : "visible",
-            }}
-          >
-            <i className="inline-flex items-center justify-center w-10 h-10 ">
-              <BsFillCaretRightFill size={30} />
-            </i>
-          </button>
-        </div>
+            <button
+              type="button"
+              className="relative flex justify-center h-min cursor-pointer group focus:outline-none"
+              data-carousel-next
+              onClick={handleNext}
+              style={{
+                visibility:
+                  goatDescriptionVisible || goatsData.length < 2
+                    ? "hidden"
+                    : "visible",
+              }}
+            >
+              <i className="inline-flex items-center justify-center w-10 h-10 ">
+                <BsFillCaretRightFill size={30} />
+              </i>
+            </button>
+          </div>
+        )}
 
         <div className={styles.goatDetails}>
           {/* Interactive Quantity Controls */}
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              <p>Mutton </p>
-              <div className={styles.controlPrices}>
-                <div
-                  className={styles.quantityButtons}
-                  style={{
-                    opacity: remainingMuttonShares > 0 ? 1 : 0.5,
-                  }}  
-                >
-                  <button
-                    onClick={() => handleDecrement("numberOfMuttonShares")}
-                  >
-                    -
-                  </button>
-                  <input
-                    type="text"
-                    id="numberOfMuttonShares"
-                    readOnly
-                    value={numberOfMuttonShares || 0}
-                  />
-                  <button
-                    onClick={() =>
-                      handleIncrement(
-                        "numberOfMuttonShares",
-                        remainingMuttonShares
-                      )
-                    }
-                  >
-                    +
-                  </button>
-                </div>
-                <div className={styles.price}>
-                  <p>₹ {muttonShareCost}</p>
-                  {/* <p>₹ {muttonShareCost * numberOfMuttonShares}</p> */}
-                </div>
+              <div className={styles.itemLabelWrap}>
+                <p>Mutton</p>
+                <span className={styles.availableNote}>
+                  Available Shares : <span>{remainingMuttonShares || 0}</span>
+                </span>
               </div>
             </div>
-
             <span>
               Each share weighs between 480 and 520 grams and includes one
               nalli, liver, and all cuts of the meat.
             </span>
 
+            <div className={styles.controlPrices}>
+              <div className={styles.price}>
+                <p>
+                  ₹ {muttonShareCost} <span>/500g</span>
+                </p>
+                {/* <p>₹ {muttonShareCost * numberOfMuttonShares}</p> */}
+              </div>
+              <div
+                className={styles.quantityButtons}
+                style={{
+                  opacity: remainingMuttonShares > 0 ? 1 : 0.5,
+                }}
+              >
+                <button onClick={() => handleDecrement("numberOfMuttonShares")}>
+                  -
+                </button>
+                <p>{numberOfMuttonShares || 0}</p>
+                {/* <input
+                  type="text"
+                  id="numberOfMuttonShares"
+                  readOnly
+                  value={numberOfMuttonShares || 0}
+                /> */}
+                <button
+                  onClick={() =>
+                    handleIncrement(
+                      "numberOfMuttonShares",
+                      remainingMuttonShares
+                    )
+                  }
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
             {/* <div className={styles.quantityLabels}>
               <span>₹ {muttonShareCost * muttonQuantity}/-</span>
             </div> */}
-            <span
+            {/* <span
               className={styles.availableNote}
               style={{ color: remainingMuttonShares > 0 ? "green" : "red" }}
             >
               (Available: {remainingMuttonShares || 0} shares)
-            </span>
+            </span> */}
           </div>
 
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              <p>Head (తలకాయ) </p>
-              <div className={styles.controlPrices}>
-                <div
-                  className={styles.quantityButtons}
-                  style={{
-                    opacity: remainingHeads > 0 ? 1 : 0.5,
-                  }}
+              {/* <p>Head (తలకాయ) </p> */}
+              <div className={styles.itemLabelWrap}>
+                <p>Goat Head</p>
+                <span className={styles.availableNote}>
+                  Available Shares : <span>{remainingHeads || 0} </span>
+                </span>
+              </div>
+            </div>
+            <div className={styles.controlPrices}>
+              <div className={styles.price}>
+                <p>
+                  ₹ {headPrice} <span>/1pc</span>
+                </p>
+                {/* <p>₹ {headPrice * numberOfHeadShares}</p> */}
+              </div>
+              <div
+                className={styles.quantityButtons}
+                style={{
+                  opacity: remainingHeads > 0 ? 1 : 0.5,
+                }}
+              >
+                <button onClick={() => handleDecrement("numberOfHeadShares")}>
+                  -
+                </button>
+                {/* <input type="text" readOnly value={numberOfHeadShares || 0} /> */}
+                <p>{numberOfHeadShares || 0}</p>
+                <button
+                  onClick={() =>
+                    handleIncrement("numberOfHeadShares", remainingHeads)
+                  }
                 >
-                  <button onClick={() => handleDecrement("numberOfHeadShares")}>
-                    -
-                  </button>
-                  <input type="text" readOnly value={numberOfHeadShares || 0} />
-                  <button
-                    onClick={() =>
-                      handleIncrement("numberOfHeadShares", remainingHeads)
-                    }
-                  >
-                    +
-                  </button>
-                </div>
-                <div className={styles.price}>
-                  <p>₹ {headPrice}</p>
-                  {/* <p>₹ {headPrice * numberOfHeadShares}</p> */}
-                </div>
+                  +
+                </button>
               </div>
             </div>
             {/* <span>
@@ -366,86 +392,103 @@ const Tile = ({
             {/* <div className={styles.quantityLabels}>
               <span>₹ {headPrice * headQuantity}/-</span>
             </div> */}
-            <span
+            {/* <span
               className={styles.availableNote}
               style={{ color: remainingHeads > 0 ? "green" : "red" }}
             >
               (Available: {remainingHeads || 0} share)
-            </span>
+            </span> */}
           </div>
 
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              <p>Legs (కాలు)</p>
-              <div className={styles.controlPrices}>
-                <div
-                  className={styles.quantityButtons}
-                  style={{
-                    opacity: remainingLegs > 0 ? 1 : 0.5,
-                  }}
-                >
-                  <button onClick={() => handleDecrement("numberOfLegsShares")}>
-                    -
-                  </button>
-                  <input type="text" readOnly value={numberOfLegsShares || 0} />
-                  <button
-                    onClick={() =>
-                      handleIncrement("numberOfLegsShares", remainingLegs)
-                    }
-                  >
-                    +
-                  </button>
-                </div>
-                <div className={styles.price}>
-                  <p>₹ {legsPrice}</p>
-                  {/* <p>₹ {legsPrice * numberOfLegsShares}</p> */}
-                </div>
+              {/* <p>Legs (కాలు)</p> */}
+              <div className={styles.itemLabelWrap}>
+                <p>Goat Legs</p>
+                <span className={styles.availableNote}>
+                  Available Shares : <span>{remainingLegs || 0} </span>
+                </span>
               </div>
             </div>
             <span>Each share includes four legs.</span>
+            <div className={styles.controlPrices}>
+              <div className={styles.price}>
+                <p>
+                  ₹ {legsPrice} <span>/4pc</span>
+                </p>
+                {/* <p>₹ {legsPrice * numberOfLegsShares}</p> */}
+              </div>
+              <div
+                className={styles.quantityButtons}
+                style={{
+                  opacity: remainingLegs > 0 ? 1 : 0.5,
+                }}
+              >
+                <button onClick={() => handleDecrement("numberOfLegsShares")}>
+                  -
+                </button>
+                {/* <input type="text" readOnly value={numberOfLegsShares || 0} /> */}
+                <p>{numberOfLegsShares || 0}</p>
+                <button
+                  onClick={() =>
+                    handleIncrement("numberOfLegsShares", remainingLegs)
+                  }
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
             {/* <div className={styles.quantityLabels}>
               <span>₹ {legsPrice * legsQuantity}/-</span>
             </div> */}
-            <span
+            {/* <span
               className={styles.availableNote}
               style={{ color: remainingLegs > 0 ? "green" : "red" }}
             >
               (Available: {remainingLegs || 0} share)
-            </span>
+            </span> */}
           </div>
 
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              <p>Brain (మెదడు)</p>
-              <div className={styles.controlPrices}>
-                <div
-                  className={styles.quantityButtons}
-                  style={{
-                    opacity: remainingLegs > 0 ? 1 : 0.5,
-                  }}
-                >
-                  <button
-                    onClick={() => handleDecrement("numberOfBrainShares")}
-                  >
-                    -
-                  </button>
-                  <input
+              {/* <p>Brain (మెదడు)</p> */}
+              <div className={styles.itemLabelWrap}>
+                <p>Goat Brain</p>
+                <span className={styles.availableNote}>
+                  Available Shares : <span>{remainingBrains || 0}</span>
+                </span>
+              </div>
+            </div>
+            <div className={styles.controlPrices}>
+              <div className={styles.price}>
+                <p>
+                  ₹ {brainPrice} <span>/1pc</span>
+                </p>
+                {/* <p>₹ {brainPrice * numberOfBrainShares}</p> */}
+              </div>
+              <div
+                className={styles.quantityButtons}
+                style={{
+                  opacity: remainingLegs > 0 ? 1 : 0.5,
+                }}
+              >
+                <button onClick={() => handleDecrement("numberOfBrainShares")}>
+                  -
+                </button>
+                {/* <input
                     type="text"
                     readOnly
                     value={numberOfBrainShares || 0}
-                  />
-                  <button
-                    onClick={() =>
-                      handleIncrement("numberOfBrainShares", remainingBrains)
-                    }
-                  >
-                    +
-                  </button>
-                </div>
-                <div className={styles.price}>
-                  <p>₹ {brainPrice}</p>
-                  {/* <p>₹ {brainPrice * numberOfBrainShares}</p> */}
-                </div>
+                  /> */}
+                <p>{numberOfBrainShares || 0}</p>
+                <button
+                  onClick={() =>
+                    handleIncrement("numberOfBrainShares", remainingBrains)
+                  }
+                >
+                  +
+                </button>
               </div>
             </div>
             {/* <span>
@@ -455,52 +498,59 @@ const Tile = ({
             {/* <div className={styles.quantityLabels}>
               <span>₹ {brainPrice * brainQuantity}/-</span>
             </div> */}
-            <span
+            {/* <span
               className={styles.availableNote}
-              style={{ color: remainingBrains > 0 ? "green" : "red" }}
             >
               (Available: {remainingBrains || 0} )
-            </span>
+            </span> */}
           </div>
 
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              <p>Boti (బోటి)</p>
-              <div className={styles.controlPrices}>
-                <div
-                  className={styles.quantityButtons}
-                  style={{
-                    opacity: remainingBotiShares > 0 ? 1 : 0.5,
-                  }}
-                >
-                  <button onClick={() => handleDecrement("numberOfBotiShares")}>
-                    -
-                  </button>
-                  <input type="text" readOnly value={numberOfBotiShares || 0} />
-                  <button
-                    onClick={() =>
-                      handleIncrement("numberOfBotiShares", remainingBotiShares)
-                    }
-                  >
-                    +
-                  </button>
-                </div>
-                <div className={styles.price}>
-                  <p>₹ {botiShareCost}</p>
-                  {/* <p>₹ {botiShareCost * numberOfBotiShares}</p> */}
-                </div>
+              {/* <p>Boti (బోటి)</p> */}
+              <div className={styles.itemLabelWrap}>
+                <p>Goat Boti</p>
+                <span className={styles.availableNote}>
+                  Available Shares : <span>{remainingBotiShares}</span>
+                </span>
               </div>
             </div>
             <span>Each share of boti weighs between 1.25 and 1.5 kgs.</span>
+
+            <div className={styles.controlPrices}>
+              <div className={styles.price}>
+                <p>₹ {botiShareCost}</p>
+                {/* <p>₹ {botiShareCost * numberOfBotiShares}</p> */}
+              </div>
+              <div
+                className={styles.quantityButtons}
+                style={{
+                  opacity: remainingBotiShares > 0 ? 1 : 0.5,
+                }}
+              >
+                <button onClick={() => handleDecrement("numberOfBotiShares")}>
+                  -
+                </button>
+                {/* <input type="text" readOnly value={numberOfBotiShares || 0} /> */}
+                <p>{numberOfBotiShares || 0}</p>
+                <button
+                  onClick={() =>
+                    handleIncrement("numberOfBotiShares", remainingBotiShares)
+                  }
+                >
+                  +
+                </button>
+              </div>
+            </div>
             {/* <div className={styles.quantityLabels}>
               <span>₹ {botiShareCost * botiQuantity}/-</span>
             </div> */}
-            <span
+            {/* <span
               className={styles.availableNote}
               style={{ color: remainingBotiShares > 0 ? "green" : "red" }}
             >
               (Available : {remainingBotiShares} shares)
-            </span>
+            </span> */}
           </div>
 
           {/* <div className={styles.quantityControl}>

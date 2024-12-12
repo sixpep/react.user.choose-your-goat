@@ -3,6 +3,7 @@ import styles from "./Catalog.module.css";
 import CheckOutForm from "./Check Out Form/CheckOutForm";
 import TileCarousel from "./Carousel/TileCarousel";
 import { useNavigate } from "react-router-dom";
+import { BsHandbag } from "react-icons/bs";
 import { Context } from "../../App";
 
 const Catalog = () => {
@@ -16,16 +17,17 @@ const Catalog = () => {
       <TileCarousel order={order} setOrder={setOrder} />
       <div className={styles.checkOutWrap}>
         <p>
-          Total : <span> ₹ {order.totalBill}</span>
+          Total Price: <span> ₹ {order.totalBill}</span>
         </p>
         <button
           onClick={() => navigate("/cart")}
           disabled={order.totalBill <= 0}
           style={{
-            backgroundColor: order.meatRequirements.length < 1 ? "grey" : "",
+            opacity: order.meatRequirements.length < 1 ? 0.5 : 1,
           }}
         >
-          Continue
+          <BsHandbag />
+          <p>Bag</p>
         </button>
       </div>
       {showCheckOutForm && (

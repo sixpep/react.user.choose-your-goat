@@ -3,16 +3,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #133e87;
+  /* background-color: #133e87; */
+  background-color: #fcfcfc;
   top: 0;
   z-index: 10;
+  border-bottom: 1px solid #eaeaea;
 }
 
 .content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 0;
+  padding: 0.8rem 0;
   width: 95%;
 }
 
@@ -33,9 +35,21 @@
   align-items: center;
 }
 
-.logoImageContainer img {
-  width: 38px;
-  border-radius: 50%;
+.logoContainer img {
+  width: 95px;
+}
+
+.loginBtn {
+  background-color: #1d1e22 !important;
+  width: 45px;
+}
+
+.loginBtn img {
+  width: 16px;
+}
+
+.loginBtn:active {
+  opacity: 0.9;
 }
 
 .navButtons {
@@ -58,6 +72,7 @@
 .navButtons button:last-child {
   padding: 0.5rem;
 }
+
 .navButtons button:active {
   background-color: #133e87;
   color: #ffffff;

@@ -15,7 +15,8 @@ const Navbar = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.logoContainer}>
-          <h6>Choose Your Goat</h6>
+          <img src="/images/logo.png" alt="" />
+          {/* <h6>Choose Your Goat</h6> */}
         </div>
 
         {localStorage.getItem("choose-your-goat-token") ? (
@@ -27,8 +28,11 @@ const Navbar = () => {
           </div>
         ) : (
           <div className={styles.navButtons}>
-            <button onClick={() => (window.location.href = "/login")}>
-              Log In
+            <button
+              className={styles.loginBtn}
+              onClick={() => (window.location.href = "/login")}
+            >
+              <img src="/images/loginLogo.png" alt="" />
             </button>
           </div>
         )}
