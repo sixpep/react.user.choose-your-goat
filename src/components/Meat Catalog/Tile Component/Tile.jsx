@@ -470,7 +470,7 @@ const Tile = ({
               <div
                 className={styles.quantityButtons}
                 style={{
-                  opacity: remainingLegs > 0 ? 1 : 0.5,
+                  opacity: remainingBrains > 0 ? 1 : 0.5,
                 }}
               >
                 <button onClick={() => handleDecrement("numberOfBrainShares")}>
