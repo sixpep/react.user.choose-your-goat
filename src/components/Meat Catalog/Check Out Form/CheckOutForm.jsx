@@ -40,7 +40,7 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
   }, [accessToken]);
 
   return (
-    <section className="bg-white py-4 pb-20 antialiased dark:bg-gray-900 md:pb-16 shadow-inner max-h-[99vh] overflow-y-auto z-30">
+    <section className="mb-4 bg-white py-4 pb-20 antialiased dark:bg-gray-900 md:pb-16 shadow-inner max-h-[99vh] overflow-y-auto z-30">
       <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
         {/* <div className="flex justify-end">
           <button onClick={() => setShowCheckOutForm(false)}>
