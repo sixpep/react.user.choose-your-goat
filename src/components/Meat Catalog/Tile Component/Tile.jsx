@@ -350,9 +350,9 @@ const Tile = ({
 
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              {/* <p>Head (తలకాయ) </p> */}
               <div className={styles.itemLabelWrap}>
-                <p>Goat Head</p>
+                <p>Head (తలకాయ) </p>
+                {/* <p>Goat Head</p> */}
                 <span className={styles.availableNote}>
                   Available Shares : <span>{remainingHeads || 0} </span>
                 </span>
@@ -402,9 +402,9 @@ const Tile = ({
 
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              {/* <p>Legs (కాలు)</p> */}
               <div className={styles.itemLabelWrap}>
-                <p>Goat Legs</p>
+              <p>Legs (కాలు)</p>
+                {/* <p>Goat Legs</p> */}
                 <span className={styles.availableNote}>
                   Available Shares : <span>{remainingLegs || 0} </span>
                 </span>
@@ -452,9 +452,9 @@ const Tile = ({
 
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              {/* <p>Brain (మెదడు)</p> */}
               <div className={styles.itemLabelWrap}>
-                <p>Goat Brain</p>
+              <p>Brain (మెదడు)</p>
+                {/* <p>Goat Brain</p> */}
                 <span className={styles.availableNote}>
                   Available Shares : <span>{remainingBrains || 0}</span>
                 </span>
@@ -507,9 +507,9 @@ const Tile = ({
 
           <div className={styles.quantityControl}>
             <div className={styles.label}>
-              {/* <p>Boti (బోటి)</p> */}
               <div className={styles.itemLabelWrap}>
-                <p>Goat Boti</p>
+              <p>Boti (బోటి)</p>
+                {/* <p>Goat Boti</p> */}
                 <span className={styles.availableNote}>
                   Available Shares : <span>{remainingBotiShares}</span>
                 </span>
