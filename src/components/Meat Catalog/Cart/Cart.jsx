@@ -296,10 +296,7 @@ const Cart = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.backBar}>
-          <div
-            className={styles.backBtn}
-            onClick={() => navigate("/")}
-          >
+          <div className={styles.backBtn} onClick={() => navigate("/")}>
             <i>
               <LuMoveLeft size={20} />
             </i>
@@ -466,7 +463,7 @@ const Cart = () => {
         <div class={styles.verifyOtpContainer}>
           <div class={styles.popupContent}>
             <div class={styles.checkmark}>
-              <SiTicktick color="green" size={40} />
+              <SiTicktick color="#1D1E22" size={40} />
             </div>
             <h1>Your order is confirmed!</h1>
             <p>Thank you for your order</p>
