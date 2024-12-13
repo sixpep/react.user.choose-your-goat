@@ -40,7 +40,7 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
   }, [accessToken]);
 
   return (
-    <section className="bg-white py-4 antialiased dark:bg-gray-900 md:pb-16 shadow-inner max-h-[99vh] overflow-y-auto z-30">
+    <section className="bg-white py-4 pb-20 antialiased dark:bg-gray-900 md:pb-16 shadow-inner max-h-[99vh] overflow-y-auto z-30">
       <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
         {/* <div className="flex justify-end">
           <button onClick={() => setShowCheckOutForm(false)}>
@@ -179,11 +179,14 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                   )}
                 </div>
 
-                <div className="space-y-3">
+                <div className="bg-white p-4 shadow-top fixed flex justify-center bottom-0 left-0 w-full space-y-3">
                   <button
-                    style={{ backgroundColor: "#1d1e22", color: "white" }}
+                    style={{
+                      backgroundColor: "#1d1e22",
+                      color: "white",
+                    }}
                     onClick={handleFormValidations}
-                    className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4  focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                    className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-3 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4  focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                   >
                     Place Order
                   </button>
