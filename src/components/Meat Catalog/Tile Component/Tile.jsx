@@ -201,7 +201,7 @@ const Tile = ({
                   <td>:</td>
                   <td>{cutSize}</td>
                 </tr>
-                <tr>
+                {/* <tr>
                   <td>Total boti shares</td>
                   <td>:</td>
                   <td>{totalBotiShares}</td>
@@ -214,7 +214,7 @@ const Tile = ({
                   </td>
                   <td>:</td>
                   <td>₹ {extraCost}/-</td>
-                </tr>
+                </tr> */}
               </tbody>
             </table>
           </div>
