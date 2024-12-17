@@ -16,15 +16,12 @@ const Tile = ({
   approxShareSize,
   muttonShareCost,
   cutSize,
-  headLegsBrainPrice,
   headPrice,
   legsPrice,
   brainPrice,
   extraCost,
-  totalBotiShares,
   botiShareCost,
   deliveryDateTimestamp,
-  headLegsBrainAvailability,
   remainingBotiShares,
   remainingBrains,
   remainingMuttonShares,
@@ -32,6 +29,10 @@ const Tile = ({
   remainingLegs,
   handlePrev,
   handleNext,
+  status,
+  totalBotiShares,
+  headLegsBrainPrice,
+  headLegsBrainAvailability,
   remainingExtras,
 }) => {
   const [goatDescriptionVisible, setGoatDescriptionVisible] = useState(false);
@@ -52,7 +53,7 @@ const Tile = ({
   } = currentGoatDoc || {};
 
   const handleIncrement = (keyName, availability) => {
-    if (availability === 0) return;
+    if (availability === 0 || status !== "active") return;
     if (currentGoatDoc) {
       const currentValue = currentGoatDoc[keyName] || 0;
 
@@ -311,7 +312,8 @@ const Tile = ({
               <div
                 className={styles.quantityButtons}
                 style={{
-                  opacity: remainingMuttonShares > 0 ? 1 : 0.5,
+                  opacity:
+                    remainingMuttonShares < 1 || status !== "active" ? 0.5 : 1,
                 }}
               >
                 <button onClick={() => handleDecrement("numberOfMuttonShares")}>
@@ -368,7 +370,7 @@ const Tile = ({
               <div
                 className={styles.quantityButtons}
                 style={{
-                  opacity: remainingHeads > 0 ? 1 : 0.5,
+                  opacity: remainingHeads < 1 || status !== "active" ? 0.5 : 1,
                 }}
               >
                 <button onClick={() => handleDecrement("numberOfHeadShares")}>
@@ -403,7 +405,7 @@ const Tile = ({
           <div className={styles.quantityControl}>
             <div className={styles.label}>
               <div className={styles.itemLabelWrap}>
-              <p>Legs (కాలు)</p>
+                <p>Legs (కాలు)</p>
                 {/* <p>Goat Legs</p> */}
                 <span className={styles.availableNote}>
                   Available Shares : <span>{remainingLegs || 0} </span>
@@ -421,7 +423,7 @@ const Tile = ({
               <div
                 className={styles.quantityButtons}
                 style={{
-                  opacity: remainingLegs > 0 ? 1 : 0.5,
+                  opacity: remainingLegs < 1 || status !== "active" ? 0.5 : 1,
                 }}
               >
                 <button onClick={() => handleDecrement("numberOfLegsShares")}>
@@ -453,7 +455,7 @@ const Tile = ({
           <div className={styles.quantityControl}>
             <div className={styles.label}>
               <div className={styles.itemLabelWrap}>
-              <p>Brain (మెదడు)</p>
+                <p>Brain (మెదడు)</p>
                 {/* <p>Goat Brain</p> */}
                 <span className={styles.availableNote}>
                   Available Shares : <span>{remainingBrains || 0}</span>
@@ -470,7 +472,7 @@ const Tile = ({
               <div
                 className={styles.quantityButtons}
                 style={{
-                  opacity: remainingBrains > 0 ? 1 : 0.5,
+                  opacity: remainingBrains < 1 || status !== "active" ? 0.5 : 1,
                 }}
               >
                 <button onClick={() => handleDecrement("numberOfBrainShares")}>
@@ -508,7 +510,7 @@ const Tile = ({
           <div className={styles.quantityControl}>
             <div className={styles.label}>
               <div className={styles.itemLabelWrap}>
-              <p>Boti (బోటి)</p>
+                <p>Boti (బోటి)</p>
                 {/* <p>Goat Boti</p> */}
                 <span className={styles.availableNote}>
                   Available Shares : <span>{remainingBotiShares}</span>
@@ -525,7 +527,8 @@ const Tile = ({
               <div
                 className={styles.quantityButtons}
                 style={{
-                  opacity: remainingBotiShares > 0 ? 1 : 0.5,
+                  opacity:
+                    remainingBotiShares < 1 || status !== "active" ? 0.5 : 1,
                 }}
               >
                 <button onClick={() => handleDecrement("numberOfBotiShares")}>
