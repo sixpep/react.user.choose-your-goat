@@ -293,7 +293,10 @@ const Tile = ({
               <div className={styles.itemLabelWrap}>
                 <p>Mutton</p>
                 <span className={styles.availableNote}>
-                  Available Shares : <span>{remainingMuttonShares || 0}</span>
+                  Available Shares :{" "}
+                  <span>
+                    {status !== "active" ? 0 : remainingMuttonShares || 0}
+                  </span>
                 </span>
               </div>
             </div>
@@ -356,7 +359,8 @@ const Tile = ({
                 <p>Head (తలకాయ) </p>
                 {/* <p>Goat Head</p> */}
                 <span className={styles.availableNote}>
-                  Available Shares : <span>{remainingHeads || 0} </span>
+                  Available Shares :{" "}
+                  <span>{status !== "active" ? 0 : remainingHeads || 0} </span>
                 </span>
               </div>
             </div>
@@ -408,7 +412,8 @@ const Tile = ({
                 <p>Legs (కాలు)</p>
                 {/* <p>Goat Legs</p> */}
                 <span className={styles.availableNote}>
-                  Available Shares : <span>{remainingLegs || 0} </span>
+                  Available Shares :{" "}
+                  <span>{status !== "active" ? 0 : remainingLegs || 0} </span>
                 </span>
               </div>
             </div>
@@ -458,7 +463,8 @@ const Tile = ({
                 <p>Brain (మెదడు)</p>
                 {/* <p>Goat Brain</p> */}
                 <span className={styles.availableNote}>
-                  Available Shares : <span>{remainingBrains || 0}</span>
+                  Available Shares :{" "}
+                  <span>{status !== "active" ? 0 : remainingBrains || 0}</span>
                 </span>
               </div>
             </div>
@@ -513,7 +519,10 @@ const Tile = ({
                 <p>Boti (బోటి)</p>
                 {/* <p>Goat Boti</p> */}
                 <span className={styles.availableNote}>
-                  Available Shares : <span>{remainingBotiShares}</span>
+                  Available Shares :{" "}
+                  <span>
+                    {status !== "active" ? 0 : remainingBotiShares || 0}
+                  </span>
                 </span>
               </div>
             </div>
