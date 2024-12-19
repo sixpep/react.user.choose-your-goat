@@ -30,6 +30,7 @@ const Tile = ({
   handlePrev,
   handleNext,
   status,
+  isActive,
   totalBotiShares,
   headLegsBrainPrice,
   headLegsBrainAvailability,
@@ -53,7 +54,7 @@ const Tile = ({
   } = currentGoatDoc || {};
 
   const handleIncrement = (keyName, availability) => {
-    if (availability === 0 || status !== "active") return;
+    if (availability === 0 || isActive === false) return;
     if (currentGoatDoc) {
       const currentValue = currentGoatDoc[keyName] || 0;
 
@@ -294,9 +295,7 @@ const Tile = ({
                 <p>Mutton</p>
                 <span className={styles.availableNote}>
                   Available Shares :{" "}
-                  <span>
-                    {status !== "active" ? 0 : remainingMuttonShares || 0}
-                  </span>
+                  <span>{!isActive ? 0 : remainingMuttonShares || 0}</span>
                 </span>
               </div>
             </div>
@@ -315,8 +314,7 @@ const Tile = ({
               <div
                 className={styles.quantityButtons}
                 style={{
-                  opacity:
-                    remainingMuttonShares < 1 || status !== "active" ? 0.5 : 1,
+                  opacity: remainingMuttonShares < 1 || !isActive ? 0.5 : 1,
                 }}
               >
                 <button onClick={() => handleDecrement("numberOfMuttonShares")}>
@@ -360,7 +358,7 @@ const Tile = ({
                 {/* <p>Goat Head</p> */}
                 <span className={styles.availableNote}>
                   Available Shares :{" "}
-                  <span>{status !== "active" ? 0 : remainingHeads || 0} </span>
+                  <span>{!isActive ? 0 : remainingHeads || 0} </span>
                 </span>
               </div>
             </div>
@@ -374,7 +372,7 @@ const Tile = ({
               <div
                 className={styles.quantityButtons}
                 style={{
-                  opacity: remainingHeads < 1 || status !== "active" ? 0.5 : 1,
+                  opacity: remainingHeads < 1 || !isActive ? 0.5 : 1,
                 }}
               >
                 <button onClick={() => handleDecrement("numberOfHeadShares")}>
@@ -413,7 +411,7 @@ const Tile = ({
                 {/* <p>Goat Legs</p> */}
                 <span className={styles.availableNote}>
                   Available Shares :{" "}
-                  <span>{status !== "active" ? 0 : remainingLegs || 0} </span>
+                  <span>{!isActive ? 0 : remainingLegs || 0} </span>
                 </span>
               </div>
             </div>
@@ -428,7 +426,7 @@ const Tile = ({
               <div
                 className={styles.quantityButtons}
                 style={{
-                  opacity: remainingLegs < 1 || status !== "active" ? 0.5 : 1,
+                  opacity: remainingLegs < 1 || !isActive ? 0.5 : 1,
                 }}
               >
                 <button onClick={() => handleDecrement("numberOfLegsShares")}>
@@ -464,7 +462,7 @@ const Tile = ({
                 {/* <p>Goat Brain</p> */}
                 <span className={styles.availableNote}>
                   Available Shares :{" "}
-                  <span>{status !== "active" ? 0 : remainingBrains || 0}</span>
+                  <span>{!isActive ? 0 : remainingBrains || 0}</span>
                 </span>
               </div>
             </div>
@@ -478,7 +476,7 @@ const Tile = ({
               <div
                 className={styles.quantityButtons}
                 style={{
-                  opacity: remainingBrains < 1 || status !== "active" ? 0.5 : 1,
+                  opacity: remainingBrains < 1 || !isActive ? 0.5 : 1,
                 }}
               >
                 <button onClick={() => handleDecrement("numberOfBrainShares")}>
@@ -520,9 +518,7 @@ const Tile = ({
                 {/* <p>Goat Boti</p> */}
                 <span className={styles.availableNote}>
                   Available Shares :{" "}
-                  <span>
-                    {status !== "active" ? 0 : remainingBotiShares || 0}
-                  </span>
+                  <span>{!isActive ? 0 : remainingBotiShares || 0}</span>
                 </span>
               </div>
             </div>
@@ -536,8 +532,7 @@ const Tile = ({
               <div
                 className={styles.quantityButtons}
                 style={{
-                  opacity:
-                    remainingBotiShares < 1 || status !== "active" ? 0.5 : 1,
+                  opacity: remainingBotiShares < 1 || !isActive ? 0.5 : 1,
                 }}
               >
                 <button onClick={() => handleDecrement("numberOfBotiShares")}>
