@@ -62,6 +62,8 @@ const App = () => {
         ...doc.data(),
       }));
 
+      updatedGoatsData.sort((a,b)=> b.deliveryDateTimestamp - a.deliveryDateTimestamp)
+
       console.log(updatedGoatsData);
       setGoatsData(updatedGoatsData);
     });
