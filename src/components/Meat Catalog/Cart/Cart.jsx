@@ -373,15 +373,35 @@ const Cart = () => {
                 </div>
               ))}
 
-          <div className=" w-full divide-y divide-gray-200 px-4 dark:divide-gray-800">
-            <dl className="flex items-center justify-between gap-4 py-3">
-              <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                Subtotal
-              </dt>
-              <dd className="text-base font-medium text-gray-900 dark:text-white">
-                ₹ {order.totalBill}
-              </dd>
-            </dl>
+          <div className="w-full">
+            {order.orderType === "chicken" && (
+              <div className=" w-full divide-y divide-gray-200 px-4 dark:divide-gray-800">
+                <dl className="flex items-center justify-between gap-4">
+                  <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
+                    Delivery fee
+                  </dt>
+                  <dd className="text-base font-medium text-gray-900 dark:text-white">
+                    ₹ 20/-
+                  </dd>
+                </dl>
+              </div>
+            )}
+
+            <div className=" w-full divide-y divide-gray-200 px-4 dark:divide-gray-800">
+              <dl className="flex items-center justify-between gap-4 py-3">
+                <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
+                  Subtotal
+                </dt>
+                <dd className="text-base font-medium text-gray-900 dark:text-white">
+                  ₹
+                  {order.orderType === "chicken"
+                    ? order.totalBill + 20
+                    : order.totalBill}
+                  /-
+                  {/* ₹ {order.totalBill + 20}/- */}
+                </dd>
+              </dl>
+            </div>
           </div>
 
           {/* <div className={styles.cartItemsWrap}>
