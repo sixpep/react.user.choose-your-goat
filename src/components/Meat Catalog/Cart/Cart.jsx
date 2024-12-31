@@ -18,7 +18,7 @@ import {
 } from "firebase/firestore";
 
 const Cart = () => {
-  const { order, setOrder, goatsData } = useContext(Context);
+  const { order, setOrder, goatsData, hensData } = useContext(Context);
   const [showOtpInputPopup, setShowOtpInputPopup] = useState(false);
   const [showVerificationLoading, setShowVerificationLoading] = useState(false);
   const [showConfirmationLoading, setShowConfirmationLoading] = useState(false);
@@ -123,42 +123,52 @@ const Cart = () => {
   const placeOrder = async () => {
     setShowVerificationLoading(false);
     setShowConfirmationLoading(true);
-    try {
-      const isUpdated = updateGoatDataQuantities();
 
-      if (isUpdated) {
-        for (let requirement of order.meatRequirements) {
-          const goat = goatsData.find(
-            (goatItem) => goatItem.docId === requirement.goatId
-          );
-          const billCalculated = calculateTotalBill(requirement, goat);
+    if (order.orderType === "chicken") {
+      const docRef = await addDoc(collection(db, "chickenOrders"), {
+        ...order,
+        orderedDate: new Date().getTime(),
+      });
+      setShowConfirmationLoading(false);
+      setOrderConfirmation(true);
+    } else {
+      try {
+        const isUpdated = updateGoatDataQuantities();
 
-          const docRef = await addDoc(collection(db, "orders"), {
-            ...requirement,
-            userName: order.userName,
-            userPhoneNumber: order.userPhoneNumber,
-            userAddress: order.userAddress,
-            landmark: order.landmark,
-            deliveryDate: goat.deliveryDateTimestamp,
-            userId: localStorage.getItem("choose-your-goat-userId"),
-            totalBill: billCalculated,
-          });
-          setShowConfirmationLoading(false);
-          setOrderConfirmation(true);
+        if (isUpdated) {
+          for (let requirement of order.meatRequirements) {
+            const goat = goatsData.find(
+              (goatItem) => goatItem.docId === requirement.goatId
+            );
+            const billCalculated = calculateTotalBill(requirement, goat);
 
-          // const orderData = {
-          //   ...requirement,
-          //   userName: order.userName,
-          //   userPhoneNumber: order.userPhoneNumber,
-          //   userAddress: order.userAddress,
-          //   landmark: order.landmark,
-          //   deliveryDate: goat.deliveryDateTimestamp,
-          //   userId: localStorage.getItem("choose-your-goat-userId"),
-          // };
+            const docRef = await addDoc(collection(db, "orders"), {
+              ...requirement,
+              userName: order.userName,
+              userPhoneNumber: order.userPhoneNumber,
+              userAddress: order.userAddress,
+              landmark: order.landmark,
+              deliveryDate: goat.deliveryDateTimestamp,
+              userId: localStorage.getItem("choose-your-goat-userId"),
+              totalBill: billCalculated,
+            });
+            setShowConfirmationLoading(false);
+            setOrderConfirmation(true);
+
+            // const orderData = {
+            //   ...requirement,
+            //   userName: order.userName,
+            //   userPhoneNumber: order.userPhoneNumber,
+            //   userAddress: order.userAddress,
+            //   landmark: order.landmark,
+            //   deliveryDate: goat.deliveryDateTimestamp,
+            //   userId: localStorage.getItem("choose-your-goat-userId"),
+            // };
+          }
         }
+      } catch (error) {
+        console.log("Error in placing order", error);
       }
-    } catch (error) {
-      console.log("Error in placing order", error);
     }
   };
 
@@ -230,18 +240,6 @@ const Cart = () => {
     }
   };
 
-  // const setNewUserId = (id) => {
-  //   return new Promise((resolve) => {
-  //     setOrder((prev) => {
-  //       console.log("Setting userId in order");
-  //       resolve({
-  //         ...prev,
-  //         userId: id,
-  //       });
-  //     });
-  //   });
-  // };
-
   const setUser = async (userId, userData) => {
     try {
       await setDoc(doc(collection(db, "users"), userId), userData);
@@ -290,13 +288,21 @@ const Cart = () => {
     }
 
     console.log("goatsData in cart", goatsData);
+    console.log("Orders in cart", order);
   }, []);
 
   return (
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.backBar}>
-          <div className={styles.backBtn} onClick={() => navigate("/")}>
+          <div
+            className={styles.backBtn}
+            onClick={() =>
+              order.orderType === "chicken"
+                ? navigate("/chicken")
+                : navigate("/mutton")
+            }
+          >
             <i>
               <LuMoveLeft size={20} />
             </i>
@@ -304,17 +310,39 @@ const Cart = () => {
           </div>
         </div>
         <div className={styles.carts}>
-          {order.meatRequirements.map((goatObj, index) => (
-            <div className={styles.cartItemsWrap} key={index}>
-              {Object.keys(goatObj).map((keyName) => {
-                if (keyNames[keyName]) {
-                  return (
-                    <div className={styles.cartItem} key={keyName}>
+          {order.orderType === "chicken"
+            ? order.meatRequirements.map((item, index) => {
+                const henData = hensData.find(
+                  (hen) => hen.docId === item.henId
+                );
+                const totalPrice = henData
+                  ? henData.chickenPrice * item.quantity
+                  : 0;
+
+                return (
+                  <div className={styles.cartItemsWrap}>
+                    <div className={styles.cartItem} key={index}>
                       <div className={styles.priceValues}>
                         <p>
-                          {keyNames[keyName]} ( {goatObj[keyName]} shares )
+                          {item?.henName} {`(${item.quantity})`}
                         </p>
-                        {/* <div className={styles.quantityButtons}>
+                      </div>
+                      <p>₹ {totalPrice}/-</p>
+                    </div>
+                  </div>
+                );
+              })
+            : order.meatRequirements.map((goatObj, index) => (
+                <div className={styles.cartItemsWrap} key={index}>
+                  {Object.keys(goatObj).map((keyName) => {
+                    if (keyNames[keyName]) {
+                      return (
+                        <div className={styles.cartItem} key={keyName}>
+                          <div className={styles.priceValues}>
+                            <p>
+                              {keyNames[keyName]} ( {goatObj[keyName]} shares )
+                            </p>
+                            {/* <div className={styles.quantityButtons}>
                           <button>-</button>
                           <input
                             type="text"
@@ -324,26 +352,26 @@ const Cart = () => {
                           />
                           <button>+</button>
                         </div> */}
-                      </div>
-                      <p>
-                        ₹
-                        {goatObj[keyName] *
-                          (goatsData.find(
-                            (item) => item.docId === goatObj.goatId
-                          )
-                            ? goatsData.find(
+                          </div>
+                          <p>
+                            ₹
+                            {goatObj[keyName] *
+                              (goatsData.find(
                                 (item) => item.docId === goatObj.goatId
-                              )[priceNames[keyName]]
-                            : 0)}
-                        /-
-                      </p>
-                    </div>
-                  );
-                }
-                return null;
-              })}
-            </div>
-          ))}
+                              )
+                                ? goatsData.find(
+                                    (item) => item.docId === goatObj.goatId
+                                  )[priceNames[keyName]]
+                                : 0)}
+                            /-
+                          </p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })}
+                </div>
+              ))}
 
           <div className=" w-full divide-y divide-gray-200 px-4 dark:divide-gray-800">
             <dl className="flex items-center justify-between gap-4 py-3">

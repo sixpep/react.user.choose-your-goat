@@ -1,0 +1,89 @@
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 0.8rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+}
+
+.deliveryNote {
+  padding: 0.6rem 0.3rem;
+  border-radius: 50px;
+  opacity: 0px;
+  background-color: #fff5d299;
+}
+
+.deliveryNote p {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fd9c00;
+}
+
+.tileHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.goatDp {
+  width: 45px;
+}
+
+.greeting p {
+  display: flex;
+  flex-direction: row;
+  align-items: last baseline;
+  gap: 0.3rem;
+}
+
+.greeting p {
+  font-weight: 600;
+  font-size: 14px !important;
+}
+
+.greeting p:last-child {
+  color: #8a8a8a;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+  text-decoration-skip-ink: none;
+}
+
+.greeting span {
+  font-size: 20px;
+  font-weight: 700;
+  text-wrap: nowrap;
+  color: #bc1414;
+}
+
+.greeting img {
+  width: 20px;
+}
+
+.offerBanner {
+  display: flex;
+  justify-content: center;
+}
+
+.choosingTitleWrap h2 {
+  font-size: 26px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.choosingTitle {
+  color: #a5a5a5;
+}
+
+.meatTiles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}

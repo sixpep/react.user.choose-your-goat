@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
 import Catalog from "./components/Meat Catalog/Catalog";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Cart from "./components/Meat Catalog/Cart/Cart";
 import { db } from "./components/firebase/setup";
 import {
@@ -15,11 +15,14 @@ import {
 import { jwtDecode } from "jwt-decode";
 import UserOrders from "./components/UserOrders/UserOrders";
 import LoginPage from "./components/LoginPage/LoginPage";
+import Homepage from "./components/Homepage/Homepage";
+import ChickenPage from "./components/ChickenPage/ChickenPage";
 
 export const Context = React.createContext();
 
 const App = () => {
   const [goatsData, setGoatsData] = useState([]);
+  const [hensData, setHensData] = useState([]);
   const [order, setOrder] = useState({
     meatRequirements: [],
     userId: "",
@@ -56,16 +59,32 @@ const App = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "goats"), (snapshot) => {
+    const unsubscribeGoats = onSnapshot(collection(db, "goats"), (snapshot) => {
       const updatedGoatsData = snapshot.docs.map((doc) => ({
         docId: doc.id,
         ...doc.data(),
       }));
 
-      updatedGoatsData.sort((a,b)=> b.deliveryDateTimestamp - a.deliveryDateTimestamp)
+      updatedGoatsData.sort(
+        (a, b) => b.deliveryDateTimestamp - a.deliveryDateTimestamp
+      );
 
-      console.log(updatedGoatsData);
+      console.log("Updated Goats Data", updatedGoatsData);
       setGoatsData(updatedGoatsData);
+    });
+
+    const unsubscribeHens = onSnapshot(collection(db, "hens"), (snapshot) => {
+      const updatedHensData = snapshot.docs.map((doc) => ({
+        docId: doc.id,
+        ...doc.data(),
+      }));
+
+      updatedHensData.sort(
+        (a, b) => b.deliveryDateTimestamp - a.deliveryDateTimestamp
+      );
+
+      console.log("Updated Hens Data", updatedHensData);
+      setHensData(updatedHensData);
     });
 
     const fetchUserData = async () => {
@@ -94,19 +113,28 @@ const App = () => {
 
     fetchUserData();
 
-    return () => unsubscribe();
+    // Cleanup function to unsubscribe from snapshots
+    return () => {
+      unsubscribeGoats();
+      unsubscribeHens();
+    };
   }, []);
 
   return (
-    <Context.Provider value={{ order, setOrder, goatsData, setGoatsData }}>
+    <Context.Provider
+      value={{ order, setOrder, goatsData, setGoatsData, hensData }}
+    >
       <div className="appContainer">
         <Navbar />
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Navigate to={"/home"} />} />
+            <Route path="/home" index element={<Homepage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/" index element={<Catalog />} />
-            <Route path="cart" element={<Cart />} />
-            <Route path="orders" element={<UserOrders />} />
+            <Route path="/mutton" element={<Catalog />} />
+            <Route path="/chicken" element={<ChickenPage />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/orders" element={<UserOrders />} />
           </Routes>
         </BrowserRouter>
       </div>

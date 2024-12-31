@@ -24,6 +24,29 @@ const UserOrders = () => {
       setUserLoggedIn(false);
     }
 
+    // const unsubscribe = onSnapshot(
+    //   collection(db, "orders"),
+    //   (querySnapshot) => {
+    //     const userOrders = [];
+
+    //     querySnapshot.forEach((doc) => {
+    //       const orderData = doc.data();
+
+    //       if (orderData.userId === userId) {
+    //         userOrders.push(orderData);
+    //       }
+    //     });
+
+    //     console.log("userOrders", userOrders);
+
+    //     setUserOrders(userOrders);
+    //     setShowFetchingOrdersLoading(false);
+    //   },
+    //   (error) => {
+    //     console.error("Error listening to orders:", error);
+    //   }
+    // );
+
     const unsubscribe = onSnapshot(
       collection(db, "orders"),
       (querySnapshot) => {
@@ -37,10 +60,26 @@ const UserOrders = () => {
           }
         });
 
-        console.log("userOrders", userOrders);
+        onSnapshot(
+          collection(db, "chickenOrders"),
+          (chickenQuerySnapshot) => {
+            chickenQuerySnapshot.forEach((doc) => {
+              const chickenOrderData = doc.data();
 
-        setUserOrders(userOrders);
-        setShowFetchingOrdersLoading(false);
+              if (chickenOrderData.userId === userId) {
+                userOrders.push(chickenOrderData);
+              }
+            });
+
+            console.log("userOrders", userOrders);
+
+            setUserOrders(userOrders);
+            setShowFetchingOrdersLoading(false);
+          },
+          (error) => {
+            console.error("Error listening to chicken orders:", error);
+          }
+        );
       },
       (error) => {
         console.error("Error listening to orders:", error);
@@ -77,37 +116,72 @@ const UserOrders = () => {
             <h6>Fetching your orders!</h6>
           </div>
         ) : userOrders.length > 0 ? (
-          userOrders.map((order) => (
-            <div
-              key={order.id}
-              style={{
-                border: "1px solid #ccc",
-                margin: "10px",
-                padding: "10px",
-              }}
-            >
-              <div className={styles.goatRequirements}>
-                {Object.keys(order).map((keyName) =>
-                  keyNames[keyName] ? (
-                    <div key={keyName}>
-                      <p>
-                        {keyNames[keyName]} : {order[keyName]}
-                      </p>
-                    </div>
-                  ) : null
-                )}
-              </div>
-              <div className={styles.orderDetails}>
-                <p>
-                  Delivery Date:{" "}
-                  {new Date(order.deliveryDate).toLocaleDateString()}
-                </p>
-              </div>
-              <div className={styles.orderDetails}>
-                <p>Total Bill: {order.totalBill}</p>
-              </div>
-            </div>
-          ))
+          userOrders.map((order) => {
+            if (order.orderType !== "chicken") {
+              return (
+                <div
+                  key={order.id}
+                  style={{
+                    border: "1px solid #ccc",
+                    margin: "10px",
+                    padding: "10px",
+                  }}
+                >
+                  <div className={styles.goatRequirements}>
+                    {Object.keys(order).map((keyName) =>
+                      keyNames[keyName] ? (
+                        <div key={keyName}>
+                          <p>
+                            {keyNames[keyName]} : {order[keyName]}
+                          </p>
+                        </div>
+                      ) : null
+                    )}
+                  </div>
+                  <div className={styles.orderDetails}>
+                    <p>
+                      Delivery Date:{" "}
+                      {new Date(order.deliveryDate).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className={styles.orderDetails}>
+                    <p>Total Bill: {order.totalBill}</p>
+                  </div>
+                </div>
+              );
+            }
+            //  else {
+            //   return (
+            //     <div
+            //       key={order.id}
+            //       style={{
+            //         border: "1px solid #ccc",
+            //         margin: "10px",
+            //         padding: "10px",
+            //       }}
+            //     >
+            //       <div className={styles.goatRequirements}>
+            //         {order.meatRequirements.map((item) => (
+            //           <div>
+            //             <p>{item.henName}</p>
+            //           </div>
+            //         ))}
+            //       </div>
+            //       <div className={styles.orderDetails}>
+            //         <p>
+            //           Delivery Date:{" "}
+            //           {new Date(
+            //             order.deliveryDate || order.orderedDate
+            //           ).toLocaleDateString()}
+            //         </p>
+            //       </div>
+            //       <div className={styles.orderDetails}>
+            //         <p>Total Bill: {order.totalBill}</p>
+            //       </div>
+            //     </div>
+            //   );
+            // }
+          })
         ) : (
           <h1 className="text-center border-2 border-dotted py-4 font-semibold">
             No orders for this user

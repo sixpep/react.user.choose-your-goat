@@ -5,6 +5,7 @@ import { FaInfoCircle } from "react-icons/fa";
 import { BsFillCaretLeftFill, BsFillCaretRightFill } from "react-icons/bs";
 import { RxCross2 } from "react-icons/rx";
 import { Context } from "../../../App";
+import { LuMoveLeft } from "react-icons/lu";
 
 const Tile = ({
   docId,
@@ -224,13 +225,32 @@ const Tile = ({
       )}
 
       <div className={styles.content}>
+        <div className={styles.backBar}>
+          <div
+            className={styles.backBtn}
+            onClick={() => (window.location.pathname = "/home")}
+          >
+            <i>
+              <LuMoveLeft size={20} />
+            </i>
+          </div>
+        </div>
         <div className={styles.tileHeader}>
-          <div className={styles.greeting}>
+          {/* <div className={styles.greeting}>
             <p>
               Hello <span>Meat Lover</span>
               <img src="/images/handWaveSymbol.png" alt="" />
             </p>
             <p>It's Meat Time!</p>
+          </div> */}
+          <div className={styles.headerTitle}>
+            <h6>
+              Fresh <br />
+              Chicken{" "}
+              <div className={styles.iconWrap}>
+                <img src="/images/muttonIcon.png" alt="" />
+              </div>
+            </h6>
           </div>
           <div className={styles.deliveryDateWrap}>
             <p> Delivery by</p>

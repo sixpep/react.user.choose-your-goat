@@ -29,6 +29,26 @@
   justify-content: space-between;
 }
 
+.headerTitle img {
+  display: flex;
+  height: min-content;
+  width: 28px;
+}
+
+.headerTitle h6 {
+  display: flex;
+  font-family: Roboto;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+.iconWrap {
+  display: flex;
+  align-items: last baseline;
+  margin-left: 0.3rem;
+}
+
 .greeting p {
   display: flex;
   flex-direction: row;
@@ -53,6 +73,7 @@
   font-size: 20px;
   font-weight: 700;
   text-wrap: nowrap;
+  color: #bc1414;
 }
 
 .greeting img {
@@ -298,14 +319,14 @@
   font-size: 14px;
 }
 
-.price{
+.price {
   display: flex;
   align-items: center;
 }
 
 .price p {
   text-align: right;
-  color: #bc1414;
+  color: #1d1e22;
   font-size: 16px;
   font-weight: 700;
 }
