@@ -246,7 +246,7 @@ const Tile = ({
           <div className={styles.headerTitle}>
             <h6>
               Fresh <br />
-              Chicken{" "}
+              Goat Meat{" "}
               <div className={styles.iconWrap}>
                 <img src="/images/muttonIcon.png" alt="" />
               </div>

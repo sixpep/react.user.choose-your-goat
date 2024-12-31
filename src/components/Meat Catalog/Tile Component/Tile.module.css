@@ -29,11 +29,11 @@
   justify-content: space-between;
 }
 
-.headerTitle img {
+/* .headerTitle img {
   display: flex;
   height: min-content;
   width: 28px;
-}
+} */
 
 .headerTitle h6 {
   display: flex;
@@ -47,6 +47,12 @@
   display: flex;
   align-items: last baseline;
   margin-left: 0.3rem;
+}
+
+.iconWrap img {
+  height: min-content;
+  width: 20px;
+  margin-bottom: 0.3rem;
 }
 
 .greeting p {
