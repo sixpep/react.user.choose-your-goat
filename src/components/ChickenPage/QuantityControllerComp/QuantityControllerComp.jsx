@@ -92,27 +92,6 @@ const QuantityControllerComp = ({
     console.log("Order in dec", order);
   };
 
-  // useEffect(() => {
-  //   const updatedBill =
-  //     numberOfMuttonShares * muttonShareCost +
-  //     numberOfHeadShares * headPrice +
-  //     numberOfLegsShares * legsPrice +
-  //     numberOfBrainShares * brainPrice +
-  //     numberOfBotiShares * botiShareCost +
-  //     numberOfExtras * extraCost;
-
-  //   setOrder((prevOrder) => ({
-  //     ...prevOrder,
-  //     totalBill: updatedBill,
-  //   }));
-  // }, [
-  //   numberOfMuttonShares,
-  //   numberOfHeadShares,
-  //   numberOfLegsShares,
-  //   numberOfBrainShares,
-  //   numberOfBotiShares,
-  //   numberOfExtras,
-  // ]);
   return (
     <div className={styles.quantityControl}>
       <div className={styles.label}>
@@ -125,7 +104,9 @@ const QuantityControllerComp = ({
       <div className={styles.controlPrices}>
         <div className={styles.price}>
           <p>
-            ₹ {chickenPrice} <span>/{chickenWeight}g</span>
+            ₹ {chickenPrice}
+            <span style={{ color: "#BC1414", fontSize: "20px" }}>*</span>
+            {/* <span>/{chickenWeight}g</span> */}
           </p>
         </div>
         <div

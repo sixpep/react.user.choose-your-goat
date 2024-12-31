@@ -56,6 +56,7 @@
 }
 
 .checkOutWrap {
+  position: relative;
   background-color: #fcfcfc;
   position: fixed;
   display: flex;
@@ -102,4 +103,31 @@
   padding: 0.8rem 1rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
   border-radius: 5px;
+}
+
+.asterikNote {
+  width: 100%;
+  place-content: center;
+  justify-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: absolute;
+  flex-direction: row !important;
+  align-items: center !important;
+  top: -1.5rem;
+  color: #1d1e22 !important;
+  font-size: 12px !important;
+  text-wrap: nowrap;
+  left: 0;
+  background-color: #fcfcfc;
+  gap: 0.5rem;
+}
+
+.asterikNote > p {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  color: #bc1414;
+  margin-top: 0.5rem;
 }

@@ -55,6 +55,10 @@ const ChickenPage = () => {
         </div>
       </div>
       <div className={styles.checkOutWrap}>
+        <div className={styles.asterikNote}>
+          <p style={{ color: "#BC1414" }}>* </p>
+          <h6>The final price may vary based on the size of the chicken.</h6>
+        </div>
         <p>
           Total Price: <span> ₹{order.totalBill}</span>
         </p>
