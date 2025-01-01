@@ -16,6 +16,7 @@ import {
   getDoc,
   setDoc,
 } from "firebase/firestore";
+import emailjs from "@emailjs/browser";
 
 const Cart = () => {
   const { order, setOrder, goatsData, hensData } = useContext(Context);
@@ -24,9 +25,10 @@ const Cart = () => {
   const [showConfirmationLoading, setShowConfirmationLoading] = useState(false);
   const [orderConfirmation, setOrderConfirmation] = useState(false);
   const [showSendingOtpLoading, setShowSendingOtpLoading] = useState(false);
-  const [newlyFetchedGoatsData, setNewlyFetchedGoatsData] = useState([]);
   const [showOtpError, setShowOtpError] = useState("");
-
+  const [confirmation, setConfirmation] = useState();
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const inputRefs = useRef([]);
   const navigate = useNavigate();
 
   const keyNames = {
@@ -37,7 +39,6 @@ const Cart = () => {
     numberOfBotiShares: "Boti",
     numberOfExtras: "Extras",
   };
-
   const priceNames = {
     numberOfMuttonShares: "muttonShareCost",
     numberOfHeadShares: "headPrice",
@@ -46,7 +47,6 @@ const Cart = () => {
     numberOfBotiShares: "botiShareCost",
     numberOfExtras: "extraCost",
   };
-
   const mapping = {
     numberOfMuttonShares: "remainingMuttonShares",
     numberOfHeadShares: "remainingHeads",
@@ -55,8 +55,6 @@ const Cart = () => {
     numberOfBotiShares: "remainingBotiShares",
     numberOfExtras: "remainingExtras",
   };
-
-  const [confirmation, setConfirmation] = useState();
 
   const updateGoatDataQuantities = async () => {
     for (const requirement of order.meatRequirements) {
@@ -128,7 +126,18 @@ const Cart = () => {
       const docRef = await addDoc(collection(db, "chickenOrders"), {
         ...order,
         orderedDate: new Date().getTime(),
+        userId: localStorage.getItem("choose-your-goat-userId"),
       });
+      console.log(docRef);
+
+      sendEmailOrder(
+        order.userName,
+        order.userPhoneNumber,
+        order.userAddress,
+        order.landmark,
+        order.meatRequirements,
+        order.totalBill
+      );
       setShowConfirmationLoading(false);
       setOrderConfirmation(true);
     } else {
@@ -218,14 +227,19 @@ const Cart = () => {
         otpConfirmation.user.accessToken
       );
 
+      setOrder((prev) => ({
+        ...prev,
+        userId: localStorage.getItem("choose-your-goat-userId"),
+      }));
+
       setShowOtpInputPopup(false);
 
-      setUser(otpConfirmation.user.uid, {
+      addUserToDb(otpConfirmation.user.uid, {
         userName: order.userName,
         userPhoneNumber: order.userPhoneNumber,
       });
 
-      setUserAddress({
+      addUserAddressToDb({
         userId: otpConfirmation.user.uid,
         userAddress: order.userAddress,
         landmark: order.landmark,
@@ -240,15 +254,15 @@ const Cart = () => {
     }
   };
 
-  const setUser = async (userId, userData) => {
+  const addUserToDb = async (userId, userData) => {
     try {
-      await setDoc(doc(collection(db, "users"), userId), userData);
+      await setDoc(doc(db, "users", userId), userData);
     } catch (error) {
       console.log("error in creating user", error);
     }
   };
 
-  const setUserAddress = async (userData) => {
+  const addUserAddressToDb = async (userData) => {
     try {
       await addDoc(collection(db, "addresses"), userData);
       console.log("Address doc written");
@@ -256,9 +270,6 @@ const Cart = () => {
       console.log("error in setting user address", error);
     }
   };
-
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const inputRefs = useRef([]);
 
   const handleChange = (e, index) => {
     const value = e.target.value;
@@ -279,6 +290,43 @@ const Cart = () => {
     if (e.key === "Backspace" && otp[index] === "" && index > 0) {
       // Move focus to the previous input if it's empty
       inputRefs.current[index - 1].focus();
+    }
+  };
+
+  const sendEmailOrder = async (
+    userName,
+    userPhoneNumber,
+    userAddress,
+    landmark,
+    meatRequirements,
+    totalBill
+  ) => {
+    try {
+      const serviceID = "service_iw7ipns"; // Replace with your EmailJS service ID
+      const templateID = "template_cxzybxo"; // Replace with your EmailJS template ID
+      const publicKey = "omRK8BgK3Wa3-ZxiI"; // Replace with your EmailJS public key
+
+      // Template parameters to fill in the email
+      const templateParams = {
+        userName,
+        userPhoneNumber,
+        userAddress,
+        landmark,
+        meatRequirements,
+        totalBill,
+      };
+
+      const response = await emailjs.send(
+        serviceID,
+        templateID,
+        templateParams,
+        publicKey
+      );
+      console.log("Email sent successfully:", response.status, response.text);
+      return { success: true, message: "Email sent successfully" };
+    } catch (error) {
+      console.error("Failed to send email:", error);
+      return { success: false, message: "Failed to send email", error };
     }
   };
 

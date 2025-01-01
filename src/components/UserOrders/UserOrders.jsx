@@ -149,38 +149,44 @@ const UserOrders = () => {
                   </div>
                 </div>
               );
+            } else {
+              return (
+                <div
+                  key={order.id}
+                  style={{
+                    border: "1px solid #ccc",
+                    margin: "10px",
+                    padding: "10px",
+                  }}
+                >
+                  <div className={styles.goatRequirements}>
+                    {order.meatRequirements.map((item) => (
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <p>
+                          {item.henName} ({item.quantity})
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className={styles.orderDetails}>
+                    <p>
+                      Delivery Date:{" "}
+                      {new Date(
+                        order.deliveryDate || order.orderedDate
+                      ).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className={styles.orderDetails}>
+                    <p>Total Bill: {order.totalBill}</p>
+                  </div>
+                </div>
+              );
             }
-            //  else {
-            //   return (
-            //     <div
-            //       key={order.id}
-            //       style={{
-            //         border: "1px solid #ccc",
-            //         margin: "10px",
-            //         padding: "10px",
-            //       }}
-            //     >
-            //       <div className={styles.goatRequirements}>
-            //         {order.meatRequirements.map((item) => (
-            //           <div>
-            //             <p>{item.henName}</p>
-            //           </div>
-            //         ))}
-            //       </div>
-            //       <div className={styles.orderDetails}>
-            //         <p>
-            //           Delivery Date:{" "}
-            //           {new Date(
-            //             order.deliveryDate || order.orderedDate
-            //           ).toLocaleDateString()}
-            //         </p>
-            //       </div>
-            //       <div className={styles.orderDetails}>
-            //         <p>Total Bill: {order.totalBill}</p>
-            //       </div>
-            //     </div>
-            //   );
-            // }
           })
         ) : (
           <h1 className="text-center border-2 border-dotted py-4 font-semibold">
