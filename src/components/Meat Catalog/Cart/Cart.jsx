@@ -132,14 +132,15 @@ const Cart = () => {
       });
       console.log(docRef);
 
-      // sendEmailOrder(
-      //   order.userName,
-      //   order.userPhoneNumber,
-      //   order.userAddress,
-      //   order.landmark,
-      //   order.meatRequirements,
-      //   order.totalBill
-      // );
+      sendEmailOrder(
+        order.userName,
+        order.userPhoneNumber,
+        order.userAddress,
+        order.landmark,
+        order.meatRequirements,
+        order.totalBill
+      );
+      
       setShowConfirmationLoading(false);
       setOrderConfirmation(true);
     } else {
