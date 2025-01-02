@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "./ChickenPage.module.css";
 import { LuMoveLeft } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,23 @@ import { Context } from "../../App";
 
 const ChickenPage = () => {
   const navigate = useNavigate();
+  const [isOrderAllowed, setIsOrderAllowed] = useState(false);
   const { hensData, order } = useContext(Context);
+
+  useEffect(() => {
+    const checkTime = () => {
+      const currentHour = new Date().getHours();
+      if (currentHour >= 8 && currentHour < 20) {
+        setIsOrderAllowed(true);
+      } else {
+        setIsOrderAllowed(false);
+      }
+    };
+    checkTime();
+    const interval = setInterval(checkTime, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -50,6 +66,7 @@ const ChickenPage = () => {
               chickenPrice={item.chickenPrice}
               chickenWeight={item.chickenWeight}
               docId={item.docId}
+              isOrderAllowed={isOrderAllowed}
             />
           ))}
         </div>

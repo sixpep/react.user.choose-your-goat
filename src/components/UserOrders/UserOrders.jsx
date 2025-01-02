@@ -73,6 +73,15 @@ const UserOrders = () => {
 
             console.log("userOrders", userOrders);
 
+            userOrders.sort((a, b) => {
+              // Get the timestamp for comparison
+              const timestampA = a.orderedDate || a.deliveryDate;
+              const timestampB = b.orderedDate || b.deliveryDate;
+
+              // Sort in descending order
+              return timestampB - timestampA;
+            });
+
             setUserOrders(userOrders);
             setShowFetchingOrdersLoading(false);
           },

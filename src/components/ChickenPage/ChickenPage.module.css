@@ -131,3 +131,10 @@
   color: #bc1414;
   margin-top: 0.5rem;
 }
+
+@media screen and (max-width: 375px) {
+  .asterikNote {
+    text-wrap: wrap;
+    font-size: 10.5px !important;
+  }
+}
