@@ -91,9 +91,8 @@ const App = () => {
       const userToken = localStorage.getItem("choose-your-goat-token");
 
       if (userToken) {
-        const decodedToken = jwtDecode(userToken);
-
         try {
+          const decodedToken = jwtDecode(userToken);
           const user = await getUser(decodedToken.sub);
           const userAddress = await getUserAddress(decodedToken.sub);
 

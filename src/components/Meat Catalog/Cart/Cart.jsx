@@ -123,21 +123,23 @@ const Cart = () => {
     setShowConfirmationLoading(true);
 
     if (order.orderType === "chicken") {
+      const deliveryFee = 20;
       const docRef = await addDoc(collection(db, "chickenOrders"), {
         ...order,
+        totalBill: order.totalBill + deliveryFee,
         orderedDate: new Date().getTime(),
         userId: localStorage.getItem("choose-your-goat-userId"),
       });
       console.log(docRef);
 
-      sendEmailOrder(
-        order.userName,
-        order.userPhoneNumber,
-        order.userAddress,
-        order.landmark,
-        order.meatRequirements,
-        order.totalBill
-      );
+      // sendEmailOrder(
+      //   order.userName,
+      //   order.userPhoneNumber,
+      //   order.userAddress,
+      //   order.landmark,
+      //   order.meatRequirements,
+      //   order.totalBill
+      // );
       setShowConfirmationLoading(false);
       setOrderConfirmation(true);
     } else {
@@ -158,6 +160,7 @@ const Cart = () => {
               userAddress: order.userAddress,
               landmark: order.landmark,
               deliveryDate: goat.deliveryDateTimestamp,
+              orderedDate: new Date().getTime(),
               userId: localStorage.getItem("choose-your-goat-userId"),
               totalBill: billCalculated,
             });
