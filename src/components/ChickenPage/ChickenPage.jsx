@@ -51,7 +51,7 @@ const ChickenPage = () => {
           </div>
           <div className={styles.deliveryDate}>
             <p>Delivery</p>
-            <h6>Every Day</h6>
+            <h6>Every Day <br /> <span>(8AM to 8PM)</span></h6>
           </div>
         </div>
         <div className={styles.wholeChickenBanner}>
