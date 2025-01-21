@@ -17,6 +17,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import emailjs from "@emailjs/browser";
+import axios from "axios";
 
 const Cart = () => {
   const { order, setOrder, goatsData, hensData } = useContext(Context);
@@ -140,7 +141,7 @@ const Cart = () => {
         order.meatRequirements,
         order.totalBill
       );
-      
+
       setShowConfirmationLoading(false);
       setOrderConfirmation(true);
     } else {
@@ -297,6 +298,43 @@ const Cart = () => {
     }
   };
 
+  // const sendEmailOrder = async (
+  //   userName,
+  //   userPhoneNumber,
+  //   userAddress,
+  //   landmark,
+  //   meatRequirements,
+  //   totalBill
+  // ) => {
+  //   try {
+  //     const serviceID = "service_iw7ipns"; // Replace with your EmailJS service ID
+  //     const templateID = "template_cxzybxo"; // Replace with your EmailJS template ID
+  //     const publicKey = "omRK8BgK3Wa3-ZxiI"; // Replace with your EmailJS public key
+
+  //     // Template parameters to fill in the email
+  //     const templateParams = {
+  //       userName,
+  //       userPhoneNumber,
+  //       userAddress,
+  //       landmark,
+  //       meatRequirements,
+  //       totalBill,
+  //     };
+
+  //     const response = await emailjs.send(
+  //       serviceID,
+  //       templateID,
+  //       templateParams,
+  //       publicKey
+  //     );
+  //     console.log("Email sent successfully:", response.status, response.text);
+  //     return { success: true, message: "Email sent successfully" };
+  //   } catch (error) {
+  //     console.error("Failed to send email:", error);
+  //     return { success: false, message: "Failed to send email", error };
+  //   }
+  // };
+
   const sendEmailOrder = async (
     userName,
     userPhoneNumber,
@@ -306,31 +344,20 @@ const Cart = () => {
     totalBill
   ) => {
     try {
-      const serviceID = "service_iw7ipns"; // Replace with your EmailJS service ID
-      const templateID = "template_cxzybxo"; // Replace with your EmailJS template ID
-      const publicKey = "omRK8BgK3Wa3-ZxiI"; // Replace with your EmailJS public key
-
-      // Template parameters to fill in the email
-      const templateParams = {
-        userName,
-        userPhoneNumber,
-        userAddress,
-        landmark,
-        meatRequirements,
-        totalBill,
-      };
-
-      const response = await emailjs.send(
-        serviceID,
-        templateID,
-        templateParams,
-        publicKey
+      const resp = await axios.post(
+        "https://sendneworderemail-ypvdab2dka-uc.a.run.app",
+        {
+          userName: userName,
+          userPhoneNumber: userPhoneNumber,
+          userAddress: userAddress,
+          landmark: landmark,
+          meatRequirements: meatRequirements,
+          totalBill: totalBill,
+        }
       );
-      console.log("Email sent successfully:", response.status, response.text);
-      return { success: true, message: "Email sent successfully" };
+      console.log("Email sent successfully", resp);
     } catch (error) {
-      console.error("Failed to send email:", error);
-      return { success: false, message: "Failed to send email", error };
+      console.log("error in sending order email");
     }
   };
 
