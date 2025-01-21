@@ -139,7 +139,7 @@ const Cart = () => {
         order.userAddress,
         order.landmark,
         order.meatRequirements,
-        order.totalBill
+        order.totalBill + deliveryFee
       );
 
       setShowConfirmationLoading(false);
