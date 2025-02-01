@@ -4,9 +4,8 @@ import { LuMoveLeft } from "react-icons/lu";
 import CheckOutForm from "../Check Out Form/CheckOutForm";
 import { Context } from "../../../App";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
-import { auth } from "../../firebase/setup";
 import { SiTicktick } from "react-icons/si";
-import { db } from "../../firebase/setup";
+import { db, auth } from "../../firebase/setup";
 import { useNavigate } from "react-router-dom";
 import {
   addDoc,
@@ -139,7 +138,8 @@ const Cart = () => {
         order.userAddress,
         order.landmark,
         order.meatRequirements,
-        order.totalBill + deliveryFee
+        order.totalBill + deliveryFee,
+        order.scheduledDeliveryDate
       );
 
       setShowConfirmationLoading(false);
@@ -341,7 +341,8 @@ const Cart = () => {
     userAddress,
     landmark,
     meatRequirements,
-    totalBill
+    totalBill,
+    scheduledDeliveryDate
   ) => {
     try {
       const resp = await axios.post(
@@ -353,6 +354,7 @@ const Cart = () => {
           landmark: landmark,
           meatRequirements: meatRequirements,
           totalBill: totalBill,
+          scheduledDeliveryDate: scheduledDeliveryDate,
         }
       );
       console.log("Email sent successfully", resp);
@@ -516,6 +518,7 @@ const Cart = () => {
             </div>
           </div> */}
         </div>
+
         {/* <div className="-my-3 divide-y divide-gray-200 px-4 dark:divide-gray-800">
           <dl className="flex items-center justify-between gap-4 py-3">
             <dt className="text-base font-normal text-gray-500 dark:text-gray-400">

@@ -1,16 +1,23 @@
 <p>Hello Admin,</p>
 <p>You have received a new chicken order from {{userName}}:</p>
 
-<div style="padding: 12px; border-left: 4px solid #d0d0d0; background-color: #f9f9f9;">
+<div
+  style="
+    padding: 12px;
+    border-left: 4px solid #d0d0d0;
+    background-color: #f9f9f9;
+  "
+>
   <p><strong>Customer Name:</strong> {{userName}}</p>
   <p><strong>Customer Phone:</strong> {{userPhoneNumber}}</p>
   <p><strong>Delivery Address:</strong></p>
-  <p style="margin: 0; padding: 0 0 12px 12px;">{{userAddress}}</p>
-  <p style="margin: 0; padding: 0 0 12px 12px;">{{landmark}}</p>
+  <p style="margin: 0; padding: 0 0 12px 12px">{{userAddress}}</p>
+  <p style="margin: 0; padding: 0 0 12px 12px">{{landmark}}</p>
+  <p><strong>Sheduled Delivery Date : {scheduledDeliveryDate}</strong></p>
   <p><strong>Order Items:</strong></p>
-  <ul style="margin: 0; padding: 0 0 0 20px;">
+  <ul style="margin: 0; padding: 0 0 0 20px">
     {{#each meatRequirements}}
-      <li><strong>{{henName}}</strong>: {{quantity}}</li>
+    <li><strong>{{henName}}</strong>: {{quantity}}</li>
     {{/each}}
   </ul>
 
@@ -19,6 +26,4 @@
 
 <p>Please process this order at your earliest convenience.</p>
 
-<p>
-  Best wishes,<br>Your Team
-</p>
+<p>Best wishes,<br />Your Team</p>

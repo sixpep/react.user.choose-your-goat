@@ -8,23 +8,23 @@ import { Context } from "../../App";
 
 const ChickenPage = () => {
   const navigate = useNavigate();
-  const [isOrderAllowed, setIsOrderAllowed] = useState(false);
+  // const [isOrderAllowed, setIsOrderAllowed] = useState(false);
   const { hensData, order } = useContext(Context);
 
-  useEffect(() => {
-    const checkTime = () => {
-      const currentHour = new Date().getHours();
-      if (currentHour >= 8 && currentHour < 20) {
-        setIsOrderAllowed(true);
-      } else {
-        setIsOrderAllowed(false);
-      }
-    };
-    checkTime();
-    const interval = setInterval(checkTime, 60000);
+  // useEffect(() => {
+  //   const checkTime = () => {
+  //     const currentHour = new Date().getHours();
+  //     if (currentHour >= 8 && currentHour < 20) {
+  //       setIsOrderAllowed(true);
+  //     } else {
+  //       setIsOrderAllowed(false);
+  //     }
+  //   };
+  //   checkTime();
+  //   const interval = setInterval(checkTime, 60000);
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   return (
     <div className={styles.container}>
@@ -51,7 +51,9 @@ const ChickenPage = () => {
           </div>
           <div className={styles.deliveryDate}>
             <p>Delivery</p>
-            <h6>Every Day <br /> <span>(8AM to 8PM)</span></h6>
+            <h6>
+              Every Day <br /> <span>(8AM to 8PM)</span>
+            </h6>
           </div>
         </div>
         <div className={styles.wholeChickenBanner}>
@@ -66,7 +68,7 @@ const ChickenPage = () => {
               chickenPrice={item.chickenPrice}
               chickenWeight={item.chickenWeight}
               docId={item.docId}
-              isOrderAllowed={isOrderAllowed}
+              // isOrderAllowed={isOrderAllowed}
             />
           ))}
         </div>

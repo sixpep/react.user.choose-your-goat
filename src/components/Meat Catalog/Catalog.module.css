@@ -63,3 +63,15 @@
   justify-items: center;
   z-index: 10;
 }
+
+.nextGoatPopup {
+  position: fixed;
+  height: 100vh;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+}
