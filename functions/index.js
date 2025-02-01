@@ -41,6 +41,7 @@ exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
         landmark,
         meatRequirements,
         totalBill,
+        scheduledDeliveryDate,
       } = req.body;
 
       // Validate required fields
@@ -49,7 +50,8 @@ exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
         !userPhoneNumber ||
         !userAddress ||
         !meatRequirements ||
-        !totalBill
+        !totalBill ||
+        !scheduledDeliveryDate
       ) {
         return res.status(400).send("Missing required fields.");
       }
@@ -62,6 +64,7 @@ exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
         landmark,
         meatRequirements,
         totalBill,
+        scheduledDeliveryDate,
       });
 
       // Configure nodemailer with Gmail service

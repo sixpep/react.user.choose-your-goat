@@ -8,7 +8,6 @@ const QuantityControllerComp = ({
   description,
   chickenWeight,
   docId,
-  isOrderAllowed,
 }) => {
   const { order, setOrder } = useContext(Context);
 
@@ -17,8 +16,6 @@ const QuantityControllerComp = ({
   );
 
   const handleIncrement = () => {
-    if (!isOrderAllowed) return;
-
     if (order.meatRequirements.length === 0) {
       setOrder((prev) => ({
         ...prev,
@@ -63,8 +60,6 @@ const QuantityControllerComp = ({
     );
 
     if (existingHenIndex !== -1) {
-      if (!isOrderAllowed) return;
-
       const updatedMeatRequirements = [...order.meatRequirements];
       const currentQuantity =
         updatedMeatRequirements[existingHenIndex].quantity;
@@ -114,12 +109,7 @@ const QuantityControllerComp = ({
             {/* <span>/{chickenWeight}g</span> */}
           </p>
         </div>
-        <div
-          className={styles.quantityButtons}
-          style={{
-            opacity: isOrderAllowed ? 1 : 0.5,
-          }}
-        >
+        <div className={styles.quantityButtons}>
           <button onClick={handleDecrement}>-</button>
           <p>{currentHenDoc ? currentHenDoc["quantity"] : 0}</p>
 

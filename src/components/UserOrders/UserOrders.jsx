@@ -24,29 +24,6 @@ const UserOrders = () => {
       setUserLoggedIn(false);
     }
 
-    // const unsubscribe = onSnapshot(
-    //   collection(db, "orders"),
-    //   (querySnapshot) => {
-    //     const userOrders = [];
-
-    //     querySnapshot.forEach((doc) => {
-    //       const orderData = doc.data();
-
-    //       if (orderData.userId === userId) {
-    //         userOrders.push(orderData);
-    //       }
-    //     });
-
-    //     console.log("userOrders", userOrders);
-
-    //     setUserOrders(userOrders);
-    //     setShowFetchingOrdersLoading(false);
-    //   },
-    //   (error) => {
-    //     console.error("Error listening to orders:", error);
-    //   }
-    // );
-
     const unsubscribe = onSnapshot(
       collection(db, "orders"),
       (querySnapshot) => {
@@ -147,6 +124,7 @@ const UserOrders = () => {
                       ) : null
                     )}
                   </div>
+
                   <div className={styles.orderDetails}>
                     <p>
                       Delivery Date:{" "}
@@ -186,7 +164,9 @@ const UserOrders = () => {
                     <p>
                       Delivery Date:{" "}
                       {new Date(
-                        order.deliveryDate || order.orderedDate
+                        order.scheduledDeliveryDate ||
+                          order.deliveryDate ||
+                          order.orderedDate
                       ).toLocaleDateString()}
                     </p>
                   </div>
