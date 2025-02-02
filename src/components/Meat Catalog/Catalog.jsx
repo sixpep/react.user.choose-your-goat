@@ -9,7 +9,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { db } from "../firebase/setup";
+import { db } from "../../firebase/setup";
 import styles from "./Catalog.module.css";
 import CheckOutForm from "./Check Out Form/CheckOutForm";
 import TileCarousel from "./Carousel/TileCarousel";

@@ -1,6 +1,6 @@
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import React, { useState } from "react";
-import { auth } from "../firebase/setup";
+import { auth } from "../../firebase/setup";
 import styles from "../Meat Catalog/Cart/Cart.module.css";
 import { useNavigate } from "react-router-dom";
 import { LuMoveLeft } from "react-icons/lu";

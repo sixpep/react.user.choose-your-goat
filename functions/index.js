@@ -71,8 +71,8 @@ exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: "firebase.cyg@gmail.com", // Replace with your Gmail email
-          pass: "xiks jshd qgvr ilvk", // Replace with your Gmail app password
+          user: "firebase.cyg@gmail.com",
+          pass: "xiks jshd qgvr ilvk",
         },
       });
 
