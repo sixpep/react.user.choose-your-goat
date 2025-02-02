@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styles from "./UserOrders.module.css";
 import { collection, onSnapshot } from "firebase/firestore";
 import { Context } from "../../App";
-import { db } from "../firebase/setup";
+import { db } from "../../firebase/setup";
 import { LuMoveLeft } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 
@@ -155,7 +155,7 @@ const UserOrders = () => {
                         }}
                       >
                         <p>
-                          {item.henName} ({item.quantity})
+                          {item.henName} : {item.quantity}
                         </p>
                       </div>
                     ))}

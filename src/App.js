@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar/Navbar";
 import Catalog from "./components/Meat Catalog/Catalog";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Cart from "./components/Meat Catalog/Cart/Cart";
-import { db } from "../src/components/firebase/setup";
+import { db } from "../src/firebase/setup";
 import {
   collection,
   doc,

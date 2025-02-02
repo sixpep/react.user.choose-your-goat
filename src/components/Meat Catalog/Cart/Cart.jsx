@@ -5,7 +5,7 @@ import CheckOutForm from "../Check Out Form/CheckOutForm";
 import { Context } from "../../../App";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { SiTicktick } from "react-icons/si";
-import { db, auth } from "../../firebase/setup";
+import { db, auth } from "../../../firebase/setup";
 import { useNavigate } from "react-router-dom";
 import {
   addDoc,
@@ -253,6 +253,7 @@ const Cart = () => {
 
       placeOrder();
     } catch (error) {
+      setShowVerificationLoading(false);
       setShowOtpInputPopup(true);
       setShowOtpError(true);
       console.log(error);
