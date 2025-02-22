@@ -542,7 +542,7 @@ const Tile = ({
                 </span>
               </div>
             </div>
-            <span>Each share of boti weighs between 1.25 and 1.5 kgs.</span>
+            <span>Each share of boti weighs between 650 grams to 750 grams.</span>
 
             <div className={styles.controlPrices}>
               <div className={styles.price}>
