@@ -15,6 +15,7 @@ const Catalog = () => {
   const [showCheckOutForm, setShowCheckOutForm] = useState(false);
   const [showFutureGoatPopup, setShowFutureGoatPopup] = useState(false);
   const [nextGoatDate, setNextGoatDate] = useState(null);
+  const { goatsData } = useContext(Context);
 
   useEffect(() => {
     const fetchNextGoatDate = async () => {
@@ -65,7 +66,7 @@ const Catalog = () => {
         </div>
       )}
 
-      <TileCarousel order={order} setOrder={setOrder} />
+      {goatsData.length === 0 ? <p>Fetching goats, please wait ...</p> : <TileCarousel order={order} setOrder={setOrder} />}
 
       <div className={styles.checkOutWrap}>
         <p>
