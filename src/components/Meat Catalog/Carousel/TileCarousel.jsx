@@ -7,23 +7,15 @@ const TileCarousel = ({ order, setOrder }) => {
   const { goatsData } = useContext(Context);
 
   const handlePrev = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? goatsData.length - 1 : prevIndex - 1
-    );
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? goatsData.length - 1 : prevIndex - 1));
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === goatsData.length - 1 ? 0 : prevIndex + 1
-    );
+    setCurrentIndex((prevIndex) => (prevIndex === goatsData.length - 1 ? 0 : prevIndex + 1));
   };
 
   return (
-    <div
-      id="default-carousel"
-      className="relative w-full h-auto overflow-x-hidden"
-      data-carousel="slide"
-    >
+    <div id="default-carousel" className="relative w-full h-auto overflow-x-hidden" data-carousel="slide">
       <div
         className="flex transition-transform duration-700 ease-in-out"
         style={{
