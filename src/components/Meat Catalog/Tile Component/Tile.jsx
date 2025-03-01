@@ -40,9 +40,7 @@ const Tile = ({
   const [goatDescriptionVisible, setGoatDescriptionVisible] = useState(false);
   const { order, setOrder, goatsData } = useContext(Context);
 
-  const currentGoatDoc = order.meatRequirements.find(
-    (item) => item.goatId === docId
-  );
+  const currentGoatDoc = order.meatRequirements.find((item) => item.goatId === docId);
 
   const {
     numberOfMuttonShares = 0,
@@ -62,27 +60,18 @@ const Tile = ({
       if (currentGoatDoc[keyName] && currentGoatDoc[keyName] < availability) {
         setOrder((prev) => ({
           ...prev,
-          meatRequirements: prev.meatRequirements.map((item) =>
-            item.goatId === docId
-              ? { ...item, [keyName]: currentValue + 1 }
-              : item
-          ),
+          meatRequirements: prev.meatRequirements.map((item) => (item.goatId === docId ? { ...item, [keyName]: currentValue + 1 } : item)),
         }));
       } else if (!currentGoatDoc[keyName]) {
         setOrder((prev) => ({
           ...prev,
-          meatRequirements: prev.meatRequirements.map((item) =>
-            item.goatId === docId ? { ...item, [keyName]: 1 } : item
-          ),
+          meatRequirements: prev.meatRequirements.map((item) => (item.goatId === docId ? { ...item, [keyName]: 1 } : item)),
         }));
       }
     } else {
       setOrder((prev) => ({
         ...prev,
-        meatRequirements: [
-          ...prev.meatRequirements,
-          { goatId: docId, [keyName]: 1 },
-        ],
+        meatRequirements: [...prev.meatRequirements, { goatId: docId, [keyName]: 1 }],
       }));
     }
   };
@@ -94,11 +83,7 @@ const Tile = ({
       if (newValue > 0) {
         setOrder((prev) => ({
           ...prev,
-          meatRequirements: prev.meatRequirements.map((item) =>
-            item.goatId === docId
-              ? { ...item, [keyName]: currentValue - 1 }
-              : item
-          ),
+          meatRequirements: prev.meatRequirements.map((item) => (item.goatId === docId ? { ...item, [keyName]: currentValue - 1 } : item)),
         }));
       } else {
         setOrder((prev) => ({
@@ -144,24 +129,14 @@ const Tile = ({
       ...prevOrder,
       totalBill: updatedBill,
     }));
-  }, [
-    numberOfMuttonShares,
-    numberOfHeadShares,
-    numberOfLegsShares,
-    numberOfBrainShares,
-    numberOfBotiShares,
-    numberOfExtras,
-  ]);
+  }, [numberOfMuttonShares, numberOfHeadShares, numberOfLegsShares, numberOfBrainShares, numberOfBotiShares, numberOfExtras]);
 
   return (
     <div className={styles.container}>
       {goatDescriptionVisible && (
         <div className={styles.descriptionPopupOverlay}>
           <div className={styles.descriptionTable}>
-            <i
-              className={styles.closeIcon}
-              onClick={() => setGoatDescriptionVisible(false)}
-            >
+            <i className={styles.closeIcon} onClick={() => setGoatDescriptionVisible(false)}>
               <RxCross2 color="black" size={24} />
             </i>
             <table>
@@ -226,10 +201,7 @@ const Tile = ({
 
       <div className={styles.content}>
         <div className={styles.backBar}>
-          <div
-            className={styles.backBtn}
-            onClick={() => (window.location.pathname = "/home")}
-          >
+          <div className={styles.backBtn} onClick={() => (window.location.pathname = "/home")}>
             <i>
               <LuMoveLeft size={20} />
             </i>
@@ -258,10 +230,7 @@ const Tile = ({
           </div>
         </div>
         <div className={styles.tileImage}>
-          <Carousel
-            images={[goatImage]}
-            goatDescriptionVisible={goatDescriptionVisible}
-          />
+          <Carousel images={[goatImage]} goatDescriptionVisible={goatDescriptionVisible} />
           <i onClick={handleShowGoatInfo}>
             <FaInfoCircle color="white" size={20} style={{ zIndex: "100" }} />
           </i>
@@ -274,16 +243,10 @@ const Tile = ({
               data-carousel-prev
               onClick={handlePrev}
               style={{
-                visibility:
-                  goatDescriptionVisible || goatsData.length < 2
-                    ? "hidden"
-                    : "visible",
+                visibility: goatDescriptionVisible || goatsData.length < 2 ? "hidden" : "visible",
               }}
             >
-              <i
-                className="inline-flex items-center justify-center w-10 h-10"
-                style={{ zIndex: 5 }}
-              >
+              <i className="inline-flex items-center justify-center w-10 h-10" style={{ zIndex: 5 }}>
                 <BsFillCaretLeftFill size={30} style={{ zIndex: "5" }} />
               </i>
             </button>
@@ -294,10 +257,7 @@ const Tile = ({
               data-carousel-next
               onClick={handleNext}
               style={{
-                visibility:
-                  goatDescriptionVisible || goatsData.length < 2
-                    ? "hidden"
-                    : "visible",
+                visibility: goatDescriptionVisible || goatsData.length < 2 ? "hidden" : "visible",
               }}
             >
               <i className="inline-flex items-center justify-center w-10 h-10 ">
@@ -314,15 +274,11 @@ const Tile = ({
               <div className={styles.itemLabelWrap}>
                 <p>Mutton</p>
                 <span className={styles.availableNote}>
-                  Available Shares :{" "}
-                  <span>{!isActive ? 0 : remainingMuttonShares || 0}</span>
+                  Available Shares : <span>{!isActive ? 0 : remainingMuttonShares || 0}</span>
                 </span>
               </div>
             </div>
-            <span>
-              Each share weighs between 480 and 520 grams and includes one
-              nalli, liver, and all cuts of the meat.
-            </span>
+            <span>Each share weighs between 480 and 520 grams and includes one nalli, liver, and all cuts of the meat.</span>
 
             <div className={styles.controlPrices}>
               <div className={styles.price}>
@@ -337,9 +293,7 @@ const Tile = ({
                   opacity: remainingMuttonShares < 1 || !isActive ? 0.5 : 1,
                 }}
               >
-                <button onClick={() => handleDecrement("numberOfMuttonShares")}>
-                  -
-                </button>
+                <button onClick={() => handleDecrement("numberOfMuttonShares")}>-</button>
                 <p>{numberOfMuttonShares || 0}</p>
                 {/* <input
                   type="text"
@@ -347,16 +301,7 @@ const Tile = ({
                   readOnly
                   value={numberOfMuttonShares || 0}
                 /> */}
-                <button
-                  onClick={() =>
-                    handleIncrement(
-                      "numberOfMuttonShares",
-                      remainingMuttonShares
-                    )
-                  }
-                >
-                  +
-                </button>
+                <button onClick={() => handleIncrement("numberOfMuttonShares", remainingMuttonShares)}>+</button>
               </div>
             </div>
 
@@ -377,8 +322,7 @@ const Tile = ({
                 <p>Head (తలకాయ) </p>
                 {/* <p>Goat Head</p> */}
                 <span className={styles.availableNote}>
-                  Available Shares :{" "}
-                  <span>{!isActive ? 0 : remainingHeads || 0} </span>
+                  Available Shares : <span>{!isActive ? 0 : remainingHeads || 0} </span>
                 </span>
               </div>
             </div>
@@ -395,18 +339,10 @@ const Tile = ({
                   opacity: remainingHeads < 1 || !isActive ? 0.5 : 1,
                 }}
               >
-                <button onClick={() => handleDecrement("numberOfHeadShares")}>
-                  -
-                </button>
+                <button onClick={() => handleDecrement("numberOfHeadShares")}>-</button>
                 {/* <input type="text" readOnly value={numberOfHeadShares || 0} /> */}
                 <p>{numberOfHeadShares || 0}</p>
-                <button
-                  onClick={() =>
-                    handleIncrement("numberOfHeadShares", remainingHeads)
-                  }
-                >
-                  +
-                </button>
+                <button onClick={() => handleIncrement("numberOfHeadShares", remainingHeads)}>+</button>
               </div>
             </div>
             {/* <span>
@@ -430,8 +366,7 @@ const Tile = ({
                 <p>Legs (కాలు)</p>
                 {/* <p>Goat Legs</p> */}
                 <span className={styles.availableNote}>
-                  Available Shares :{" "}
-                  <span>{!isActive ? 0 : remainingLegs || 0} </span>
+                  Available Shares : <span>{!isActive ? 0 : remainingLegs || 0} </span>
                 </span>
               </div>
             </div>
@@ -449,18 +384,10 @@ const Tile = ({
                   opacity: remainingLegs < 1 || !isActive ? 0.5 : 1,
                 }}
               >
-                <button onClick={() => handleDecrement("numberOfLegsShares")}>
-                  -
-                </button>
+                <button onClick={() => handleDecrement("numberOfLegsShares")}>-</button>
                 {/* <input type="text" readOnly value={numberOfLegsShares || 0} /> */}
                 <p>{numberOfLegsShares || 0}</p>
-                <button
-                  onClick={() =>
-                    handleIncrement("numberOfLegsShares", remainingLegs)
-                  }
-                >
-                  +
-                </button>
+                <button onClick={() => handleIncrement("numberOfLegsShares", remainingLegs)}>+</button>
               </div>
             </div>
 
@@ -481,8 +408,7 @@ const Tile = ({
                 <p>Brain (మెదడు)</p>
                 {/* <p>Goat Brain</p> */}
                 <span className={styles.availableNote}>
-                  Available Shares :{" "}
-                  <span>{!isActive ? 0 : remainingBrains || 0}</span>
+                  Available Shares : <span>{!isActive ? 0 : remainingBrains || 0}</span>
                 </span>
               </div>
             </div>
@@ -499,22 +425,14 @@ const Tile = ({
                   opacity: remainingBrains < 1 || !isActive ? 0.5 : 1,
                 }}
               >
-                <button onClick={() => handleDecrement("numberOfBrainShares")}>
-                  -
-                </button>
+                <button onClick={() => handleDecrement("numberOfBrainShares")}>-</button>
                 {/* <input
                     type="text"
                     readOnly
                     value={numberOfBrainShares || 0}
                   /> */}
                 <p>{numberOfBrainShares || 0}</p>
-                <button
-                  onClick={() =>
-                    handleIncrement("numberOfBrainShares", remainingBrains)
-                  }
-                >
-                  +
-                </button>
+                <button onClick={() => handleIncrement("numberOfBrainShares", remainingBrains)}>+</button>
               </div>
             </div>
             {/* <span>
@@ -537,8 +455,7 @@ const Tile = ({
                 <p>Boti (బోటి)</p>
                 {/* <p>Goat Boti</p> */}
                 <span className={styles.availableNote}>
-                  Available Shares :{" "}
-                  <span>{!isActive ? 0 : remainingBotiShares || 0}</span>
+                  Available Shares : <span>{!isActive ? 0 : remainingBotiShares || 0}</span>
                 </span>
               </div>
             </div>
@@ -555,18 +472,10 @@ const Tile = ({
                   opacity: remainingBotiShares < 1 || !isActive ? 0.5 : 1,
                 }}
               >
-                <button onClick={() => handleDecrement("numberOfBotiShares")}>
-                  -
-                </button>
+                <button onClick={() => handleDecrement("numberOfBotiShares")}>-</button>
                 {/* <input type="text" readOnly value={numberOfBotiShares || 0} /> */}
                 <p>{numberOfBotiShares || 0}</p>
-                <button
-                  onClick={() =>
-                    handleIncrement("numberOfBotiShares", remainingBotiShares)
-                  }
-                >
-                  +
-                </button>
+                <button onClick={() => handleIncrement("numberOfBotiShares", remainingBotiShares)}>+</button>
               </div>
             </div>
             {/* <div className={styles.quantityLabels}>
