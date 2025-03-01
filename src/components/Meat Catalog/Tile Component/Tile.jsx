@@ -489,6 +489,46 @@ const Tile = ({
             </span> */}
           </div>
 
+          <div className={styles.quantityControl}>
+            <div className={styles.label}>
+              <div className={styles.itemLabelWrap}>
+                <p>Gizzards</p>
+                {/* <p>Goat Boti</p> */}
+                <span className={styles.availableNote}>
+                  Available Shares : <span>{!isActive ? 0 : remainingExtras || 0}</span>
+                </span>
+              </div>
+            </div>
+            <span>100g liver, Heart (1), Kidneys (2), Testicles (2).</span>
+
+            <div className={styles.controlPrices}>
+              <div className={styles.price}>
+                <p>₹ {extraCost}</p>
+                {/* <p>₹ {botiShareCost * numberOfBotiShares}</p> */}
+              </div>
+              <div
+                className={styles.quantityButtons}
+                style={{
+                  opacity: remainingExtras < 1 || !isActive ? 0.5 : 1,
+                }}
+              >
+                <button onClick={() => handleDecrement("numberOfExtras")}>-</button>
+                {/* <input type="text" readOnly value={numberOfBotiShares || 0} /> */}
+                <p>{numberOfExtras || 0}</p>
+                <button onClick={() => handleIncrement("numberOfExtras", remainingExtras)}>+</button>
+              </div>
+            </div>
+            {/* <div className={styles.quantityLabels}>
+              <span>₹ {botiShareCost * botiQuantity}/-</span>
+            </div> */}
+            {/* <span
+              className={styles.availableNote}
+              style={{ color: remainingBotiShares > 0 ? "green" : "red" }}
+            >
+              (Available : {remainingBotiShares} shares)
+            </span> */}
+          </div>
+
           {/* <div className={styles.quantityControl}>
             <div className={styles.label}>
               <p>Gizzards</p>
