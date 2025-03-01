@@ -19,31 +19,26 @@ const Catalog = () => {
   useEffect(() => {
     const fetchNextGoatDate = async () => {
       try {
-        // Get today's timestamp at midnight (00:00:00)
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const todayTimestamp = today.getTime();
+        const now = Date.now();
+        const docRef = doc(db, "futureGoatConfig", "nextGoat");
+        const docSnap = await getDoc(docRef);
 
-        // Check if any existing goat has a future delivery date
-        const goatsRef = collection(db, "goats");
-        const q = query(goatsRef, where("deliveryDateTimestamp", ">=", todayTimestamp));
-        const querySnapshot = await getDocs(q);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const futureGoatTimestamp = data.nextGoatTimeStamp;
+          const showPopup = data.showNextGoatPopup;
 
-        if (querySnapshot.docs.length === 0) {
-          // Fetch next goat timestamp from Firestore
-          const docRef = doc(db, "futureGoatConfig", "nextGoat");
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.exists()) {
-            const futureGoatTimestamp = docSnap.data().nextGoatTimeStamp;
-
-            // Convert Firestore timestamp to formatted date
+          if (showPopup === true && futureGoatTimestamp > now) {
             const nextDate = new Date(futureGoatTimestamp);
-            const formattedDate = nextDate.toLocaleDateString("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            });
+            const formattedDate = nextDate
+              .toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+                hour: "numeric",
+                hour12: true,
+              })
+              .replace(":00", "");
 
             setNextGoatDate(formattedDate);
             setShowFutureGoatPopup(true);
