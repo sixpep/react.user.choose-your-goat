@@ -5,13 +5,7 @@ import Catalog from "./components/Meat Catalog/Catalog";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Cart from "./components/Meat Catalog/Cart/Cart";
 import { db } from "../src/firebase/setup";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  onSnapshot,
-} from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, onSnapshot } from "firebase/firestore";
 import { jwtDecode } from "jwt-decode";
 import UserOrders from "./components/UserOrders/UserOrders";
 import LoginPage from "./components/LoginPage/LoginPage";
@@ -66,9 +60,7 @@ const App = () => {
         ...doc.data(),
       }));
 
-      updatedGoatsData.sort(
-        (a, b) => b.deliveryDateTimestamp - a.deliveryDateTimestamp
-      );
+      updatedGoatsData.sort((a, b) => b.deliveryDateTimestamp - a.deliveryDateTimestamp);
 
       console.log("Updated Goats Data", updatedGoatsData);
       setGoatsData(updatedGoatsData);
@@ -80,9 +72,7 @@ const App = () => {
         ...doc.data(),
       }));
 
-      updatedHensData.sort(
-        (a, b) => b.deliveryDateTimestamp - a.deliveryDateTimestamp
-      );
+      updatedHensData.sort((a, b) => b.deliveryDateTimestamp - a.deliveryDateTimestamp);
 
       console.log("Updated Hens Data", updatedHensData);
       setHensData(updatedHensData);
@@ -121,9 +111,7 @@ const App = () => {
   }, []);
 
   return (
-    <Context.Provider
-      value={{ order, setOrder, goatsData, setGoatsData, hensData }}
-    >
+    <Context.Provider value={{ order, setOrder, goatsData, setGoatsData, hensData }}>
       <div className="appContainer">
         <Navbar />
         <BrowserRouter>
