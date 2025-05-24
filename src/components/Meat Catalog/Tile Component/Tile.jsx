@@ -526,7 +526,7 @@ const Tile = ({
                 </span>
               </div>
             </div>
-            <span>100g liver, Heart (1), Kidneys (2), Testicles (2).</span>
+            <span>100g liver, Heart (1), Kidneys (2), Testicles (2), Tilli(1).</span>
 
             <div className={styles.controlPrices}>
               <div className={styles.price}>
