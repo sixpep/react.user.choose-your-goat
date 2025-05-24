@@ -32,6 +32,10 @@ const Tile = ({
   handleNext,
   status,
   isActive,
+  totalHeads,
+  totalLegs,
+  totalBrains,
+  totalExtras,
   totalBotiShares,
   headLegsBrainPrice,
   headLegsBrainAvailability,
@@ -274,7 +278,10 @@ const Tile = ({
               <div className={styles.itemLabelWrap}>
                 <p>Mutton</p>
                 <span className={styles.availableNote}>
-                  Available Shares : <span>{!isActive ? 0 : remainingMuttonShares || 0}</span>
+                  Available Shares :{" "}
+                  <span>
+                    {!isActive ? 0 : remainingMuttonShares || 0}/{totalShares}
+                  </span>
                 </span>
               </div>
             </div>
@@ -322,7 +329,11 @@ const Tile = ({
                 <p>Head (తలకాయ) </p>
                 {/* <p>Goat Head</p> */}
                 <span className={styles.availableNote}>
-                  Available Shares : <span>{!isActive ? 0 : remainingHeads || 0} </span>
+                  Available Shares :{" "}
+                  <span>
+                    {!isActive ? 0 : remainingHeads || 0}
+                    {totalHeads ? `/${totalHeads}` : ""}
+                  </span>
                 </span>
               </div>
             </div>
@@ -366,7 +377,11 @@ const Tile = ({
                 <p>Legs (కాలు)</p>
                 {/* <p>Goat Legs</p> */}
                 <span className={styles.availableNote}>
-                  Available Shares : <span>{!isActive ? 0 : remainingLegs || 0} </span>
+                  Available Shares :{" "}
+                  <span>
+                    {!isActive ? 0 : remainingLegs || 0}
+                    {totalLegs ? `/${totalLegs}` : ""}
+                  </span>
                 </span>
               </div>
             </div>
@@ -408,7 +423,11 @@ const Tile = ({
                 <p>Brain (మెదడు)</p>
                 {/* <p>Goat Brain</p> */}
                 <span className={styles.availableNote}>
-                  Available Shares : <span>{!isActive ? 0 : remainingBrains || 0}</span>
+                  Available Shares :{" "}
+                  <span>
+                    {!isActive ? 0 : remainingBrains || 0}
+                    {totalBrains ? `/${totalBrains}` : ""}
+                  </span>
                 </span>
               </div>
             </div>
@@ -455,7 +474,11 @@ const Tile = ({
                 <p>Boti (బోటి)</p>
                 {/* <p>Goat Boti</p> */}
                 <span className={styles.availableNote}>
-                  Available Shares : <span>{!isActive ? 0 : remainingBotiShares || 0}</span>
+                  Available Shares :{" "}
+                  <span>
+                    {!isActive ? 0 : remainingBotiShares || 0}
+                    {totalBotiShares ? `/${totalBotiShares}` : ""}
+                  </span>
                 </span>
               </div>
             </div>
@@ -495,7 +518,11 @@ const Tile = ({
                 <p>Gizzards</p>
                 {/* <p>Goat Boti</p> */}
                 <span className={styles.availableNote}>
-                  Available Shares : <span>{!isActive ? 0 : remainingExtras || 0}</span>
+                  Available Shares :{" "}
+                  <span>
+                    {!isActive ? 0 : remainingExtras || 0}
+                    {totalExtras ? `/${totalExtras}` : ""}
+                  </span>
                 </span>
               </div>
             </div>

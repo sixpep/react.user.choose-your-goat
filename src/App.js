@@ -5,7 +5,7 @@ import Catalog from "./components/Meat Catalog/Catalog";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Cart from "./components/Meat Catalog/Cart/Cart";
 import { db } from "../src/firebase/setup";
-import { collection, doc, getDoc, getDocs, onSnapshot } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, onSnapshot, query, orderBy, limit } from "firebase/firestore";
 import { jwtDecode } from "jwt-decode";
 import UserOrders from "./components/UserOrders/UserOrders";
 import LoginPage from "./components/LoginPage/LoginPage";
@@ -54,13 +54,13 @@ const App = () => {
   };
 
   useEffect(() => {
-    const unsubscribeGoats = onSnapshot(collection(db, "goats"), (snapshot) => {
+    const unsubscribeGoats = onSnapshot(query(collection(db, "goats"), orderBy("deliveryDateTimestamp", "desc"), limit(3)), (snapshot) => {
       const updatedGoatsData = snapshot.docs.map((doc) => ({
         docId: doc.id,
         ...doc.data(),
       }));
 
-      updatedGoatsData.sort((a, b) => b.deliveryDateTimestamp - a.deliveryDateTimestamp);
+      //updatedGoatsData.sort((a, b) => b.deliveryDateTimestamp - a.deliveryDateTimestamp);
 
       console.log("Updated Goats Data", updatedGoatsData);
       setGoatsData(updatedGoatsData);

@@ -50,6 +50,10 @@ const TileCarousel = ({ order, setOrder }) => {
                 remainingLegs={item.remainingLegs}
                 remainingMuttonShares={item.remainingMuttonShares}
                 remainingExtras={item.remainingExtras}
+                totalHeads={item.totalHeads}
+                totalLegs={item.totalLegs}
+                totalBrains={item.totalBrains}
+                totalExtras={item.totalExtras}
                 isActive={item.isActive}
                 order={order}
                 setOrder={setOrder}
