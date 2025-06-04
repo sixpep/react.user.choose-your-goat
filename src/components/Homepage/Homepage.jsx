@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./Homepage.module.css";
 import MeatTile from "./MeatTileComponent/MeatTile";
+import { motion } from "framer-motion";
 
 const MeatTileProps = [
   {
@@ -19,8 +20,21 @@ const Homepage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <div className={styles.deliveryNote}>
+        {/* <div className={styles.deliveryNote}>
           <p>We are currently serving only in Sangareddy</p>
+        </div> */}
+        <div className={styles.deliveryNote}>
+          <motion.p
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              repeatType: "loop",
+              ease: "easeInOut",
+            }}
+          >
+            We are currently serving only in Sangareddy
+          </motion.p>
         </div>
         <div className={styles.tileHeader}>
           <div className={styles.goatDp}>
@@ -46,12 +60,7 @@ const Homepage = () => {
         </div>
         <div className={styles.meatTiles}>
           {MeatTileProps.map((tile, ind) => (
-            <MeatTile
-              key={ind}
-              title={tile.title}
-              imgSrc={tile.imgSrc}
-              tilePath={tile.tilePath}
-            />
+            <MeatTile key={ind} title={tile.title} imgSrc={tile.imgSrc} tilePath={tile.tilePath} />
           ))}
         </div>
       </div>

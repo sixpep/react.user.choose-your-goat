@@ -11,17 +11,27 @@
   width: 100%;
 }
 
-.deliveryNote {
+/* .deliveryNote {
   padding: 0.6rem 0.3rem;
   border-radius: 50px;
   background-color: #fff5d299;
-}
+} */
 
-.deliveryNote p {
+/* .deliveryNote p {
   text-align: center;
   font-size: 12px;
   font-weight: 600;
   color: #fd9c00;
+} */
+
+.deliveryNote p {
+  background-color: #fff4e5;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #ff6600;
+  display: inline-block;
+  text-align: center;
 }
 
 .tileHeader {
