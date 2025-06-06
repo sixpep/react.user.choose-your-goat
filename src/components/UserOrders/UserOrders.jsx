@@ -131,6 +131,9 @@ const UserOrders = () => {
                   <div className={styles.orderDetails}>
                     <p>Total Bill: {order.totalBill}</p>
                   </div>
+                  <div className={styles.orderDetails}>
+                    <p>Address: {`${order.userAddress}, ${order.landmark}`}</p>
+                  </div>
                 </div>
               );
             } else {
@@ -162,6 +165,9 @@ const UserOrders = () => {
                   </div>
                   <div className={styles.orderDetails}>
                     <p>Total Bill: {order.totalBill}</p>
+                  </div>
+                  <div className={styles.orderDetails}>
+                    <p>Address: {`${order.userAddress}, ${order.landmark}`}</p>
                   </div>
                 </div>
               );
