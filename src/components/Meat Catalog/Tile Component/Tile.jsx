@@ -6,6 +6,7 @@ import { BsFillCaretLeftFill, BsFillCaretRightFill } from "react-icons/bs";
 import { RxCross2 } from "react-icons/rx";
 import { Context } from "../../../App";
 import { LuMoveLeft } from "react-icons/lu";
+import { motion } from "framer-motion";
 
 const Tile = ({
   docId,
@@ -210,6 +211,19 @@ const Tile = ({
               <LuMoveLeft size={20} />
             </i>
           </div>
+        </div>
+        <div className={styles.deliveryNote}>
+          <motion.p
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              repeatType: "loop",
+              ease: "easeInOut",
+            }}
+          >
+            We are currently serving only in Sangareddy
+          </motion.p>
         </div>
         <div className={styles.tileHeader}>
           {/* <div className={styles.greeting}>

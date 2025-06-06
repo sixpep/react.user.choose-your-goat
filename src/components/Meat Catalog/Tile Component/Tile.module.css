@@ -373,3 +373,13 @@
   color: #bc1414;
   font-size: 16px;
 }
+
+.deliveryNote p {
+  background-color: #fff4e5;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #ff6600;
+  display: inline-block;
+  text-align: center;
+}
