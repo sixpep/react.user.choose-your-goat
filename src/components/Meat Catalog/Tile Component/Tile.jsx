@@ -126,14 +126,17 @@ const Tile = ({
   };
 
   useEffect(() => {
-    const updatedBill =
+    var updatedBill =
       numberOfMuttonShares * muttonShareCost +
-      numberOfKeemaShares * keemaShareCost +
       numberOfHeadShares * headPrice +
       numberOfLegsShares * legsPrice +
       numberOfBrainShares * brainPrice +
       numberOfBotiShares * botiShareCost +
       numberOfExtras * extraCost;
+
+    if (keemaShareCost) {
+      updatedBill += numberOfKeemaShares * keemaShareCost;
+    }
 
     setOrder((prevOrder) => ({
       ...prevOrder,
