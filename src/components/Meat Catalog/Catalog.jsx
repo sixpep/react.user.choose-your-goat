@@ -32,11 +32,12 @@ const Catalog = () => {
           if (showPopup === true && futureGoatTimestamp > now) {
             const nextDate = new Date(futureGoatTimestamp);
             const formattedDate = nextDate
-              .toLocaleDateString("en-US", {
+              .toLocaleDateString("en-IN", {
                 month: "long",
                 day: "numeric",
                 year: "numeric",
                 hour: "numeric",
+                minute: "2-digit",
                 hour12: true,
               })
               .replace(":00", "");
@@ -57,12 +58,7 @@ const Catalog = () => {
     <div className={styles.container}>
       {showFutureGoatPopup && nextGoatDate && (
         <div className={styles.nextGoatPopup}>
-          <PopupModal
-            title="Next Goat Arriving Soon!"
-            description="🌟 The Wait is Almost Over! 🌟 Our next premium goat will be available on "
-            nextDate={nextGoatDate}
-            setShowFutureGoatPopup={setShowFutureGoatPopup}
-          />
+          <PopupModal title="Listing of premium goats!" description="Our next premium goats will be listed on " nextDate={nextGoatDate} setShowFutureGoatPopup={setShowFutureGoatPopup} />
         </div>
       )}
 
