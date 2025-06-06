@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import QuantityControllerComp from "./QuantityControllerComp/QuantityControllerComp";
 import { BsHandbag } from "react-icons/bs";
 import { Context } from "../../App";
+import { motion } from "framer-motion";
 
 const ChickenPage = () => {
   const navigate = useNavigate();
@@ -30,14 +31,24 @@ const ChickenPage = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.backBar}>
-          <div
-            className={styles.backBtn}
-            onClick={() => (window.location.pathname = "/home")}
-          >
+          <div className={styles.backBtn} onClick={() => (window.location.pathname = "/home")}>
             <i>
               <LuMoveLeft size={20} />
             </i>
           </div>
+        </div>
+        <div className={styles.deliveryNote}>
+          <motion.p
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              repeatType: "loop",
+              ease: "easeInOut",
+            }}
+          >
+            We are currently serving only in Sangareddy
+          </motion.p>
         </div>
         <div className={styles.header}>
           <div className={styles.headerTitle}>
