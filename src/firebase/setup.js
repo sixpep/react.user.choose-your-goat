@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCb_wY3T-iSJsOKJVKaQQW2uj2_pKov-v0",
@@ -13,8 +14,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const messaging = getMessaging(app);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+export { messaging, getToken, onMessage };
 
 // //------- Test Config --------
 // // Import the functions you need from the SDKs you need
