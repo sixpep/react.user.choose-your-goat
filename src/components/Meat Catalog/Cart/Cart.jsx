@@ -7,14 +7,7 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { SiTicktick } from "react-icons/si";
 import { db, auth } from "../../../firebase/setup";
 import { useNavigate } from "react-router-dom";
-import {
-  addDoc,
-  collection,
-  doc,
-  updateDoc,
-  getDoc,
-  setDoc,
-} from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc, getDoc, setDoc } from "firebase/firestore";
 import emailjs from "@emailjs/browser";
 import axios from "axios";
 
@@ -33,6 +26,7 @@ const Cart = () => {
 
   const keyNames = {
     numberOfMuttonShares: "Mutton",
+    numberOfKeemaShares: "Keema",
     numberOfHeadShares: "Head",
     numberOfLegsShares: "Legs",
     numberOfBrainShares: "Brain",
@@ -41,6 +35,7 @@ const Cart = () => {
   };
   const priceNames = {
     numberOfMuttonShares: "muttonShareCost",
+    numberOfKeemaShares: "keemaShareCost",
     numberOfHeadShares: "headPrice",
     numberOfLegsShares: "legsPrice",
     numberOfBrainShares: "brainPrice",
@@ -49,6 +44,7 @@ const Cart = () => {
   };
   const mapping = {
     numberOfMuttonShares: "remainingMuttonShares",
+    numberOfKeemaShares: "remainingKeemaShares",
     numberOfHeadShares: "remainingHeads",
     numberOfLegsShares: "remainingLegs",
     numberOfBrainShares: "remainingBrains",
@@ -107,10 +103,7 @@ const Cart = () => {
           return false;
         }
       } catch (error) {
-        console.error(
-          `Error updating goat data for docId: ${requirement.goatId}`,
-          error
-        );
+        console.error(`Error updating goat data for docId: ${requirement.goatId}`, error);
         return false;
       }
     }
@@ -132,15 +125,7 @@ const Cart = () => {
       });
       console.log(docRef);
 
-      sendEmailOrder(
-        order.userName,
-        order.userPhoneNumber,
-        order.userAddress,
-        order.landmark,
-        order.meatRequirements,
-        order.totalBill + deliveryFee,
-        order.scheduledDeliveryDate
-      );
+      sendEmailOrder(order.userName, order.userPhoneNumber, order.userAddress, order.landmark, order.meatRequirements, order.totalBill + deliveryFee, order.scheduledDeliveryDate);
 
       setShowConfirmationLoading(false);
       setOrderConfirmation(true);
@@ -150,9 +135,7 @@ const Cart = () => {
 
         if (isUpdated) {
           for (let requirement of order.meatRequirements) {
-            const goat = goatsData.find(
-              (goatItem) => goatItem.docId === requirement.goatId
-            );
+            const goat = goatsData.find((goatItem) => goatItem.docId === requirement.goatId);
             const billCalculated = calculateTotalBill(requirement, goat);
 
             const docRef = await addDoc(collection(db, "orders"), {
@@ -206,11 +189,7 @@ const Cart = () => {
         size: "invisible",
       });
 
-      const confirmation = await signInWithPhoneNumber(
-        auth,
-        "+91 " + order.userPhoneNumber,
-        recaptcha
-      );
+      const confirmation = await signInWithPhoneNumber(auth, "+91 " + order.userPhoneNumber, recaptcha);
       setConfirmation(confirmation);
       setShowSendingOtpLoading(false);
       setShowOtpInputPopup(true);
@@ -227,10 +206,7 @@ const Cart = () => {
       const otpConfirmation = await confirmation.confirm(otpValue);
       localStorage.setItem("choose-your-goat-userId", otpConfirmation.user.uid);
 
-      window.localStorage.setItem(
-        "choose-your-goat-token",
-        otpConfirmation.user.accessToken
-      );
+      window.localStorage.setItem("choose-your-goat-token", otpConfirmation.user.accessToken);
 
       setOrder((prev) => ({
         ...prev,
@@ -336,28 +312,17 @@ const Cart = () => {
   //   }
   // };
 
-  const sendEmailOrder = async (
-    userName,
-    userPhoneNumber,
-    userAddress,
-    landmark,
-    meatRequirements,
-    totalBill,
-    scheduledDeliveryDate
-  ) => {
+  const sendEmailOrder = async (userName, userPhoneNumber, userAddress, landmark, meatRequirements, totalBill, scheduledDeliveryDate) => {
     try {
-      const resp = await axios.post(
-        "https://sendneworderemail-ypvdab2dka-uc.a.run.app",
-        {
-          userName: userName,
-          userPhoneNumber: userPhoneNumber,
-          userAddress: userAddress,
-          landmark: landmark,
-          meatRequirements: meatRequirements,
-          totalBill: totalBill,
-          scheduledDeliveryDate: scheduledDeliveryDate,
-        }
-      );
+      const resp = await axios.post("https://sendneworderemail-ypvdab2dka-uc.a.run.app", {
+        userName: userName,
+        userPhoneNumber: userPhoneNumber,
+        userAddress: userAddress,
+        landmark: landmark,
+        meatRequirements: meatRequirements,
+        totalBill: totalBill,
+        scheduledDeliveryDate: scheduledDeliveryDate,
+      });
       console.log("Email sent successfully", resp);
     } catch (error) {
       console.log("error in sending order email");
@@ -377,14 +342,7 @@ const Cart = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.backBar}>
-          <div
-            className={styles.backBtn}
-            onClick={() =>
-              order.orderType === "chicken"
-                ? navigate("/chicken")
-                : navigate("/mutton")
-            }
-          >
+          <div className={styles.backBtn} onClick={() => (order.orderType === "chicken" ? navigate("/chicken") : navigate("/mutton"))}>
             <i>
               <LuMoveLeft size={20} />
             </i>
@@ -394,12 +352,8 @@ const Cart = () => {
         <div className={styles.carts}>
           {order.orderType === "chicken"
             ? order.meatRequirements.map((item, index) => {
-                const henData = hensData.find(
-                  (hen) => hen.docId === item.henId
-                );
-                const totalPrice = henData
-                  ? henData.chickenPrice * item.quantity
-                  : 0;
+                const henData = hensData.find((hen) => hen.docId === item.henId);
+                const totalPrice = henData ? henData.chickenPrice * item.quantity : 0;
 
                 return (
                   <div className={styles.cartItemsWrap}>
@@ -436,15 +390,7 @@ const Cart = () => {
                         </div> */}
                           </div>
                           <p>
-                            ₹
-                            {goatObj[keyName] *
-                              (goatsData.find(
-                                (item) => item.docId === goatObj.goatId
-                              )
-                                ? goatsData.find(
-                                    (item) => item.docId === goatObj.goatId
-                                  )[priceNames[keyName]]
-                                : 0)}
+                            ₹{goatObj[keyName] * (goatsData.find((item) => item.docId === goatObj.goatId) ? goatsData.find((item) => item.docId === goatObj.goatId)[priceNames[keyName]] : 0)}
                             /-
                           </p>
                         </div>
@@ -459,26 +405,17 @@ const Cart = () => {
             {order.orderType === "chicken" && (
               <div className=" w-full divide-y divide-gray-200 px-4 dark:divide-gray-800">
                 <dl className="flex items-center justify-between gap-4">
-                  <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                    Delivery fee
-                  </dt>
-                  <dd className="text-base font-medium text-gray-900 dark:text-white">
-                    ₹ 20/-
-                  </dd>
+                  <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Delivery fee</dt>
+                  <dd className="text-base font-medium text-gray-900 dark:text-white">₹ 20/-</dd>
                 </dl>
               </div>
             )}
 
             <div className=" w-full divide-y divide-gray-200 px-4 dark:divide-gray-800">
               <dl className="flex items-center justify-between gap-4 py-3">
-                <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                  Subtotal
-                </dt>
+                <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Subtotal</dt>
                 <dd className="text-base font-medium text-gray-900 dark:text-white">
-                  ₹
-                  {order.orderType === "chicken"
-                    ? order.totalBill + 20
-                    : order.totalBill}
+                  ₹{order.orderType === "chicken" ? order.totalBill + 20 : order.totalBill}
                   /-
                   {/* ₹ {order.totalBill + 20}/- */}
                 </dd>
@@ -598,10 +535,7 @@ const Cart = () => {
             </div>
             <h1>Your order is confirmed!</h1>
             <p>Thank you for your order</p>
-            <button
-              class={styles.goHomeBtn}
-              onClick={() => (window.location.href = "/orders")}
-            >
+            <button class={styles.goHomeBtn} onClick={() => (window.location.href = "/orders")}>
               My Orders
             </button>
           </div>

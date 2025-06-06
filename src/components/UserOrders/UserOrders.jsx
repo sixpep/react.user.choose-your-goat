@@ -9,8 +9,7 @@ import { useNavigate } from "react-router-dom";
 const UserOrders = () => {
   const [userOrders, setUserOrders] = useState([]);
   const [userLoggedIn, setUserLoggedIn] = useState(true);
-  const [showFetchingOrdersLoading, setShowFetchingOrdersLoading] =
-    useState(true);
+  const [showFetchingOrdersLoading, setShowFetchingOrdersLoading] = useState(true);
   const navigate = useNavigate();
 
   const { order } = useContext(Context);
@@ -77,6 +76,7 @@ const UserOrders = () => {
 
   const keyNames = {
     numberOfMuttonShares: "Mutton",
+    numberOfKeemaShares: "Keema",
     numberOfHeadShares: "Head",
     numberOfLegsShares: "Legs",
     numberOfBrainShares: "Brain",
@@ -126,10 +126,7 @@ const UserOrders = () => {
                   </div>
 
                   <div className={styles.orderDetails}>
-                    <p>
-                      Delivery Date:{" "}
-                      {new Date(order.deliveryDate).toLocaleDateString()}
-                    </p>
+                    <p>Delivery Date: {new Date(order.deliveryDate).toLocaleDateString()}</p>
                   </div>
                   <div className={styles.orderDetails}>
                     <p>Total Bill: {order.totalBill}</p>
@@ -161,14 +158,7 @@ const UserOrders = () => {
                     ))}
                   </div>
                   <div className={styles.orderDetails}>
-                    <p>
-                      Delivery Date:{" "}
-                      {new Date(
-                        order.scheduledDeliveryDate ||
-                          order.deliveryDate ||
-                          order.orderedDate
-                      ).toLocaleDateString()}
-                    </p>
+                    <p>Delivery Date: {new Date(order.scheduledDeliveryDate || order.deliveryDate || order.orderedDate).toLocaleDateString()}</p>
                   </div>
                   <div className={styles.orderDetails}>
                     <p>Total Bill: {order.totalBill}</p>
@@ -178,14 +168,10 @@ const UserOrders = () => {
             }
           })
         ) : (
-          <h1 className="text-center border-2 border-dotted py-4 font-semibold">
-            No orders for this user!
-          </h1>
+          <h1 className="text-center border-2 border-dotted py-4 font-semibold">No orders for this user!</h1>
         )
       ) : (
-        <p style={{ textAlign: "center", margin: "2rem 0" }}>
-          Please login to see orders!
-        </p>
+        <p style={{ textAlign: "center", margin: "2rem 0" }}>Please login to see orders!</p>
       )}
 
       {/* {userLoggedIn && showFetchingOrdersLoading && (

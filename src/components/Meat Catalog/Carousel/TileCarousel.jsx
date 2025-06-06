@@ -34,6 +34,8 @@ const TileCarousel = ({ order, setOrder }) => {
                 totalShares={item.totalShares}
                 approxShareSize={item.approxShareSize}
                 muttonShareCost={item.muttonShareCost}
+                totalKeemaShares={item.totalKeemaShares}
+                keemaShareCost={item.keemaShareCost}
                 cutSize={item.cutSize}
                 headLegsBrainPrice={item.headLegsBrainPrice}
                 headPrice={item.headPrice}
@@ -49,6 +51,7 @@ const TileCarousel = ({ order, setOrder }) => {
                 remainingBrains={item.remainingBrains}
                 remainingLegs={item.remainingLegs}
                 remainingMuttonShares={item.remainingMuttonShares}
+                remainingKeemaShares={item.remainingKeemaShares}
                 remainingExtras={item.remainingExtras}
                 totalHeads={item.totalHeads}
                 totalLegs={item.totalLegs}

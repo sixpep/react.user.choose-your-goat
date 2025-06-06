@@ -15,8 +15,10 @@ const Tile = ({
   netWeight,
   meatOnlyWeight,
   totalShares,
+  totalKeemaShares,
   approxShareSize,
   muttonShareCost,
+  keemaShareCost,
   cutSize,
   headPrice,
   legsPrice,
@@ -27,6 +29,7 @@ const Tile = ({
   remainingBotiShares,
   remainingBrains,
   remainingMuttonShares,
+  remainingKeemaShares,
   remainingHeads,
   remainingLegs,
   handlePrev,
@@ -49,6 +52,7 @@ const Tile = ({
 
   const {
     numberOfMuttonShares = 0,
+    numberOfKeemaShares = 0,
     numberOfHeadLegsBrainShares = 0,
     numberOfHeadShares = 0,
     numberOfLegsShares = 0,
@@ -124,6 +128,7 @@ const Tile = ({
   useEffect(() => {
     const updatedBill =
       numberOfMuttonShares * muttonShareCost +
+      numberOfKeemaShares * keemaShareCost +
       numberOfHeadShares * headPrice +
       numberOfLegsShares * legsPrice +
       numberOfBrainShares * brainPrice +
@@ -134,7 +139,7 @@ const Tile = ({
       ...prevOrder,
       totalBill: updatedBill,
     }));
-  }, [numberOfMuttonShares, numberOfHeadShares, numberOfLegsShares, numberOfBrainShares, numberOfBotiShares, numberOfExtras]);
+  }, [numberOfMuttonShares, numberOfKeemaShares, numberOfHeadShares, numberOfLegsShares, numberOfBrainShares, numberOfBotiShares, numberOfExtras]);
 
   return (
     <div className={styles.container}>
@@ -336,6 +341,44 @@ const Tile = ({
               (Available: {remainingMuttonShares || 0} shares)
             </span> */}
           </div>
+
+          {totalKeemaShares ? (
+            <div className={styles.quantityControl}>
+              <div className={styles.label}>
+                <div className={styles.itemLabelWrap}>
+                  <p>Keema</p>
+                  <span className={styles.availableNote}>
+                    Available Shares :{" "}
+                    <span>
+                      {!isActive ? 0 : remainingKeemaShares || 0}
+                      {totalKeemaShares ? `/${totalKeemaShares}` : ""}
+                    </span>
+                  </span>
+                </div>
+              </div>
+              {/* <span>Description here</span> */}
+
+              <div className={styles.controlPrices}>
+                <div className={styles.price}>
+                  <p>
+                    ₹ {keemaShareCost} <span>/500g</span>
+                  </p>
+                </div>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingKeemaShares < 1 || !isActive ? 0.5 : 1,
+                  }}
+                >
+                  <button onClick={() => handleDecrement("numberOfKeemaShares")}>-</button>
+                  <p>{numberOfKeemaShares || 0}</p>
+                  <button onClick={() => handleIncrement("numberOfKeemaShares", remainingKeemaShares)}>+</button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div></div>
+          )}
 
           <div className={styles.quantityControl}>
             <div className={styles.label}>
