@@ -53,6 +53,7 @@ const TileCarousel = ({ order, setOrder }) => {
                 remainingMuttonShares={item.remainingMuttonShares}
                 remainingKeemaShares={item.remainingKeemaShares}
                 remainingExtras={item.remainingExtras}
+                nextUnlockText={item.nextUnlockText}
                 totalHeads={item.totalHeads}
                 totalLegs={item.totalLegs}
                 totalBrains={item.totalBrains}

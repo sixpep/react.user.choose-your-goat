@@ -44,6 +44,7 @@ const Tile = ({
   headLegsBrainPrice,
   headLegsBrainAvailability,
   remainingExtras,
+  nextUnlockText,
 }) => {
   const [goatDescriptionVisible, setGoatDescriptionVisible] = useState(false);
   const { order, setOrder, goatsData } = useContext(Context);
@@ -290,6 +291,12 @@ const Tile = ({
                 <BsFillCaretRightFill size={30} />
               </i>
             </button>
+          </div>
+        )}
+
+        {nextUnlockText && (
+          <div className={styles.unlockingNote}>
+            <p>{nextUnlockText} </p>
           </div>
         )}
 
