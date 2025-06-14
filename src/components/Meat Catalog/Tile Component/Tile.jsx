@@ -364,7 +364,7 @@ const Tile = ({
               <div className={styles.controlPrices}>
                 <div className={styles.price}>
                   <p>
-                    ₹ {keemaShareCost} <span>/500g</span>
+                    ₹ {keemaShareCost} <span>/250g</span>
                   </p>
                 </div>
                 <div
