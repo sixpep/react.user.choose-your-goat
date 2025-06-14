@@ -359,7 +359,7 @@ const Tile = ({
                   </span>
                 </div>
               </div>
-              {/* <span>Description here</span> */}
+              <span>100% Boneless</span>
 
               <div className={styles.controlPrices}>
                 <div className={styles.price}>
