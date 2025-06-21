@@ -294,12 +294,6 @@ const Tile = ({
           </div>
         )}
 
-        {nextUnlockText && (
-          <div className={styles.unlockingNote}>
-            <p>{nextUnlockText} </p>
-          </div>
-        )}
-
         <div className={styles.goatDetails}>
           {/* Interactive Quantity Controls */}
           <div className={styles.quantityControl}>
@@ -388,6 +382,12 @@ const Tile = ({
             </div>
           ) : (
             <div></div>
+          )}
+
+          {nextUnlockText && (
+            <div className={styles.unlockingNote}>
+              <p>{nextUnlockText} </p>
+            </div>
           )}
 
           <div className={styles.quantityControl}>
