@@ -147,10 +147,10 @@ const Cart = () => {
       });
 
       console.log("✅ All goat stocks updated successfully via transaction.");
-      return true;
+      return { isUpdated: true, message: "" };
     } catch (error) {
       console.error("❌ Transaction failed:", error.message);
-      return false;
+      return { isUpdated: false, message: error.message };
     }
   };
 
@@ -183,7 +183,7 @@ const Cart = () => {
     } else {
       try {
         // const isUpdated = await updateGoatDataQuantities();
-        const isUpdated = await updateGoatDataQuantities_session();
+        const { isUpdated, message } = await updateGoatDataQuantities_session();
 
         if (isUpdated) {
           for (let requirement of order.meatRequirements) {
@@ -214,6 +214,9 @@ const Cart = () => {
             //   userId: localStorage.getItem("choose-your-goat-userId"),
             // };
           }
+        } else {
+          alert(message);
+          setShowConfirmationLoading(false);
         }
       } catch (error) {
         console.log("Error in placing order", error);
