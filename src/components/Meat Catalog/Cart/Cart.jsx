@@ -196,6 +196,8 @@ const Cart = () => {
               userPhoneNumber: order.userPhoneNumber,
               userAddress: order.userAddress,
               landmark: order.landmark,
+              userPinCode: order.userPinCode,
+              city: order.userCity,
               deliveryDate: goat.deliveryDateTimestamp,
               orderedDate: new Date().getTime(),
               userId: localStorage.getItem("choose-your-goat-userId"),
@@ -279,7 +281,8 @@ const Cart = () => {
         userId: otpConfirmation.user.uid,
         userAddress: order.userAddress,
         landmark: order.landmark,
-        city: "Sangareddy",
+        userPinCode: order.userPinCode,
+        city: order.userCity,
       });
 
       placeOrder();
