@@ -182,7 +182,8 @@ const Cart = () => {
       setOrderConfirmation(true);
     } else {
       try {
-        const isUpdated = await updateGoatDataQuantities();
+        // const isUpdated = await updateGoatDataQuantities();
+        const isUpdated = await updateGoatDataQuantities_session();
 
         if (isUpdated) {
           for (let requirement of order.meatRequirements) {
