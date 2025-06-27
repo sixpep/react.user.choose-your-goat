@@ -7,7 +7,7 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { SiTicktick } from "react-icons/si";
 import { db, auth } from "../../../firebase/setup";
 import { useNavigate } from "react-router-dom";
-import { addDoc, collection, doc, updateDoc, getDoc, setDoc } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc, getDoc, setDoc, runTransaction } from "firebase/firestore";
 import emailjs from "@emailjs/browser";
 import axios from "axios";
 
@@ -111,6 +111,49 @@ const Cart = () => {
     return true;
   };
 
+  const updateGoatDataQuantities_session = async () => {
+    try {
+      await runTransaction(db, async (transaction) => {
+        for (const requirement of order.meatRequirements) {
+          const goatRef = doc(db, "goats", requirement.goatId);
+          const goatDoc = await transaction.get(goatRef);
+
+          if (!goatDoc.exists()) {
+            throw new Error(`Goat with ID ${requirement.goatId} not found.`);
+          }
+
+          const goatData = goatDoc.data();
+          const updateData = {};
+
+          // Validate availability
+          for (const key of Object.keys(requirement)) {
+            if (key === "goatId") continue;
+
+            const goatField = mapping[key];
+            const requestedQty = requirement[key];
+
+            if (goatField && typeof requestedQty === "number") {
+              const availableQty = goatData[goatField] ?? 0;
+              if (availableQty < requestedQty) {
+                throw new Error(`Insufficient ${key} for goat ID ${requirement.goatId}`);
+              }
+              updateData[goatField] = availableQty - requestedQty;
+            }
+          }
+
+          // Apply updates
+          transaction.update(goatRef, updateData);
+        }
+      });
+
+      console.log("✅ All goat stocks updated successfully via transaction.");
+      return true;
+    } catch (error) {
+      console.error("❌ Transaction failed:", error.message);
+      return false;
+    }
+  };
+
   const placeOrder = async () => {
     setShowVerificationLoading(false);
     setShowConfirmationLoading(true);
@@ -125,13 +168,21 @@ const Cart = () => {
       });
       console.log(docRef);
 
-      sendEmailOrder(order.userName, order.userPhoneNumber, order.userAddress, order.landmark, order.meatRequirements, order.totalBill + deliveryFee, order.scheduledDeliveryDate);
+      sendEmailOrder(
+        order.userName,
+        order.userPhoneNumber,
+        order.userAddress,
+        order.landmark,
+        order.meatRequirements,
+        order.totalBill + deliveryFee,
+        order.scheduledDeliveryDate
+      );
 
       setShowConfirmationLoading(false);
       setOrderConfirmation(true);
     } else {
       try {
-        const isUpdated = updateGoatDataQuantities();
+        const isUpdated = await updateGoatDataQuantities();
 
         if (isUpdated) {
           for (let requirement of order.meatRequirements) {
@@ -390,7 +441,11 @@ const Cart = () => {
                         </div> */}
                           </div>
                           <p>
-                            ₹{goatObj[keyName] * (goatsData.find((item) => item.docId === goatObj.goatId) ? goatsData.find((item) => item.docId === goatObj.goatId)[priceNames[keyName]] : 0)}
+                            ₹
+                            {goatObj[keyName] *
+                              (goatsData.find((item) => item.docId === goatObj.goatId)
+                                ? goatsData.find((item) => item.docId === goatObj.goatId)[priceNames[keyName]]
+                                : 0)}
                             /-
                           </p>
                         </div>
