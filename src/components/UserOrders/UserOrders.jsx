@@ -111,6 +111,7 @@ const UserOrders = () => {
                     border: "1px solid #ccc",
                     margin: "10px",
                     padding: "10px",
+                    backgroundColor: order.status === "cancelled" ? "pink" : null,
                   }}
                 >
                   <div className={styles.goatRequirements}>
@@ -118,7 +119,7 @@ const UserOrders = () => {
                       keyNames[keyName] ? (
                         <div key={keyName}>
                           <p>
-                            {keyNames[keyName]} : {order[keyName]}
+                            <strong>{keyNames[keyName]} :</strong> {order[keyName]}
                           </p>
                         </div>
                       ) : null
@@ -126,14 +127,30 @@ const UserOrders = () => {
                   </div>
 
                   <div className={styles.orderDetails}>
-                    <p>Delivery Date: {new Date(order.deliveryDate).toLocaleDateString()}</p>
+                    <p>
+                      <strong>Delivery Date :</strong> {new Date(order.deliveryDate).toLocaleDateString()}
+                    </p>
                   </div>
                   <div className={styles.orderDetails}>
-                    <p>Total Bill: {order.totalBill}</p>
+                    <p>
+                      <strong>Total Bill :</strong> {order.totalBill}
+                    </p>
                   </div>
                   <div className={styles.orderDetails}>
-                    <p>Address: {`${order.userAddress}, ${order.landmark}`}</p>
+                    <p>
+                      <strong>Address :</strong>{" "}
+                      {`${order.userAddress}, ${order.landmark}${order.userCity ? ", " + order.userCity : ""}${
+                        order.userPinCode ? ", " + order.userPinCode : ""
+                      }`}
+                    </p>
                   </div>
+                  {order.status === "cancelled" && (
+                    <div className={styles.orderDetails}>
+                      <p>
+                        <strong>Status :</strong> {`${order.status} (${order.cancellationReason || ""})`}
+                      </p>
+                    </div>
+                  )}
                 </div>
               );
             } else {
@@ -155,20 +172,42 @@ const UserOrders = () => {
                         }}
                       >
                         <p>
-                          {item.henName} : {item.quantity}
+                          <strong>{item.henName} :</strong> {item.quantity}
                         </p>
                       </div>
                     ))}
                   </div>
                   <div className={styles.orderDetails}>
-                    <p>Delivery Date: {new Date(order.scheduledDeliveryDate || order.deliveryDate || order.orderedDate).toLocaleDateString()}</p>
+                    <p>
+                      <strong>Delivery Date :</strong>{" "}
+                      {new Date(order.scheduledDeliveryDate || order.deliveryDate || order.orderedDate).toLocaleDateString()}
+                    </p>
                   </div>
                   <div className={styles.orderDetails}>
-                    <p>Total Bill: {order.totalBill}</p>
+                    <p>
+                      <strong>Total Bill :</strong> {order.totalBill}
+                    </p>
                   </div>
-                  <div className={styles.orderDetails}>
+                  {/* <div className={styles.orderDetails}>
                     <p>Address: {`${order.userAddress}, ${order.landmark}`}</p>
+                  </div> */}
+
+                  <div className={styles.orderDetails}>
+                    <p>
+                      <strong>Address :</strong>{" "}
+                      {`${order.userAddress}, ${order.landmark}${order.userCity ? ", " + order.userCity : ""}${
+                        order.userPinCode ? ", " + order.userPinCode : ""
+                      }`}
+                    </p>
                   </div>
+
+                  {order.status === "cancelled" && (
+                    <div className={styles.orderDetails}>
+                      <p>
+                        <strong>Status :</strong> {`${order.status} (${order.cancellationReason || ""})`}
+                      </p>
+                    </div>
+                  )}
                 </div>
               );
             }
