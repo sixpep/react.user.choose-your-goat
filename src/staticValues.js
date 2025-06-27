@@ -1,1 +1,1 @@
-module.exports = { pincodes: [533016], cityMap: { 533016: "Aratlakatta" } };
+module.exports = { pincodes: [502001], cityMap: { 533016: "Aratlakatta", 502001: "Sangareddy" } };
