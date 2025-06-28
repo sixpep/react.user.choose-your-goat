@@ -190,6 +190,8 @@ const Cart = () => {
             const goat = goatsData.find((goatItem) => goatItem.docId === requirement.goatId);
             const billCalculated = calculateTotalBill(requirement, goat);
 
+            //breaking here
+
             const docRef = await addDoc(collection(db, "orders"), {
               ...requirement,
               userName: order.userName,
@@ -222,6 +224,8 @@ const Cart = () => {
         }
       } catch (error) {
         console.log("Error in placing order", error);
+        alert("Error in placing order. Please try again.");
+        setShowConfirmationLoading(false);
       }
     }
   };
