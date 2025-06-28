@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./Homepage.module.css";
 import MeatTile from "./MeatTileComponent/MeatTile";
-import { motion } from "framer-motion";
+import { color, motion } from "framer-motion";
 
 const MeatTileProps = [
   {
@@ -17,9 +17,31 @@ const MeatTileProps = [
 ];
 
 const Homepage = () => {
+  const [isPopupVisible, setPopupVisible] = useState(true);
+
+  const closePopup = () => {
+    setPopupVisible(false);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
+        {/* Popup Section */}
+        {isPopupVisible && (
+          <div className={styles.popup}>
+            <div className={styles.popupContent}>
+              <p>
+                Due to a glitch in the app, some mutton orders may have failed without notifying the users. If you placed an order but don’t see it in
+                your order history, or if your order hasn’t arrived by <strong>8:30 AM</strong>, please contact us at{" "}
+                <strong style={{ color: "#bc1414" }}>7382949469</strong>.
+              </p>
+              <button className={styles.closeButton} onClick={closePopup}>
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* <div className={styles.deliveryNote}>
           <p>We are currently serving only in Sangareddy</p>
         </div> */}
