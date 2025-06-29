@@ -17,6 +17,7 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
       order.userAddress === "" ||
       order.landmark === "" ||
       order.userPinCode === "" ||
+      !order.userPinCode ||
       (order.orderType === "chicken" && !order.scheduledDeliveryDate)
     ) {
       return;
@@ -201,7 +202,7 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                     onChange={handleChangeInput}
                     value={order.landmark}
                   />
-                  {checkFormInputs && order?.landmark.length < 1 && <span className="text-sm text-red-500 ps-1">Enter a valid landmark</span>}
+                  {checkFormInputs && order?.landmark?.length < 1 && <span className="text-sm text-red-500 ps-1">Enter a valid landmark</span>}
                 </div>
 
                 <div>
@@ -218,7 +219,9 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                     // value={"Sangareddy"}
                     value={order.userCity}
                   />
-                  {checkFormInputs && order.length < 1 && <span className="text-sm text-red-500 ps-1">Enter a valid address</span>}
+                  {checkFormInputs && (!order?.userCity?.length || order?.userCity?.length < 1) && (
+                    <span className="text-sm text-red-500 ps-1">Enter a valid City</span>
+                  )}
                 </div>
 
                 <div className="bg-white p-4 shadow-top fixed flex justify-center bottom-0 left-0 w-full space-y-3">
