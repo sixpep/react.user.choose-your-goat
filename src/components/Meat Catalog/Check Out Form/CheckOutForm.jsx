@@ -16,6 +16,7 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
       !indianMobileNumberRegex.test(order.userPhoneNumber) ||
       order.userAddress === "" ||
       order.landmark === "" ||
+      order.userPinCode === "" ||
       (order.orderType === "chicken" && !order.scheduledDeliveryDate)
     ) {
       return;
