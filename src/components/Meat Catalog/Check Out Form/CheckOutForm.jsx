@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../../../App";
+import { pincodes, cityMap } from "../../../staticValues";
 
 const CheckOutForm = ({ sendOtp, placeOrder }) => {
   const { order, setOrder } = useContext(Context);
@@ -15,6 +16,8 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
       !indianMobileNumberRegex.test(order.userPhoneNumber) ||
       order.userAddress === "" ||
       order.landmark === "" ||
+      order.userPinCode === "" ||
+      !order.userPinCode ||
       (order.orderType === "chicken" && !order.scheduledDeliveryDate)
     ) {
       return;
@@ -71,15 +74,10 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
         <div className="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12 xl:gap-16">
           <div className="min-w-0 flex-1 space-y-8">
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Delivery Details
-              </h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Delivery Details</h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-1">
                 <div>
-                  <label
-                    htmlFor="your_name"
-                    className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                  >
+                  <label htmlFor="your_name" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                     Your name*
                   </label>
                   <input
@@ -91,18 +89,11 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                     readOnly={tokenExists}
                     value={order.userName}
                   />
-                  {checkFormInputs && order.userName.length < 1 && (
-                    <span className="text-sm text-red-500 ps-1">
-                      Enter a valid name
-                    </span>
-                  )}
+                  {checkFormInputs && order.userName.length < 1 && <span className="text-sm text-red-500 ps-1">Enter a valid name</span>}
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="phone-input-3"
-                    className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                  >
+                  <label htmlFor="phone-input-3" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                     {" "}
                     Phone Number*{" "}
                   </label>
@@ -118,24 +109,16 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                         readOnly={tokenExists}
                         value={order.userPhoneNumber}
                       />
-                      {checkFormInputs &&
-                        !indianMobileNumberRegex.test(
-                          order.userPhoneNumber
-                        ) && (
-                          <span className="text-sm text-red-500 ps-1">
-                            Enter a valid phone number
-                          </span>
-                        )}
+                      {checkFormInputs && !indianMobileNumberRegex.test(order.userPhoneNumber) && (
+                        <span className="text-sm text-red-500 ps-1">Enter a valid phone number</span>
+                      )}
                     </div>
                   </div>
                 </div>
 
                 {order.orderType === "chicken" && (
                   <div>
-                    <label
-                      htmlFor="phone-input-3"
-                      className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                    >
+                    <label htmlFor="phone-input-3" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                       {" "}
                       Delivery Date*{" "}
                     </label>
@@ -152,9 +135,7 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                           value={order.scheduledDeliveryDate}
                         />
                         {checkFormInputs && !order.scheduledDeliveryDate && (
-                          <span className="text-sm text-red-500 ps-1">
-                            Enter a valid delivery date
-                          </span>
+                          <span className="text-sm text-red-500 ps-1">Enter a valid delivery date</span>
                         )}
                       </div>
                     </div>
@@ -162,10 +143,38 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                 )}
 
                 <div>
-                  <label
-                    htmlFor="userAddress"
-                    className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                  <label htmlFor="userAddress" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                    {" "}
+                    Pin Code*{" "}
+                  </label>
+                  <select
+                    id="userPinCode"
+                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                    value={order.userPinCode}
+                    onChange={(e) =>
+                      setOrder((prev) => ({
+                        ...prev,
+                        userPinCode: e.target.value,
+                        userCity: cityMap[e.target.value],
+                      }))
+                    }
                   >
+                    <option key={0} value="">
+                      Select Pincode
+                    </option>
+                    {pincodes.map((pinCode, index) => (
+                      <option key={index + 1} value={pinCode}>
+                        {pinCode}
+                      </option>
+                    ))}
+                  </select>
+                  {checkFormInputs && !pincodes.includes(parseInt(order.userPinCode)) && (
+                    <span className="text-sm text-red-500 ps-1">Select a valid pincode</span>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="userAddress" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                     {" "}
                     Street Address*{" "}
                   </label>
@@ -177,18 +186,11 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                     onChange={handleChangeInput}
                     value={order.userAddress}
                   />
-                  {checkFormInputs && order.userAddress.length < 1 && (
-                    <span className="text-sm text-red-500 ps-1">
-                      Enter a valid address
-                    </span>
-                  )}
+                  {checkFormInputs && order.userAddress.length < 1 && <span className="text-sm text-red-500 ps-1">Enter a valid address</span>}
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="landmark"
-                    className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                  >
+                  <label htmlFor="landmark" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                     {" "}
                     Landmark*{" "}
                   </label>
@@ -200,18 +202,11 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                     onChange={handleChangeInput}
                     value={order.landmark}
                   />
-                  {checkFormInputs && order?.landmark.length < 1 && (
-                    <span className="text-sm text-red-500 ps-1">
-                      Enter a valid landmark
-                    </span>
-                  )}
+                  {checkFormInputs && order?.landmark.length < 1 && <span className="text-sm text-red-500 ps-1">Enter a valid landmark</span>}
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="city"
-                    className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                  >
+                  <label htmlFor="city" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                     {" "}
                     City
                   </label>
@@ -221,12 +216,11 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                     placeholder="Flowbite LLC"
                     readOnly
-                    value={"Sangareddy"}
+                    // value={"Sangareddy"}
+                    value={order.userCity}
                   />
-                  {checkFormInputs && order.length < 1 && (
-                    <span className="text-sm text-red-500 ps-1">
-                      Enter a valid address
-                    </span>
+                  {checkFormInputs && (!order?.userCity?.length || order?.userCity?.length < 1) && (
+                    <span className="text-sm text-red-500 ps-1">Enter a valid City</span>
                   )}
                 </div>
 
