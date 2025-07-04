@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Homepage.module.css";
 import MeatTile from "./MeatTileComponent/MeatTile";
-import { color, motion } from "framer-motion";
+import { motion } from "framer-motion";
+import { db } from "../../firebase/setup";
+import { doc, getDoc } from "firebase/firestore";
 
 const MeatTileProps = [
   {
@@ -17,7 +19,29 @@ const MeatTileProps = [
 ];
 
 const Homepage = () => {
-  const [isPopupVisible, setPopupVisible] = useState(true);
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [popupData, setPopupData] = useState({});
+
+  useEffect(() => {
+    const fetchPopupData = async () => {
+      try {
+        const popupReference = doc(db, "popupConfig", "homeOnStartup");
+        const popupDoc = await getDoc(popupReference);
+
+        if (popupDoc.exists()) {
+          const popupDocData = popupDoc.data();
+          if (popupDocData.show) {
+            setPopupData(popupDocData.message); // keep as HTML string
+            setPopupVisible(true);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching popup:", error);
+      }
+    };
+
+    fetchPopupData();
+  }, []);
 
   const closePopup = () => {
     setPopupVisible(false);
@@ -30,11 +54,7 @@ const Homepage = () => {
         {isPopupVisible && (
           <div className={styles.popup}>
             <div className={styles.popupContent}>
-              <p>
-                Due to a glitch in the app, some mutton orders may have failed without notifying the users. If you placed an order but don’t see it in
-                your order history, or if your order hasn’t arrived by <strong>8:30 AM</strong>, please contact us at{" "}
-                <strong style={{ color: "#bc1414" }}>7382949469</strong>.
-              </p>
+              <div dangerouslySetInnerHTML={{ __html: popupData }} />
               <button className={styles.closeButton} onClick={closePopup}>
                 Close
               </button>
