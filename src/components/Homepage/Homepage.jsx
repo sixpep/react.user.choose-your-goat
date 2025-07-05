@@ -105,6 +105,11 @@ const Homepage = () => {
             <MeatTile key={ind} title={tile.title} imgSrc={tile.imgSrc} tilePath={tile.tilePath} />
           ))}
         </div>
+        <footer className={styles.footer}>
+          <p>
+            📞 <strong>Customer Care:</strong> <a href="tel:+917382949469">+91 73829 49469</a>
+          </p>
+        </footer>
       </div>
     </div>
   );
