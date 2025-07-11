@@ -85,3 +85,11 @@
   outline: none;
   opacity: 0.9;
 }
+
+.locationButton {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+}

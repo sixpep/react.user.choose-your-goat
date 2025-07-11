@@ -4,22 +4,25 @@ import MeatTile from "./MeatTileComponent/MeatTile";
 import { motion } from "framer-motion";
 import { db } from "../../firebase/setup";
 import { doc, getDoc } from "firebase/firestore";
+import { chickenRestrictedAt, muttonRestrictedAt } from "../../staticValues";
 
 const MeatTileProps = [
   {
     title: "Mutton",
     imgSrc: "/images/mutonRightEdge.png",
     tilePath: "/mutton",
+    restrictedAt: muttonRestrictedAt,
   },
   {
     title: "Chicken",
     imgSrc: "/images/chickenRightEdge.png",
     tilePath: "/chicken",
+    restrictedAt: chickenRestrictedAt,
   },
 ];
 
-const Homepage = () => {
-  const [isPopupVisible, setPopupVisible] = useState(false);
+// const Homepage = ({ selectLocationPopup, setSelectLocationPopup, setLocationName, locationName, isPopupVisible, setPopupVisible }) => {
+const Homepage = ({ isPopupVisible, setPopupVisible }) => {
   const [popupData, setPopupData] = useState({});
 
   useEffect(() => {
@@ -65,7 +68,7 @@ const Homepage = () => {
         {/* <div className={styles.deliveryNote}>
           <p>We are currently serving only in Sangareddy</p>
         </div> */}
-        <div className={styles.deliveryNote}>
+        {/* <div className={styles.deliveryNote}>
           <motion.p
             animate={{ scale: [1, 1.1, 1] }}
             transition={{
@@ -77,7 +80,7 @@ const Homepage = () => {
           >
             We are currently serving only in Sangareddy
           </motion.p>
-        </div>
+        </div> */}
         <div className={styles.tileHeader}>
           <div className={styles.goatDp}>
             <img src="/images/goatDp.png" alt="" />
@@ -101,9 +104,12 @@ const Homepage = () => {
           </h2>
         </div>
         <div className={styles.meatTiles}>
-          {MeatTileProps.map((tile, ind) => (
-            <MeatTile key={ind} title={tile.title} imgSrc={tile.imgSrc} tilePath={tile.tilePath} />
-          ))}
+          {MeatTileProps.map(
+            (tile, ind) =>
+              !tile.restrictedAt.includes(localStorage.getItem("true-meat-location")) && (
+                <MeatTile key={ind} title={tile.title} imgSrc={tile.imgSrc} tilePath={tile.tilePath} />
+              )
+          )}
         </div>
         <footer className={styles.footer}>
           <p>

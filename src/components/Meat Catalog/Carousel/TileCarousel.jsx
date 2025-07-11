@@ -5,6 +5,11 @@ import { Context } from "../../../App";
 const TileCarousel = ({ order, setOrder }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { goatsData } = useContext(Context);
+  const [pincode, setPincode] = useState("");
+
+  useEffect(() => {
+    setPincode(localStorage.getItem("true-meat-location"));
+  }, []);
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) => (prevIndex === 0 ? goatsData.length - 1 : prevIndex - 1));
@@ -33,16 +38,18 @@ const TileCarousel = ({ order, setOrder }) => {
                 meatOnlyWeight={item.meatOnlyWeight}
                 totalShares={item.totalShares}
                 approxShareSize={item.approxShareSize}
-                muttonShareCost={item.muttonShareCost}
                 totalKeemaShares={item.totalKeemaShares}
-                keemaShareCost={item.keemaShareCost}
                 cutSize={item.cutSize}
-                headLegsBrainPrice={item.headLegsBrainPrice}
-                headPrice={item.headPrice}
-                legsPrice={item.legsPrice}
-                brainPrice={item.brainPrice}
-                botiShareCost={item.botiShareCost}
-                extraCost={item.extraCost}
+                // updated prices based on pincode
+                muttonShareCost={item[pincode]?.muttonShareCost || item["general"]?.muttonShareCost || item.muttonShareCost}
+                keemaShareCost={item[pincode]?.keemaShareCost || item["general"]?.keemaShareCost || item.keemaShareCost}
+                headLegsBrainPrice={item[pincode]?.headLegsBrainPrice || item["general"]?.headLegsBrainPrice || item.headLegsBrainPrice}
+                headPrice={item[pincode]?.headPrice || item["general"]?.headPrice || item.headPrice}
+                legsPrice={item[pincode]?.legsPrice || item["general"]?.legsPrice || item.legsPrice}
+                brainPrice={item[pincode]?.brainPrice || item["general"]?.brainPrice || item.brainPrice}
+                botiShareCost={item[pincode]?.botiShareCost || item["general"]?.botiShareCost || item.botiShareCost}
+                extraCost={item[pincode]?.extraCost || item["general"]?.extraCost || item.extraCost}
+                //end of costs
                 deliveryDateTimestamp={item.deliveryDateTimestamp}
                 totalBotiShares={item.totalBotiShares}
                 remainingBotiShares={item.remainingBotiShares}

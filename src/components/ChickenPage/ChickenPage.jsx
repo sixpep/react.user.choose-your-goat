@@ -6,11 +6,16 @@ import QuantityControllerComp from "./QuantityControllerComp/QuantityControllerC
 import { BsHandbag } from "react-icons/bs";
 import { Context } from "../../App";
 import { motion } from "framer-motion";
+import { db } from "../../firebase/setup";
+import { where, collection, doc, getDoc, onSnapshot, query, orderBy, limit, getDocs } from "firebase/firestore";
 
 const ChickenPage = () => {
   const navigate = useNavigate();
   // const [isOrderAllowed, setIsOrderAllowed] = useState(false);
   const { hensData, order } = useContext(Context);
+
+  const [ordersAllowed, setOrdersAllowed] = useState(true);
+  const [wentWrong, setWentWrong] = useState(false);
 
   // useEffect(() => {
   //   const checkTime = () => {
@@ -27,6 +32,32 @@ const ChickenPage = () => {
   //   return () => clearInterval(interval);
   // }, []);
 
+  useEffect(() => {
+    async function checkPermision() {
+      try {
+        let permisionsDoc = await getDocs(
+          query(collection(db, "availability"), where("pincode", "==", localStorage.getItem("true-meat-location")), limit(1))
+        );
+        if (!permisionsDoc.empty) {
+          permisionsDoc = permisionsDoc[0].data();
+
+          if (permisionsDoc.chickenOrders) {
+            setOrdersAllowed(true);
+          } else {
+            setOrdersAllowed(false);
+          }
+        } else {
+          setOrdersAllowed(true);
+        }
+      } catch (error) {
+        console.log(error);
+        setWentWrong(true);
+      }
+    }
+
+    checkPermision();
+  }, []);
+
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -37,7 +68,7 @@ const ChickenPage = () => {
             </i>
           </div>
         </div>
-        <div className={styles.deliveryNote}>
+        {/* <div className={styles.deliveryNote}>
           <motion.p
             animate={{ scale: [1, 1.1, 1] }}
             transition={{
@@ -49,7 +80,7 @@ const ChickenPage = () => {
           >
             We are currently serving only in Sangareddy
           </motion.p>
-        </div>
+        </div> */}
         <div className={styles.header}>
           <div className={styles.headerTitle}>
             <h6>
@@ -103,6 +134,42 @@ const ChickenPage = () => {
           <p>Bag</p>
         </button>
       </div>
+      {!ordersAllowed && (
+        <div className={styles.popup}>
+          <div className={styles.popupContent}>
+            <div>
+              <strong>Sorry!, We are currently not accepting chicken orders at your location.</strong>
+            </div>
+            <button
+              className={styles.closeButton}
+              onClick={() => {
+                window.location.href = "/home";
+                // setOrdersAllowed(true);
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+      {wentWrong && (
+        <div className={styles.popup}>
+          <div className={styles.popupContent}>
+            <div>
+              <strong>Something went wrong. Please try again.</strong>
+            </div>
+            <button
+              className={styles.closeButton}
+              onClick={() => {
+                window.location.href = "/home";
+                // setOrdersAllowed(true);
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

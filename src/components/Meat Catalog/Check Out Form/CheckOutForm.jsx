@@ -51,6 +51,9 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
   const accessToken = localStorage.getItem("choose-your-goat-token");
 
   useEffect(() => {
+    order.userPinCode = localStorage.getItem("true-meat-location");
+    order.userCity = cityMap[order.userPinCode];
+
     updateMinDate();
     const interval = setInterval(updateMinDate, 60000);
     return () => clearInterval(interval);
@@ -145,9 +148,17 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                 <div>
                   <label htmlFor="userAddress" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                     {" "}
-                    Pin Code*{" "}
+                    Pin Code*<span className="block text-xs text-gray-500">To change this use pincode at the top of the page</span>{" "}
                   </label>
-                  <select
+                  <input
+                    type="text"
+                    id="city"
+                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                    placeholder="Flowbite LLC"
+                    readOnly
+                    value={order.userPinCode}
+                  />
+                  {/* <select
                     id="userPinCode"
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                     value={order.userPinCode}
@@ -167,8 +178,8 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                         {pinCode}
                       </option>
                     ))}
-                  </select>
-                  {checkFormInputs && !pincodes.includes(parseInt(order.userPinCode)) && (
+                  </select> */}
+                  {checkFormInputs && !pincodes.includes(order.userPinCode) && (
                     <span className="text-sm text-red-500 ps-1">Select a valid pincode</span>
                   )}
                 </div>

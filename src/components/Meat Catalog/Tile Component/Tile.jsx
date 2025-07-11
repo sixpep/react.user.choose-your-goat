@@ -221,7 +221,7 @@ const Tile = ({
             </i>
           </div>
         </div>
-        <div className={styles.deliveryNote}>
+        {/* <div className={styles.deliveryNote}>
           <motion.p
             animate={{ scale: [1, 1.1, 1] }}
             transition={{
@@ -233,7 +233,7 @@ const Tile = ({
           >
             We are currently serving only in Sangareddy
           </motion.p>
-        </div>
+        </div> */}
         <div className={styles.tileHeader}>
           {/* <div className={styles.greeting}>
             <p>

@@ -125,7 +125,15 @@ const Cart = () => {
       });
       console.log(docRef);
 
-      sendEmailOrder(order.userName, order.userPhoneNumber, order.userAddress, order.landmark, order.meatRequirements, order.totalBill + deliveryFee, order.scheduledDeliveryDate);
+      sendEmailOrder(
+        order.userName,
+        order.userPhoneNumber,
+        order.userAddress,
+        order.landmark,
+        order.meatRequirements,
+        order.totalBill + deliveryFee,
+        order.scheduledDeliveryDate
+      );
 
       setShowConfirmationLoading(false);
       setOrderConfirmation(true);
@@ -144,6 +152,7 @@ const Cart = () => {
               userPhoneNumber: order.userPhoneNumber,
               userAddress: order.userAddress,
               landmark: order.landmark,
+              pincode: order.userPinCode,
               deliveryDate: goat.deliveryDateTimestamp,
               orderedDate: new Date().getTime(),
               userId: localStorage.getItem("choose-your-goat-userId"),
@@ -171,11 +180,12 @@ const Cart = () => {
 
   const calculateTotalBill = (requirements, goat) => {
     let totalBill = 0;
+    let pincode = localStorage.getItem("true-meat-location");
 
     Object.keys(requirements).map((requirementKey) => {
       if (requirementKey !== "goatId") {
         const priceKey = priceNames[requirementKey];
-        totalBill += requirements[requirementKey] * goat[priceKey];
+        totalBill += requirements[requirementKey] * (goat[pincode]?.[priceKey] ?? goat["general"]?.[priceKey] ?? goat[priceKey]);
       }
     });
 
@@ -390,7 +400,27 @@ const Cart = () => {
                         </div> */}
                           </div>
                           <p>
-                            ₹{goatObj[keyName] * (goatsData.find((item) => item.docId === goatObj.goatId) ? goatsData.find((item) => item.docId === goatObj.goatId)[priceNames[keyName]] : 0)}
+                            ₹
+                            {/* {goatObj[keyName] *
+                              (goatsData.find((item) => item.docId === goatObj.goatId)
+                                ? goatsData.find((item) => item.docId === goatObj.goatId)[localStorage.getItem("true-meat-location")]?.[
+                                    priceNames[keyName]
+                                  ] ??
+                                  goatsData.find((item) => item.docId === goatObj.goatId)["general"]?.[priceNames[keyName]] ??
+                                  goatsData.find((item) => item.docId === goatObj.goatId)[priceNames[keyName]]
+                                : 0)} */}
+                            {(() => {
+                              const goatCount = goatObj[keyName];
+                              const goat = goatsData.find((item) => item.docId === goatObj.goatId);
+                              const pincode = localStorage.getItem("true-meat-location");
+                              const priceKey = priceNames[keyName];
+
+                              if (!goat) return 0;
+
+                              const price = goat[pincode]?.[priceKey] ?? goat["general"]?.[priceKey] ?? goat[priceKey];
+
+                              return goatCount * price;
+                            })()}
                             /-
                           </p>
                         </div>

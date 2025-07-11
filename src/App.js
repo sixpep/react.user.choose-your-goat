@@ -11,11 +11,15 @@ import UserOrders from "./components/UserOrders/UserOrders";
 import LoginPage from "./components/LoginPage/LoginPage";
 import Homepage from "./components/Homepage/Homepage";
 import ChickenPage from "./components/ChickenPage/ChickenPage";
+import { pincodes } from "./staticValues";
 import PopupModal from "./components/Modals/PopupModal";
 
 export const Context = React.createContext();
 
 const App = () => {
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [selectLocationPopup, setSelectLocationPopup] = useState(false);
+  const [locationName, setLocationName] = useState("");
   const [goatsData, setGoatsData] = useState([]);
   const [hensData, setHensData] = useState([]);
   const [order, setOrder] = useState({
@@ -103,6 +107,14 @@ const App = () => {
 
     fetchUserData();
 
+    // for location popup
+
+    setLocationName(localStorage.getItem("true-meat-location"));
+
+    if (localStorage.getItem("true-meat-location")?.length == 0 || !localStorage.getItem("true-meat-location")?.length) {
+      setSelectLocationPopup(true);
+    }
+
     // Cleanup function to unsubscribe from snapshots
     return () => {
       unsubscribeGoats();
@@ -110,14 +122,31 @@ const App = () => {
     };
   }, []);
 
+  const closePopup = () => {
+    setSelectLocationPopup(false);
+  };
+
   return (
     <Context.Provider value={{ order, setOrder, goatsData, setGoatsData, hensData }}>
       <div className="appContainer">
-        <Navbar />
+        <Navbar selectLocationPopup={selectLocationPopup} setSelectLocationPopup={setSelectLocationPopup} locationName={locationName} />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Navigate to={"/home"} />} />
-            <Route path="/home" index element={<Homepage />} />
+            <Route
+              path="/home"
+              index
+              element={
+                <Homepage
+                  // selectLocationPopup={selectLocationPopup}
+                  // setSelectLocationPopup={setSelectLocationPopup}
+                  // setLocationName={setLocationName}
+                  // locationName={locationName}
+                  isPopupVisible={isPopupVisible}
+                  setPopupVisible={setPopupVisible}
+                />
+              }
+            />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/mutton" element={<Catalog />} />
             <Route path="/chicken" element={<ChickenPage />} />
@@ -125,6 +154,42 @@ const App = () => {
             <Route path="/orders" element={<UserOrders />} />
           </Routes>
         </BrowserRouter>
+        {!isPopupVisible && selectLocationPopup && (
+          <div className="popup">
+            <div className="popupContent">
+              <label htmlFor="userAddress" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                Pin Code*{" "}
+              </label>
+              <select
+                id="userPinCode"
+                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                value={locationName}
+                onChange={(e) => {
+                  setLocationName(e.target.value);
+                  localStorage.setItem("true-meat-location", e.target.value);
+                  if (e.target.value?.length > 0) {
+                    setSelectLocationPopup(false);
+                    window.location.href = "/home";
+                  }
+                }}
+              >
+                <option key={0} value="">
+                  Select Pincode
+                </option>
+                {pincodes.map((pinCode, index) => (
+                  <option key={index + 1} value={pinCode}>
+                    {pinCode}
+                  </option>
+                ))}
+              </select>
+              {localStorage.getItem("true-meat-location") && (
+                <button className="closeButton" onClick={closePopup}>
+                  Close
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </Context.Provider>
   );
