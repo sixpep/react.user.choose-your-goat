@@ -35,11 +35,9 @@ const ChickenPage = () => {
   useEffect(() => {
     async function checkPermision() {
       try {
-        let permisionsDoc = await getDocs(
-          query(collection(db, "availability"), where("pincode", "==", localStorage.getItem("true-meat-location")), limit(1))
-        );
+        let permisionsDoc = await getDocs(query(collection(db, "availability"), where("pincode", "==", localStorage.getItem("true-meat-location")), limit(1)));
         if (!permisionsDoc.empty) {
-          permisionsDoc = permisionsDoc[0].data();
+          permisionsDoc = permisionsDoc.docs[0].data();
 
           if (permisionsDoc.chickenOrders) {
             setOrdersAllowed(true);
