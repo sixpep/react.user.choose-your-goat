@@ -7,6 +7,6 @@ module.exports = {
     502319: "Patancheru",
     500032: "Gachibowli",
   },
-  chickenRestrictedAt: [],
+  chickenRestrictedAt: ["502319", "500032"],
   muttonRestrictedAt: [],
 };
