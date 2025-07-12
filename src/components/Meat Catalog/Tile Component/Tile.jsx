@@ -352,43 +352,39 @@ const Tile = ({
             </div>
           )}
 
-          {totalKeemaShares ? (
-            <div className={styles.quantityControl}>
-              <div className={styles.label}>
-                <div className={styles.itemLabelWrap}>
-                  <p>Keema</p>
-                  <span className={styles.availableNote}>
-                    Available Shares :{" "}
-                    <span>
-                      {!isActive ? 0 : remainingKeemaShares || 0}
-                      {totalKeemaShares ? `/${totalKeemaShares}` : ""}
-                    </span>
+          <div className={styles.quantityControl}>
+            <div className={styles.label}>
+              <div className={styles.itemLabelWrap}>
+                <p>Keema</p>
+                <span className={styles.availableNote}>
+                  Available Shares :{" "}
+                  <span>
+                    {!isActive ? 0 : remainingKeemaShares || 0}
+                    {totalKeemaShares ? `/${totalKeemaShares}` : ""}
                   </span>
-                </div>
-              </div>
-              <span>100% Boneless</span>
-
-              <div className={styles.controlPrices}>
-                <div className={styles.price}>
-                  <p>
-                    ₹ {keemaShareCost} <span>/250g</span>
-                  </p>
-                </div>
-                <div
-                  className={styles.quantityButtons}
-                  style={{
-                    opacity: remainingKeemaShares < 1 || !isActive ? 0.5 : 1,
-                  }}
-                >
-                  <button onClick={() => handleDecrement("numberOfKeemaShares")}>-</button>
-                  <p>{numberOfKeemaShares || 0}</p>
-                  <button onClick={() => handleIncrement("numberOfKeemaShares", remainingKeemaShares)}>+</button>
-                </div>
+                </span>
               </div>
             </div>
-          ) : (
-            <div></div>
-          )}
+            <span>100% Boneless</span>
+
+            <div className={styles.controlPrices}>
+              <div className={styles.price}>
+                <p>
+                  ₹ {keemaShareCost} <span>/250g</span>
+                </p>
+              </div>
+              <div
+                className={styles.quantityButtons}
+                style={{
+                  opacity: remainingKeemaShares < 1 || !isActive ? 0.5 : 1,
+                }}
+              >
+                <button onClick={() => handleDecrement("numberOfKeemaShares")}>-</button>
+                <p>{numberOfKeemaShares || 0}</p>
+                <button onClick={() => handleIncrement("numberOfKeemaShares", remainingKeemaShares)}>+</button>
+              </div>
+            </div>
+          </div>
 
           <div className={styles.quantityControl}>
             <div className={styles.label}>
