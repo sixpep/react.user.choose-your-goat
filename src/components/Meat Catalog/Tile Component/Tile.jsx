@@ -346,6 +346,12 @@ const Tile = ({
             </span> */}
           </div>
 
+          {nextUnlockText && (
+            <div className={styles.unlockingNote}>
+              <p>{nextUnlockText} </p>
+            </div>
+          )}
+
           {totalKeemaShares ? (
             <div className={styles.quantityControl}>
               <div className={styles.label}>
@@ -382,12 +388,6 @@ const Tile = ({
             </div>
           ) : (
             <div></div>
-          )}
-
-          {nextUnlockText && (
-            <div className={styles.unlockingNote}>
-              <p>{nextUnlockText} </p>
-            </div>
           )}
 
           <div className={styles.quantityControl}>
