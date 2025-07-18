@@ -52,7 +52,7 @@ const Homepage = ({ isPopupVisible, setPopupVisible }) => {
         if (!snapshot.empty) {
           pincodes = snapshot.docs[0].data(); // This is your single matching document
         } else {
-          alert("Selected pincode is not valid.");
+          // alert("Selected pincode is not valid.");
         }
 
         setChickenRestricted(!pincodes.chickenOrders);
@@ -124,9 +124,9 @@ const Homepage = ({ isPopupVisible, setPopupVisible }) => {
           </h2>
         </div>
         <div className={styles.meatTiles}>
-          {MeatTileProps.map(
-            (tile, ind) => !tile.restrictedAt && <MeatTile key={ind} title={tile.title} imgSrc={tile.imgSrc} tilePath={tile.tilePath} />
-          )}
+          {MeatTileProps.map((tile, ind) => (
+            <MeatTile key={ind} title={tile.title} imgSrc={tile.imgSrc} hide={tile.restrictedAt} tilePath={tile.tilePath} />
+          ))}
         </div>
         <footer className={styles.footer}>
           <p>
