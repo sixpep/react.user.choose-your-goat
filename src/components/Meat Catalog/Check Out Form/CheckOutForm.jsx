@@ -21,6 +21,8 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
       order.landmark === "" ||
       order.userPinCode === "" ||
       !order.userPinCode ||
+      order.userCity === "" ||
+      !order.userCity ||
       (order.orderType === "chicken" && !order.scheduledDeliveryDate)
     ) {
       return;
@@ -201,9 +203,9 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                       </option>
                     ))}
                   </select> */}
-                  {checkFormInputs && !pincodes.includes(order.userPinCode) && (
+                  {/* {checkFormInputs && !pincodes.includes(order.userPinCode) && (
                     <span className="text-sm text-red-500 ps-1">Select a valid pincode</span>
-                  )}
+                  )} */}
                 </div>
 
                 <div>
