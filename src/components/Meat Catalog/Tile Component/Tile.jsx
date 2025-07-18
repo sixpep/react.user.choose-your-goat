@@ -6,6 +6,7 @@ import { BsFillCaretLeftFill, BsFillCaretRightFill } from "react-icons/bs";
 import { RxCross2 } from "react-icons/rx";
 import { Context } from "../../../App";
 import { LuMoveLeft } from "react-icons/lu";
+import { IoMdLock } from "react-icons/io";
 import { motion } from "framer-motion";
 
 const Tile = ({
@@ -43,6 +44,7 @@ const Tile = ({
   totalBotiShares,
   headLegsBrainPrice,
   headLegsBrainAvailability,
+  finalCallMade,
   remainingExtras,
   nextUnlockText,
 }) => {
@@ -302,9 +304,13 @@ const Tile = ({
                 <p>Mutton</p>
                 <span className={styles.availableNote}>
                   Available Shares :{" "}
-                  <span>
-                    {!isActive ? 0 : remainingMuttonShares || 0}/{totalShares}
-                  </span>
+                  {totalShares > 0 && !remainingMuttonShares ? (
+                    <span>SOLD</span>
+                  ) : (
+                    <span>
+                      {!isActive ? 0 : remainingMuttonShares || 0}/{totalShares}
+                    </span>
+                  )}
                 </span>
               </div>
             </div>
@@ -358,10 +364,20 @@ const Tile = ({
                 <p>Keema</p>
                 <span className={styles.availableNote}>
                   Available Shares :{" "}
-                  <span>
-                    {!isActive ? 0 : remainingKeemaShares || 0}
-                    {totalKeemaShares ? `/${totalKeemaShares}` : ""}
-                  </span>
+                  {finalCallMade ? (
+                    totalKeemaShares > 0 && !remainingKeemaShares ? (
+                      <span>SOLD</span>
+                    ) : (
+                      <span>
+                        {!isActive ? 0 : remainingKeemaShares || 0}
+                        {totalKeemaShares ? `/${totalKeemaShares}` : ""}
+                      </span>
+                    )
+                  ) : (
+                    <span style={{ display: "inline-flex", alignItems: "center" }}>
+                      <IoMdLock color="black" size={18} />
+                    </span>
+                  )}
                 </span>
               </div>
             </div>
@@ -393,10 +409,20 @@ const Tile = ({
                 {/* <p>Goat Head</p> */}
                 <span className={styles.availableNote}>
                   Available Shares :{" "}
-                  <span>
-                    {!isActive ? 0 : remainingHeads || 0}
-                    {totalHeads ? `/${totalHeads}` : ""}
-                  </span>
+                  {finalCallMade ? (
+                    totalHeads > 0 && !remainingHeads ? (
+                      <span>SOLD</span>
+                    ) : (
+                      <span>
+                        {!isActive ? 0 : remainingHeads || 0}
+                        {totalHeads ? `/${totalHeads}` : ""}
+                      </span>
+                    )
+                  ) : (
+                    <span style={{ display: "inline-flex", alignItems: "center" }}>
+                      <IoMdLock color="black" size={18} />
+                    </span>
+                  )}
                 </span>
               </div>
             </div>
@@ -441,10 +467,20 @@ const Tile = ({
                 {/* <p>Goat Legs</p> */}
                 <span className={styles.availableNote}>
                   Available Shares :{" "}
-                  <span>
-                    {!isActive ? 0 : remainingLegs || 0}
-                    {totalLegs ? `/${totalLegs}` : ""}
-                  </span>
+                  {finalCallMade ? (
+                    totalLegs > 0 && !remainingLegs ? (
+                      <span>SOLD</span>
+                    ) : (
+                      <span>
+                        {!isActive ? 0 : remainingLegs || 0}
+                        {totalLegs ? `/${totalLegs}` : ""}
+                      </span>
+                    )
+                  ) : (
+                    <span style={{ display: "inline-flex", alignItems: "center" }}>
+                      <IoMdLock color="black" size={18} />
+                    </span>
+                  )}
                 </span>
               </div>
             </div>
@@ -487,10 +523,20 @@ const Tile = ({
                 {/* <p>Goat Brain</p> */}
                 <span className={styles.availableNote}>
                   Available Shares :{" "}
-                  <span>
-                    {!isActive ? 0 : remainingBrains || 0}
-                    {totalBrains ? `/${totalBrains}` : ""}
-                  </span>
+                  {finalCallMade ? (
+                    totalBrains > 0 && !remainingBrains ? (
+                      <span>SOLD</span>
+                    ) : (
+                      <span>
+                        {!isActive ? 0 : remainingBrains || 0}
+                        {totalBrains ? `/${totalBrains}` : ""}
+                      </span>
+                    )
+                  ) : (
+                    <span style={{ display: "inline-flex", alignItems: "center" }}>
+                      <IoMdLock color="black" size={18} />
+                    </span>
+                  )}
                 </span>
               </div>
             </div>
@@ -538,10 +584,20 @@ const Tile = ({
                 {/* <p>Goat Boti</p> */}
                 <span className={styles.availableNote}>
                   Available Shares :{" "}
-                  <span>
-                    {!isActive ? 0 : remainingBotiShares || 0}
-                    {totalBotiShares ? `/${totalBotiShares}` : ""}
-                  </span>
+                  {finalCallMade ? (
+                    totalBotiShares > 0 && !remainingBotiShares ? (
+                      <span>SOLD</span>
+                    ) : (
+                      <span>
+                        {!isActive ? 0 : remainingBotiShares || 0}
+                        {totalBotiShares ? `/${totalBotiShares}` : ""}
+                      </span>
+                    )
+                  ) : (
+                    <span style={{ display: "inline-flex", alignItems: "center" }}>
+                      <IoMdLock color="black" size={18} />
+                    </span>
+                  )}
                 </span>
               </div>
             </div>
@@ -582,10 +638,20 @@ const Tile = ({
                 {/* <p>Goat Boti</p> */}
                 <span className={styles.availableNote}>
                   Available Shares :{" "}
-                  <span>
-                    {!isActive ? 0 : remainingExtras || 0}
-                    {totalExtras ? `/${totalExtras}` : ""}
-                  </span>
+                  {finalCallMade ? (
+                    totalExtras > 0 && !remainingExtras ? (
+                      <span>SOLD</span>
+                    ) : (
+                      <span>
+                        {!isActive ? 0 : remainingExtras || 0}
+                        {totalExtras ? `/${totalExtras}` : ""}
+                      </span>
+                    )
+                  ) : (
+                    <span style={{ display: "inline-flex", alignItems: "center" }}>
+                      <IoMdLock color="black" size={18} />
+                    </span>
+                  )}
                 </span>
               </div>
             </div>

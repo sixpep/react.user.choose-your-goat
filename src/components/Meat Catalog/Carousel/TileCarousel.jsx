@@ -68,6 +68,7 @@ const TileCarousel = ({ order, setOrder }) => {
                 isActive={item.isActive}
                 order={order}
                 setOrder={setOrder}
+                finalCallMade={item?.finalCallMade}
                 handlePrev={handlePrev}
                 handleNext={handleNext}
               />
