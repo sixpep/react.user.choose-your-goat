@@ -7,7 +7,7 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { SiTicktick } from "react-icons/si";
 import { db, auth } from "../../../firebase/setup";
 import { useNavigate } from "react-router-dom";
-import { addDoc, collection, doc, updateDoc, getDoc, setDoc } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc, getDoc, setDoc, runTransaction } from "firebase/firestore";
 import emailjs from "@emailjs/browser";
 import axios from "axios";
 
@@ -137,44 +137,130 @@ const Cart = () => {
 
       setShowConfirmationLoading(false);
       setOrderConfirmation(true);
-    } else {
-      try {
-        const isUpdated = updateGoatDataQuantities();
+      return;
+    }
+    // else {
+    //   try {
+    //     const isUpdated = updateGoatDataQuantities();
 
-        if (isUpdated) {
-          for (let requirement of order.meatRequirements) {
-            const goat = goatsData.find((goatItem) => goatItem.docId === requirement.goatId);
-            const billCalculated = calculateTotalBill(requirement, goat);
+    //     if (isUpdated) {
+    //       for (let requirement of order.meatRequirements) {
+    //         const goat = goatsData.find((goatItem) => goatItem.docId === requirement.goatId);
+    //         const billCalculated = calculateTotalBill(requirement, goat);
 
-            const docRef = await addDoc(collection(db, "orders"), {
-              ...requirement,
-              userName: order.userName,
-              userPhoneNumber: order.userPhoneNumber,
-              userAddress: order.userAddress,
-              landmark: order.landmark,
-              pincode: order.userPinCode,
-              deliveryDate: goat.deliveryDateTimestamp,
-              orderedDate: new Date().getTime(),
-              userId: localStorage.getItem("choose-your-goat-userId"),
-              totalBill: billCalculated,
-            });
-            setShowConfirmationLoading(false);
-            setOrderConfirmation(true);
+    //         const docRef = await addDoc(collection(db, "orders"), {
+    //           ...requirement,
+    //           userName: order.userName,
+    //           userPhoneNumber: order.userPhoneNumber,
+    //           userAddress: order.userAddress,
+    //           landmark: order.landmark,
+    //           pincode: order.userPinCode,
+    //           deliveryDate: goat.deliveryDateTimestamp,
+    //           orderedDate: new Date().getTime(),
+    //           userId: localStorage.getItem("choose-your-goat-userId"),
+    //           totalBill: billCalculated,
+    //         });
+    //         setShowConfirmationLoading(false);
+    //         setOrderConfirmation(true);
 
-            // const orderData = {
-            //   ...requirement,
-            //   userName: order.userName,
-            //   userPhoneNumber: order.userPhoneNumber,
-            //   userAddress: order.userAddress,
-            //   landmark: order.landmark,
-            //   deliveryDate: goat.deliveryDateTimestamp,
-            //   userId: localStorage.getItem("choose-your-goat-userId"),
-            // };
+    //         // const orderData = {
+    //         //   ...requirement,
+    //         //   userName: order.userName,
+    //         //   userPhoneNumber: order.userPhoneNumber,
+    //         //   userAddress: order.userAddress,
+    //         //   landmark: order.landmark,
+    //         //   deliveryDate: goat.deliveryDateTimestamp,
+    //         //   userId: localStorage.getItem("choose-your-goat-userId"),
+    //         // };
+    //       }
+    //     }
+    //   } catch (error) {
+    //     console.log("Error in placing order", error);
+    //   }
+    // }
+
+    try {
+      await runTransaction(db, async (transaction) => {
+        // 1. Update goat inventories atomically and place orders
+        for (const requirement of order.meatRequirements) {
+          const goatRef = doc(db, "goats", requirement.goatId);
+          const goatDoc = await transaction.get(goatRef);
+
+          if (!goatDoc.exists()) {
+            throw new Error(`Goat with ID ${requirement.goatId} not found.`);
           }
+
+          const goatData = goatDoc.data();
+          // const mapping = {
+          //   numberOfMuttonShares: "remainingMuttonShares",
+          //   numberOfKeemaShares: "remainingKeemaShares",
+          //   numberOfHeadShares: "remainingHeads",
+          //   numberOfLegsShares: "remainingLegs",
+          //   numberOfBrainShares: "remainingBrains",
+          //   numberOfBotiShares: "remainingBotiShares",
+          //   numberOfExtras: "remainingExtras",
+          // };
+
+          // Check for availability
+          for (const key in requirement) {
+            if (key !== "goatId" && requirement[key] !== undefined && mapping[key]) {
+              const goatField = mapping[key];
+              if (goatData[goatField] < requirement[key]) {
+                throw new Error(
+                  `Not enough ${goatField} for goat ${requirement.goatId}. Requested: ${requirement[key]}, Available: ${goatData[goatField]}`
+                );
+              }
+            }
+          }
+
+          // Prepare the update
+          const updateData = {};
+          for (const key in requirement) {
+            if (key !== "goatId" && mapping[key]) {
+              const goatField = mapping[key];
+              updateData[goatField] = goatData[goatField] - requirement[key];
+            }
+          }
+
+          // Apply the update
+          transaction.update(goatRef, updateData);
+
+          // Calculate bill
+          const goat = goatsData.find((g) => g.docId === requirement.goatId);
+          let billCalculated = 0;
+          Object.keys(requirement).forEach((requirementKey) => {
+            if (requirementKey !== "goatId") {
+              const priceKey = priceNames[requirementKey];
+              billCalculated +=
+                requirement[requirementKey] *
+                (goat[localStorage.getItem("true-meat-location")]?.[priceKey] ?? goat["general"]?.[priceKey] ?? goat[priceKey]);
+            }
+          });
+
+          // Add order (you must use collection().doc() and set to work in a transaction)
+          const orderRef = doc(collection(db, "orders"));
+          transaction.set(orderRef, {
+            ...requirement,
+            userName: order.userName,
+            userPhoneNumber: order.userPhoneNumber,
+            userAddress: order.userAddress,
+            landmark: order.landmark,
+            pincode: order.userPinCode,
+            deliveryDate: goat.deliveryDateTimestamp,
+            orderedDate: new Date().getTime(),
+            userId: localStorage.getItem("choose-your-goat-userId"),
+            totalBill: billCalculated,
+          });
         }
-      } catch (error) {
-        console.log("Error in placing order", error);
-      }
+      });
+
+      // If we reach here, transaction was successful
+      setShowConfirmationLoading(false);
+      setOrderConfirmation(true);
+    } catch (error) {
+      setShowConfirmationLoading(false);
+      alert("Order failed: " + error.message);
+      console.error("Transaction failed:", error);
     }
   };
 
