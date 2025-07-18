@@ -1,12 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../../../App";
 import { pincodes, cityMap } from "../../../staticValues";
+import { db } from "../../../firebase/setup";
+import { collection, doc, getDoc, getDocs, onSnapshot, query, orderBy, limit, where } from "firebase/firestore";
 
 const CheckOutForm = ({ sendOtp, placeOrder }) => {
   const { order, setOrder } = useContext(Context);
   const [checkFormInputs, setCheckformInputs] = useState(false);
   const [tokenExists, setTokenExists] = useState(true);
   const [minDate, setMinDate] = useState("");
+  const [areasList, setAreasList] = useState([]);
 
   const indianMobileNumberRegex = /^[6-9]\d{9}$/;
   const handleFormValidations = () => {
@@ -51,8 +54,27 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
   const accessToken = localStorage.getItem("choose-your-goat-token");
 
   useEffect(() => {
-    order.userPinCode = localStorage.getItem("true-meat-location");
-    order.userCity = cityMap[order.userPinCode];
+    const getRestrictions = async () => {
+      try {
+        const q = query(collection(db, "availability"), where("pincode", "==", localStorage.getItem("true-meat-location")), limit(1));
+        const snapshot = await getDocs(q);
+        let pincodes = [];
+        if (!snapshot.empty) {
+          pincodes = snapshot.docs[0].data(); // This is your single matching document
+        } else {
+          alert("Selected pincode is not valid.");
+        }
+
+        order.userPinCode = pincodes.pincode;
+        setAreasList(pincodes.areas);
+      } catch (error) {
+        return error;
+      }
+    };
+
+    getRestrictions();
+
+    // order.userCity = cityMap[order.userPinCode];
 
     updateMinDate();
     const interval = setInterval(updateMinDate, 60000);
@@ -221,7 +243,7 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                     {" "}
                     City
                   </label>
-                  <input
+                  {/* <input
                     type="text"
                     id="city"
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
@@ -229,7 +251,29 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                     readOnly
                     // value={"Sangareddy"}
                     value={order.userCity}
-                  />
+                  /> */}
+
+                  <select
+                    id="city"
+                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                    value={order.userCity}
+                    onChange={(e) =>
+                      setOrder((prev) => ({
+                        ...prev,
+                        userCity: e.target.value,
+                      }))
+                    }
+                  >
+                    <option key={0} value="">
+                      Select City
+                    </option>
+                    {areasList.map((area, index) => (
+                      <option key={index + 1} value={area}>
+                        {area}
+                      </option>
+                    ))}
+                  </select>
+
                   {checkFormInputs && (!order?.userCity?.length || order?.userCity?.length < 1) && (
                     <span className="text-sm text-red-500 ps-1">Enter a valid City</span>
                   )}

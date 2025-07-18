@@ -11,7 +11,6 @@ import UserOrders from "./components/UserOrders/UserOrders";
 import LoginPage from "./components/LoginPage/LoginPage";
 import Homepage from "./components/Homepage/Homepage";
 import ChickenPage from "./components/ChickenPage/ChickenPage";
-import { pincodes } from "./staticValues";
 import PopupModal from "./components/Modals/PopupModal";
 
 export const Context = React.createContext();
@@ -32,6 +31,7 @@ const App = () => {
     gpsLocation: "",
     totalBill: 0,
   });
+  const [pincodes, setPincodes] = useState([]);
 
   const getUser = async (userId) => {
     try {
@@ -56,6 +56,19 @@ const App = () => {
       return error;
     }
   };
+
+  async function getPincodes() {
+    try {
+      let pincodes = await getDocs(collection(db, "availability"));
+      let result = [];
+      pincodes.forEach((doc) => {
+        result.push(doc.data().pincode);
+      });
+      return result;
+    } catch (error) {
+      return error;
+    }
+  }
 
   useEffect(() => {
     const unsubscribeGoats = onSnapshot(query(collection(db, "goats"), orderBy("deliveryDateTimestamp", "desc"), limit(3)), (snapshot) => {
@@ -109,6 +122,12 @@ const App = () => {
 
     // for location popup
 
+    //get pincodes from db
+    const fetchPincodes = async () => {
+      const pincodesArr = await getPincodes();
+      setPincodes(pincodesArr);
+    };
+    fetchPincodes();
     setLocationName(localStorage.getItem("true-meat-location"));
 
     if (localStorage.getItem("true-meat-location")?.length == 0 || !localStorage.getItem("true-meat-location")?.length) {
@@ -176,6 +195,7 @@ const App = () => {
                 <option key={0} value="">
                   Select Pincode
                 </option>
+                {console.log(pincodes)}
                 {pincodes.map((pinCode, index) => (
                   <option key={index + 1} value={pinCode}>
                     {pinCode}

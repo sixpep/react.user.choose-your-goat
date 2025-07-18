@@ -3,27 +3,28 @@ import styles from "./Homepage.module.css";
 import MeatTile from "./MeatTileComponent/MeatTile";
 import { motion } from "framer-motion";
 import { db } from "../../firebase/setup";
-import { doc, getDoc } from "firebase/firestore";
-import { chickenRestrictedAt, muttonRestrictedAt } from "../../staticValues";
-
-const MeatTileProps = [
-  {
-    title: "Mutton",
-    imgSrc: "/images/mutonRightEdge.png",
-    tilePath: "/mutton",
-    restrictedAt: muttonRestrictedAt,
-  },
-  {
-    title: "Chicken",
-    imgSrc: "/images/chickenRightEdge.png",
-    tilePath: "/chicken",
-    restrictedAt: chickenRestrictedAt,
-  },
-];
+import { collection, doc, getDoc, getDocs, onSnapshot, query, orderBy, limit, where } from "firebase/firestore";
 
 // const Homepage = ({ selectLocationPopup, setSelectLocationPopup, setLocationName, locationName, isPopupVisible, setPopupVisible }) => {
 const Homepage = ({ isPopupVisible, setPopupVisible }) => {
   const [popupData, setPopupData] = useState({});
+  const [muttonRestricted, setMuttonRestricted] = useState(false);
+  const [chickenRestricted, setChickenRestricted] = useState(false);
+
+  const MeatTileProps = [
+    {
+      title: "Mutton",
+      imgSrc: "/images/mutonRightEdge.png",
+      tilePath: "/mutton",
+      restrictedAt: muttonRestricted,
+    },
+    {
+      title: "Chicken",
+      imgSrc: "/images/chickenRightEdge.png",
+      tilePath: "/chicken",
+      restrictedAt: chickenRestricted,
+    },
+  ];
 
   useEffect(() => {
     const fetchPopupData = async () => {
@@ -43,7 +44,26 @@ const Homepage = ({ isPopupVisible, setPopupVisible }) => {
       }
     };
 
+    const getRestrictions = async () => {
+      try {
+        const q = query(collection(db, "availability"), where("pincode", "==", localStorage.getItem("true-meat-location")), limit(1));
+        const snapshot = await getDocs(q);
+        let pincodes = [];
+        if (!snapshot.empty) {
+          pincodes = snapshot.docs[0].data(); // This is your single matching document
+        } else {
+          alert("Selected pincode is not valid.");
+        }
+
+        setChickenRestricted(!pincodes.chickenOrders);
+        setMuttonRestricted(!pincodes.muttonOrders);
+      } catch (error) {
+        return error;
+      }
+    };
+
     fetchPopupData();
+    getRestrictions();
   }, []);
 
   const closePopup = () => {
@@ -105,10 +125,7 @@ const Homepage = ({ isPopupVisible, setPopupVisible }) => {
         </div>
         <div className={styles.meatTiles}>
           {MeatTileProps.map(
-            (tile, ind) =>
-              !tile.restrictedAt.includes(localStorage.getItem("true-meat-location")) && (
-                <MeatTile key={ind} title={tile.title} imgSrc={tile.imgSrc} tilePath={tile.tilePath} />
-              )
+            (tile, ind) => !tile.restrictedAt && <MeatTile key={ind} title={tile.title} imgSrc={tile.imgSrc} tilePath={tile.tilePath} />
           )}
         </div>
         <footer className={styles.footer}>

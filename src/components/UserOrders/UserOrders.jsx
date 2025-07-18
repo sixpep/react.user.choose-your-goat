@@ -5,6 +5,7 @@ import { Context } from "../../App";
 import { db } from "../../firebase/setup";
 import { LuMoveLeft } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { color } from "framer-motion";
 
 const UserOrders = () => {
   const [userOrders, setUserOrders] = useState([]);
@@ -134,6 +135,20 @@ const UserOrders = () => {
                   <div className={styles.orderDetails}>
                     <p>Address: {`${order.userAddress}, ${order.landmark}`}</p>
                   </div>
+                  {order.status && (
+                    <div className={styles.orderDetails}>
+                      <p>
+                        Status:{" "}
+                        <spam
+                          style={{
+                            color: "red",
+                          }}
+                        >
+                          {order.status}
+                        </spam>
+                      </p>
+                    </div>
+                  )}
                 </div>
               );
             } else {
