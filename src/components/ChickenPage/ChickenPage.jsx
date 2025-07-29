@@ -35,7 +35,9 @@ const ChickenPage = () => {
   useEffect(() => {
     async function checkPermision() {
       try {
-        let permisionsDoc = await getDocs(query(collection(db, "availability"), where("pincode", "==", localStorage.getItem("true-meat-location")), limit(1)));
+        let permisionsDoc = await getDocs(
+          query(collection(db, "availability"), where("pincode", "==", localStorage.getItem("true-meat-location")), limit(1))
+        );
         if (!permisionsDoc.empty) {
           permisionsDoc = permisionsDoc.docs[0].data();
 
@@ -55,6 +57,14 @@ const ChickenPage = () => {
 
     checkPermision();
   }, []);
+
+  function onChickenBag() {
+    if (localStorage.getItem("choose-your-goat-userId")) {
+      navigate("/cart");
+    } else {
+      navigate("/login?redirect=/cart");
+    }
+  }
 
   return (
     <div className={styles.container}>
@@ -122,7 +132,8 @@ const ChickenPage = () => {
           Total Price: <span> ₹{order.totalBill}</span>
         </p>
         <button
-          onClick={() => navigate("/cart")}
+          // onClick={() => navigate("/cart")}
+          onClick={onChickenBag}
           disabled={order.totalBill <= 0}
           style={{
             opacity: order.meatRequirements.length < 1 ? 0.5 : 1,

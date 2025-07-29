@@ -5,7 +5,7 @@ import styles from "../Meat Catalog/Cart/Cart.module.css";
 import { useNavigate } from "react-router-dom";
 import { LuMoveLeft } from "react-icons/lu";
 
-const LoginPage = () => {
+const LoginPage = ({ fetchUserData }) => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [mobileNumberError, setMobileNumberError] = useState("");
   const [otp, setOtp] = useState("");
@@ -31,11 +31,7 @@ const LoginPage = () => {
         size: "invisible",
       });
 
-      const confirm = await signInWithPhoneNumber(
-        auth,
-        "+91 " + mobileNumber,
-        recaptcha
-      );
+      const confirm = await signInWithPhoneNumber(auth, "+91 " + mobileNumber, recaptcha);
 
       console.log("confirm", confirm);
 
@@ -47,19 +43,38 @@ const LoginPage = () => {
     }
   };
 
+  function extractQuery(queryString) {
+    if (!queryString.startsWith("?")) return {};
+
+    const query = queryString.slice(1); // remove the leading '?'
+    const pairs = query.split("&");
+    const resultQuery = {};
+
+    for (const element of pairs) {
+      const [key, value] = element.split("=");
+      resultQuery[decodeURIComponent(key)] = decodeURIComponent(value || "");
+    }
+
+    return resultQuery;
+  }
+
   const verifyOtp = async () => {
     setShowOtpBuffer(true);
     try {
       const otpVerification = await confirmation.confirm(otp);
       console.log("otpVerification", otpVerification);
-      localStorage.setItem(
-        "choose-your-goat-token",
-        otpVerification.user.accessToken
-      );
+      localStorage.setItem("choose-your-goat-token", otpVerification.user.accessToken);
       localStorage.setItem("choose-your-goat-userId", otpVerification.user.uid);
       setShowOtpBuffer(false);
       setOtpError("");
-      window.location.href = "/";
+
+      let redirectQuery = extractQuery(window.location.search);
+      if (redirectQuery.redirect) {
+        await fetchUserData();
+        navigate(redirectQuery.redirect);
+      } else {
+        window.location.href = "/";
+      }
     } catch (error) {
       setShowOtpBuffer(false);
       setOtpError("Enter a valid OTP");
@@ -82,15 +97,10 @@ const LoginPage = () => {
         <div className="mt-4 min-h-screen flex flex-col items-center px-4 py-12 mx-auto md:h-screen lg:py-0">
           <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                Sign in to your account
-              </h1>
+              <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Sign in to your account</h1>
               <div className="space-y-4 md:space-y-6" action="#">
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
+                  <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     Your Mobile Number
                   </label>
                   <input
@@ -102,18 +112,11 @@ const LoginPage = () => {
                     required=""
                     onChange={(e) => setMobileNumber(e.target.value)}
                   />
-                  {mobileNumberError && (
-                    <span className="text-sm text-red-500 ps-1">
-                      {mobileNumberError}
-                    </span>
-                  )}
+                  {mobileNumberError && <span className="text-sm text-red-500 ps-1">{mobileNumberError}</span>}
                 </div>
                 {confirmation && (
                   <div>
-                    <label
-                      htmlFor="number"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
+                    <label htmlFor="number" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                       OTP
                     </label>
                     <input
@@ -125,11 +128,7 @@ const LoginPage = () => {
                       required=""
                       onChange={(e) => setOtp(e.target.value)}
                     />
-                    {otpError && (
-                      <span className="text-sm text-red-500 ps-1">
-                        {otpError}
-                      </span>
-                    )}
+                    {otpError && <span className="text-sm text-red-500 ps-1">{otpError}</span>}
                   </div>
                 )}
                 {/* <div className="flex items-center justify-between">
@@ -160,21 +159,14 @@ const LoginPage = () => {
                   </a>
                 </div> */}
                 <span className="text-xs text-center text-neutral-500 leading-3">
-                  We will send you a <strong>One Time Password</strong> on your
-                  phone number
+                  We will send you a <strong>One Time Password</strong> on your phone number
                 </span>
                 <button
                   onClick={confirmation ? verifyOtp : sendOtp}
                   style={{ backgroundColor: "#1d1e22", color: "white" }}
                   className="w-full text-white flex justify-center bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >
-                  {showOtpBuffer ? (
-                    <div className={styles.loginLoader}></div>
-                  ) : confirmation ? (
-                    "Verify OTP"
-                  ) : (
-                    "Send OTP"
-                  )}
+                  {showOtpBuffer ? <div className={styles.loginLoader}></div> : confirmation ? "Verify OTP" : "Send OTP"}
                 </button>
                 {/* <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                     Don’t have an account yet?{" "}

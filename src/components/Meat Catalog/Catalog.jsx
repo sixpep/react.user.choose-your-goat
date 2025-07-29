@@ -54,11 +54,24 @@ const Catalog = () => {
     fetchNextGoatDate();
   }, []);
 
+  function onMuttonBag() {
+    if (localStorage.getItem("choose-your-goat-userId")) {
+      navigate("/cart");
+    } else {
+      navigate("/login?redirect=/cart");
+    }
+  }
+
   return (
     <div className={styles.container}>
       {showFutureGoatPopup && nextGoatDate && (
         <div className={styles.nextGoatPopup}>
-          <PopupModal title="Listing of premium goats!" description="Our next premium goats will be listed on " nextDate={nextGoatDate} setShowFutureGoatPopup={setShowFutureGoatPopup} />
+          <PopupModal
+            title="Listing of premium goats!"
+            description="Our next premium goats will be listed on "
+            nextDate={nextGoatDate}
+            setShowFutureGoatPopup={setShowFutureGoatPopup}
+          />
         </div>
       )}
 
@@ -68,7 +81,8 @@ const Catalog = () => {
         <p>
           Total Price: <span> ₹ {order.totalBill}</span>
         </p>
-        <button onClick={() => navigate("/cart")} disabled={order.totalBill <= 0} style={{ opacity: order.meatRequirements.length < 1 ? 0.5 : 1 }}>
+        {/* <button onClick={() => navigate("/cart")} disabled={order.totalBill <= 0} style={{ opacity: order.meatRequirements.length < 1 ? 0.5 : 1 }}> */}
+        <button onClick={onMuttonBag} disabled={order.totalBill <= 0} style={{ opacity: order.meatRequirements.length < 1 ? 0.5 : 1 }}>
           <BsHandbag />
           <p>Bag</p>
         </button>

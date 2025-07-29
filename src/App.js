@@ -70,6 +70,29 @@ const App = () => {
     }
   }
 
+  const fetchUserData = async () => {
+    const userToken = localStorage.getItem("choose-your-goat-token");
+
+    if (userToken) {
+      try {
+        const decodedToken = jwtDecode(userToken);
+        const user = await getUser(decodedToken.sub);
+        const userAddress = await getUserAddress(decodedToken.sub);
+
+        setOrder((prev) => ({
+          ...prev,
+          userId: decodedToken.sub,
+          userPhoneNumber: user?.userPhoneNumber,
+          userName: user?.userName,
+          userAddress: userAddress[0]?.userAddress,
+          landmark: userAddress[0]?.landmark,
+        }));
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    }
+  };
+
   useEffect(() => {
     const unsubscribeGoats = onSnapshot(query(collection(db, "goats"), orderBy("deliveryDateTimestamp", "desc"), limit(3)), (snapshot) => {
       const updatedGoatsData = snapshot.docs.map((doc) => ({
@@ -95,28 +118,28 @@ const App = () => {
       setHensData(updatedHensData);
     });
 
-    const fetchUserData = async () => {
-      const userToken = localStorage.getItem("choose-your-goat-token");
+    // const fetchUserData = async () => {
+    //   const userToken = localStorage.getItem("choose-your-goat-token");
 
-      if (userToken) {
-        try {
-          const decodedToken = jwtDecode(userToken);
-          const user = await getUser(decodedToken.sub);
-          const userAddress = await getUserAddress(decodedToken.sub);
+    //   if (userToken) {
+    //     try {
+    //       const decodedToken = jwtDecode(userToken);
+    //       const user = await getUser(decodedToken.sub);
+    //       const userAddress = await getUserAddress(decodedToken.sub);
 
-          setOrder((prev) => ({
-            ...prev,
-            userId: decodedToken.sub,
-            userPhoneNumber: user?.userPhoneNumber,
-            userName: user?.userName,
-            userAddress: userAddress[0]?.userAddress,
-            landmark: userAddress[0]?.landmark,
-          }));
-        } catch (error) {
-          console.error("Failed to fetch user:", error);
-        }
-      }
-    };
+    //       setOrder((prev) => ({
+    //         ...prev,
+    //         userId: decodedToken.sub,
+    //         userPhoneNumber: user?.userPhoneNumber,
+    //         userName: user?.userName,
+    //         userAddress: userAddress[0]?.userAddress,
+    //         landmark: userAddress[0]?.landmark,
+    //       }));
+    //     } catch (error) {
+    //       console.error("Failed to fetch user:", error);
+    //     }
+    //   }
+    // };
 
     fetchUserData();
 
@@ -166,7 +189,7 @@ const App = () => {
                 />
               }
             />
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/login" element={<LoginPage fetchUserData={fetchUserData} />} />
             <Route path="/mutton" element={<Catalog />} />
             <Route path="/chicken" element={<ChickenPage />} />
             <Route path="/cart" element={<Cart />} />
@@ -196,7 +219,7 @@ const App = () => {
                   Select Pincode
                 </option>
                 {console.log(pincodes)}
-                {pincodes.map((pinCode, index) => (
+                {pincodes?.map((pinCode, index) => (
                   <option key={index + 1} value={pinCode}>
                     {pinCode}
                   </option>

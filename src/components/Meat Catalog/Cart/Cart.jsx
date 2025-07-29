@@ -115,6 +115,25 @@ const Cart = () => {
     setShowVerificationLoading(false);
     setShowConfirmationLoading(true);
 
+    //get user name from db, if userName is not present, update it in the db
+    const userRef = doc(db, "users", localStorage.getItem("choose-your-goat-userId"));
+    try {
+      let user = await getDoc(userRef);
+      if (!user) {
+        throw new Error("Doc not found");
+      }
+
+      user = user.data();
+      if (!user.userName) {
+        await updateDoc(userRef, { userName: order.userName });
+        console.log("User name updated");
+      } else {
+        console.log("Username already exists.");
+      }
+    } catch (error) {
+      console.log("User name update failed");
+    }
+
     if (order.orderType === "chicken") {
       const deliveryFee = 20;
       const docRef = await addDoc(collection(db, "chickenOrders"), {
