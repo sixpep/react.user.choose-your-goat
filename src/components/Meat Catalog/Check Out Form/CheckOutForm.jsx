@@ -113,7 +113,7 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                     placeholder="Bonnie Green"
                     onChange={handleChangeInput}
-                    readOnly={tokenExists}
+                    // readOnly={tokenExists}
                     value={order.userName}
                   />
                   {checkFormInputs && order.userName.length < 1 && <span className="text-sm text-red-500 ps-1">Enter a valid name</span>}
