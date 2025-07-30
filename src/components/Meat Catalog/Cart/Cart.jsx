@@ -111,6 +111,24 @@ const Cart = () => {
     return true;
   };
 
+  function getCurrentLocation() {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject);
+    });
+  }
+
+  async function handleLocation() {
+    try {
+      const position = await getCurrentLocation();
+      const { latitude, longitude } = position.coords;
+      console.log("Lat:", latitude, "Lng:", longitude);
+      return { latitude, longitude }; // ✅ Now you can return it
+    } catch (error) {
+      console.error("Error getting location:", error);
+      return {};
+    }
+  }
+
   const placeOrder = async () => {
     setShowVerificationLoading(false);
     setShowConfirmationLoading(true);
@@ -133,6 +151,9 @@ const Cart = () => {
     } catch (error) {
       console.log("User name update failed");
     }
+
+    //add location to order
+    order.geolocation = await handleLocation();
 
     if (order.orderType === "chicken") {
       const deliveryFee = 20;

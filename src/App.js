@@ -28,7 +28,7 @@ const App = () => {
     userPhoneNumber: "",
     userAddress: "",
     landmark: "",
-    gpsLocation: "",
+    geolocation: "",
     totalBill: 0,
   });
   const [pincodes, setPincodes] = useState([]);
