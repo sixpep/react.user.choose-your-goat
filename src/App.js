@@ -21,6 +21,8 @@ const App = () => {
   const [locationName, setLocationName] = useState("");
   const [goatsData, setGoatsData] = useState([]);
   const [hensData, setHensData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   const [order, setOrder] = useState({
     meatRequirements: [],
     userId: "",
@@ -94,6 +96,7 @@ const App = () => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     const unsubscribeGoats = onSnapshot(query(collection(db, "goats"), orderBy("deliveryDateTimestamp", "desc"), limit(3)), (snapshot) => {
       const updatedGoatsData = snapshot.docs.map((doc) => ({
         docId: doc.id,
@@ -149,6 +152,7 @@ const App = () => {
     const fetchPincodes = async () => {
       const pincodesArr = await getPincodes();
       setPincodes(pincodesArr);
+      setIsLoading(false);
     };
     fetchPincodes();
     setLocationName(localStorage.getItem("true-meat-location"));
@@ -231,6 +235,11 @@ const App = () => {
                 </button>
               )}
             </div>
+          </div>
+        )}
+        {isLoading && (
+          <div className="loading-overlay">
+            <div className="spinner" />
           </div>
         )}
       </div>
