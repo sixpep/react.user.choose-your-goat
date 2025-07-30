@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { addDoc, collection, doc, updateDoc, getDoc, setDoc, runTransaction } from "firebase/firestore";
 import emailjs from "@emailjs/browser";
 import axios from "axios";
+import { getCurrentDay } from "../../../utils/getDay.utils";
 
 const Cart = () => {
   const { order, setOrder, goatsData, hensData } = useContext(Context);
@@ -291,6 +292,18 @@ const Cart = () => {
             userId: localStorage.getItem("choose-your-goat-userId"),
             totalBill: billCalculated,
           });
+        }
+        if (getCurrentDay() == "Sunday") {
+          //send remainder mail
+          sendEmailOrder(
+            order.userName,
+            order.userPhoneNumber,
+            order.userAddress,
+            order.landmark,
+            order.meatRequirements,
+            order.totalBill,
+            order.scheduledDeliveryDate
+          );
         }
       });
 
