@@ -5,7 +5,7 @@ import Catalog from "./components/Meat Catalog/Catalog";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Cart from "./components/Meat Catalog/Cart/Cart";
 import { db } from "../src/firebase/setup";
-import { collection, doc, getDoc, getDocs, onSnapshot, query, orderBy, limit } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, onSnapshot, query, where, orderBy, limit } from "firebase/firestore";
 import { jwtDecode } from "jwt-decode";
 import UserOrders from "./components/UserOrders/UserOrders";
 import LoginPage from "./components/LoginPage/LoginPage";
@@ -47,13 +47,13 @@ const App = () => {
   const getUserAddress = async (userId) => {
     try {
       const addresses = [];
-      const addressesQuery = await getDocs(collection(db, "addresses"));
-      addressesQuery.forEach((doc) => {
+      const addressesQuery = await getDocs(query(collection(db, "addresses"), where("userId", "==", userId)));
+
+      addressesQuery.docs.forEach((doc) => {
         addresses.push(doc.data());
       });
 
-      const addressDoc = addresses.filter((item) => item.userId === userId);
-      return addressDoc;
+      return addresses;
     } catch (error) {
       return error;
     }
