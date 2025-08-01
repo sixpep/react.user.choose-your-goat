@@ -114,7 +114,8 @@ const Homepage = ({ isPopupVisible, setPopupVisible }) => {
           </div>
         </div>
         <div className={styles.offerBanner}>
-          <img src="/images/homeBanner.png" alt="" />
+          {/* <img src="/images/homeBanner.png" alt="" /> */}
+          <img src="/images/TM_BANNER_WIth_Referral.jpeg" alt="" />
         </div>
         <div className={styles.choosingTitleWrap}>
           <h2>
