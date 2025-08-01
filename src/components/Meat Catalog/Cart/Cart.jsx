@@ -138,11 +138,12 @@ const Cart = () => {
     const userRef = doc(db, "users", localStorage.getItem("choose-your-goat-userId"));
     try {
       let user = await getDoc(userRef);
+      user = user.data();
+
       if (!user) {
         throw new Error("Doc not found");
       }
 
-      user = user.data();
       if (!user.userName) {
         await updateDoc(userRef, { userName: order.userName });
         console.log("User name updated");

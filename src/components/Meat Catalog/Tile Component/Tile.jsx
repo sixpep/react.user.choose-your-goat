@@ -8,6 +8,11 @@ import { Context } from "../../../App";
 import { LuMoveLeft } from "react-icons/lu";
 import { IoMdLock } from "react-icons/io";
 import { motion } from "framer-motion";
+import { addDoc, collection, doc, getDoc, getDocs, limit, query, where } from "firebase/firestore";
+import { db } from "../../../firebase/setup";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { MdDoneOutline } from "react-icons/md";
+import { space } from "postcss/lib/list";
 
 const Tile = ({
   docId,
@@ -49,6 +54,8 @@ const Tile = ({
   nextUnlockText,
 }) => {
   const [goatDescriptionVisible, setGoatDescriptionVisible] = useState(false);
+  const [notifyingMutton, setNotifyingMutton] = useState(false);
+  const [muttonNotified, setMuttonNotified] = useState(false);
   const { order, setOrder, goatsData } = useContext(Context);
 
   const currentGoatDoc = order.meatRequirements.find((item) => item.goatId === docId);
@@ -126,6 +133,53 @@ const Tile = ({
 
   const handleShowGoatInfo = () => {
     setGoatDescriptionVisible(!goatDescriptionVisible);
+  };
+
+  const handelNotify = async (notifyAbout) => {
+    if (localStorage.getItem("choose-your-goat-userId")) {
+      const userRef = doc(db, "users", localStorage.getItem("choose-your-goat-userId"));
+      try {
+        let user = await getDoc(userRef);
+        user = user.data();
+
+        if (!user) {
+          throw new Error("User not found. Please login again.");
+        }
+
+        user.notifyAbout = notifyAbout;
+        user.userId = localStorage.getItem("choose-your-goat-userId");
+        user.goatId = docId;
+
+        // check if request already exists
+        let existingRequest = await getDocs(
+          query(
+            collection(db, "notify"),
+            where("goatId", "==", user.goatId),
+            where("notifyAbout", "==", user.notifyAbout),
+            where("userId", "==", user.userId),
+            limit(1)
+          )
+        );
+
+        if (existingRequest.empty) {
+          await addDoc(collection(db, "notify"), user);
+          console.log("Request added to db");
+        }
+
+        setMuttonNotified(true);
+        setNotifyingMutton(false);
+
+        setTimeout(() => {
+          setMuttonNotified(false);
+        }, 5000);
+      } catch (error) {
+        alert(error.message);
+        setNotifyingMutton(false);
+      }
+    } else {
+      alert('Please login and then click "Notify" to get notified');
+      setNotifyingMutton(false);
+    }
   };
 
   useEffect(() => {
@@ -314,7 +368,15 @@ const Tile = ({
                 </span>
               </div>
             </div>
-            <span>Each share weighs between 480 and 520 grams and includes one nalli, liver, and all cuts of the meat.</span>
+            <span>
+              Each share weighs between 480 and 520 grams and includes one nalli, liver, and all cuts of the meat.
+              {!remainingMuttonShares && (
+                <>
+                  <br />
+                  <span>Please click "Notify" to get notified when shares are available.</span>
+                </>
+              )}
+            </span>
 
             <div className={styles.controlPrices}>
               <div className={styles.price}>
@@ -323,22 +385,50 @@ const Tile = ({
                 </p>
                 {/* <p>₹ {muttonShareCost * numberOfMuttonShares}</p> */}
               </div>
-              <div
-                className={styles.quantityButtons}
-                style={{
-                  opacity: remainingMuttonShares < 1 || !isActive ? 0.5 : 1,
-                }}
-              >
-                <button onClick={() => handleDecrement("numberOfMuttonShares")}>-</button>
-                <p>{numberOfMuttonShares || 0}</p>
-                {/* <input
+              {!remainingMuttonShares ? (
+                <div className={styles.notifyDiv}>
+                  {!muttonNotified && !notifyingMutton && (
+                    <button
+                      className={styles.notify}
+                      type="button"
+                      onClick={async () => {
+                        setNotifyingMutton(true);
+                        await handelNotify("Mutton Shares");
+                      }}
+                    >
+                      Notify
+                    </button>
+                  )}
+
+                  {notifyingMutton && (
+                    <button className={styles.notify} disabled="disabled">
+                      <AiOutlineLoading3Quarters className={styles.spin} />
+                    </button>
+                  )}
+                  {muttonNotified && (
+                    <button className={styles.notify} disabled="disabled">
+                      <MdDoneOutline className={styles.doneTick} />
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingMuttonShares < 1 || !isActive ? 0.5 : 1,
+                  }}
+                >
+                  <button onClick={() => handleDecrement("numberOfMuttonShares")}>-</button>
+                  <p>{numberOfMuttonShares || 0}</p>
+                  {/* <input
                   type="text"
                   id="numberOfMuttonShares"
                   readOnly
                   value={numberOfMuttonShares || 0}
                 /> */}
-                <button onClick={() => handleIncrement("numberOfMuttonShares", remainingMuttonShares)}>+</button>
-              </div>
+                  <button onClick={() => handleIncrement("numberOfMuttonShares", remainingMuttonShares)}>+</button>
+                </div>
+              )}
             </div>
 
             {/* <div className={styles.quantityLabels}>
