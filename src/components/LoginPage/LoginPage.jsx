@@ -1,9 +1,10 @@
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import React, { useState } from "react";
-import { auth } from "../../firebase/setup";
+import { auth, db } from "../../firebase/setup";
 import styles from "../Meat Catalog/Cart/Cart.module.css";
 import { useNavigate } from "react-router-dom";
 import { LuMoveLeft } from "react-icons/lu";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 const LoginPage = ({ fetchUserData }) => {
   const [mobileNumber, setMobileNumber] = useState("");
@@ -58,22 +59,47 @@ const LoginPage = ({ fetchUserData }) => {
     return resultQuery;
   }
 
+  async function createUserIndb(userId) {
+    try {
+      // check if user exists
+      const q = query(collection(db, "users"), where("userId", "==", userId));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        return userDoc.data();
+      } else {
+        await addDoc(collection(db, "users"), {
+          userId: userId,
+          userPhoneNumber: mobileNumber,
+        });
+      }
+    } catch (e) {
+      alert(e?.message);
+    }
+  }
+
   const verifyOtp = async () => {
     setShowOtpBuffer(true);
     try {
       const otpVerification = await confirmation.confirm(otp);
       console.log("otpVerification", otpVerification);
+
+      // create user in db
+      await createUserIndb(otpVerification.user.uid);
+
       localStorage.setItem("choose-your-goat-token", otpVerification.user.accessToken);
       localStorage.setItem("choose-your-goat-userId", otpVerification.user.uid);
       setShowOtpBuffer(false);
       setOtpError("");
 
+      await fetchUserData();
+
       let redirectQuery = extractQuery(window.location.search);
       if (redirectQuery.redirect) {
-        await fetchUserData();
         navigate(redirectQuery.redirect);
       } else {
-        window.location.href = "/";
+        navigate("/");
       }
     } catch (error) {
       setShowOtpBuffer(false);

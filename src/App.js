@@ -37,8 +37,15 @@ const App = () => {
 
   const getUser = async (userId) => {
     try {
-      const userDoc = (await getDoc(doc(db, "users", userId))).data();
-      return userDoc;
+      const q = query(collection(db, "users"), where("userId", "==", userId));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        return userDoc.data();
+      } else {
+        alert("user not found");
+      }
     } catch (error) {
       return error;
     }
@@ -90,6 +97,8 @@ const App = () => {
           landmark: userAddress[0]?.landmark,
         }));
       } catch (error) {
+        console.log("no toek");
+        alert("no tokjen");
         console.error("Failed to fetch user:", error);
       }
     }
