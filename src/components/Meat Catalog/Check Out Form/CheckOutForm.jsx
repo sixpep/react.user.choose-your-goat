@@ -12,6 +12,7 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
   const [areasList, setAreasList] = useState([]);
 
   const indianMobileNumberRegex = /^[6-9]\d{9}$/;
+
   const handleFormValidations = () => {
     setCheckformInputs(true);
     if (
@@ -114,9 +115,11 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                     placeholder="Bonnie Green"
                     onChange={handleChangeInput}
                     // readOnly={tokenExists}
-                    value={order.userName}
+                    value={order?.userName}
                   />
-                  {checkFormInputs && order.userName.length < 1 && <span className="text-sm text-red-500 ps-1">Enter a valid name</span>}
+                  {checkFormInputs && (order.userName?.length < 1 || !order?.userName) && (
+                    <span className="text-sm text-red-500 ps-1">Enter a valid name</span>
+                  )}
                 </div>
 
                 <div>
@@ -221,7 +224,9 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                     onChange={handleChangeInput}
                     value={order.userAddress}
                   />
-                  {checkFormInputs && order.userAddress.length < 1 && <span className="text-sm text-red-500 ps-1">Enter a valid address</span>}
+                  {checkFormInputs && (order?.userAddress?.length < 1 || !order?.userAddress) && (
+                    <span className="text-sm text-red-500 ps-1">Enter a valid address</span>
+                  )}
                 </div>
 
                 <div>
@@ -237,7 +242,9 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                     onChange={handleChangeInput}
                     value={order.landmark}
                   />
-                  {checkFormInputs && order?.landmark.length < 1 && <span className="text-sm text-red-500 ps-1">Enter a valid landmark</span>}
+                  {checkFormInputs && (order?.landmark?.length < 1 || !order?.landmark) && (
+                    <span className="text-sm text-red-500 ps-1">Enter a valid landmark</span>
+                  )}
                 </div>
 
                 <div>

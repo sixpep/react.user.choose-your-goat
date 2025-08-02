@@ -7,7 +7,7 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { SiTicktick } from "react-icons/si";
 import { db, auth } from "../../../firebase/setup";
 import { useNavigate } from "react-router-dom";
-import { addDoc, collection, doc, updateDoc, getDoc, setDoc, runTransaction } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc, getDoc, setDoc, runTransaction, getDocs, query, where } from "firebase/firestore";
 import emailjs from "@emailjs/browser";
 import axios from "axios";
 import { getCurrentDay } from "../../../utils/getDay.utils";
@@ -123,10 +123,10 @@ const Cart = () => {
       const position = await getCurrentLocation();
       const { latitude, longitude } = position.coords;
       console.log("Lat:", latitude, "Lng:", longitude);
-      return { latitude, longitude }; // ✅ Now you can return it
+      return { latitude, longitude };
     } catch (error) {
       console.error("Error getting location:", error);
-      return {};
+      return { latitude: "", longitude: "" };
     }
   }
 
@@ -134,15 +134,27 @@ const Cart = () => {
     setShowVerificationLoading(false);
     setShowConfirmationLoading(true);
 
-    //get user name from db, if userName is not present, update it in the db
-    const userRef = doc(db, "users", localStorage.getItem("choose-your-goat-userId"));
+    // //get user name from db, if userName is not present, update it in the db
     try {
-      let user = await getDoc(userRef);
-      user = user.data();
+      // const userRef = doc(db, "users", localStorage.getItem("choose-your-goat-userId"));
 
-      if (!user) {
-        throw new Error("Doc not found");
+      // let user = await getDoc(userRef);
+      // user = user.data();
+
+      // if (!user) {
+      //   throw new Error("user Doc not found");
+      // }
+
+      const q = query(collection(db, "users"), where("userId", "==", localStorage.getItem("choose-your-goat-userId")));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        return alert("user not found");
       }
+
+      const userDoc = querySnapshot.docs[0];
+      const user = userDoc.data();
+
+      const userRef = doc(db, "users", userDoc.id);
 
       if (!user.userName) {
         await updateDoc(userRef, { userName: order.userName });
@@ -151,7 +163,9 @@ const Cart = () => {
         console.log("Username already exists.");
       }
     } catch (error) {
-      console.log("User name update failed");
+      console.log("User name update failed", error);
+      alert(error?.message);
+      return;
     }
 
     //add location to order
@@ -181,6 +195,7 @@ const Cart = () => {
       setOrderConfirmation(true);
       return;
     }
+
     // else {
     //   try {
     //     const isUpdated = updateGoatDataQuantities();
@@ -281,6 +296,7 @@ const Cart = () => {
 
           // Add order (you must use collection().doc() and set to work in a transaction)
           const orderRef = doc(collection(db, "orders"));
+
           transaction.set(orderRef, {
             ...requirement,
             userName: order.userName,
@@ -314,6 +330,7 @@ const Cart = () => {
     } catch (error) {
       setShowConfirmationLoading(false);
       alert("Order failed: " + error.message);
+      console.log("Tx error", error);
       console.error("Transaction failed:", error);
     }
   };
