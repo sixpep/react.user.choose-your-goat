@@ -169,8 +169,7 @@ const Cart = () => {
     }
 
     //add location to order
-    let geolocation = await handleLocation();
-    order.geolocation = geolocation;
+    // order.geolocation = await handleLocation();
 
     if (order.orderType === "chicken") {
       const deliveryFee = 20;
@@ -309,7 +308,7 @@ const Cart = () => {
             orderedDate: new Date().getTime(),
             userId: localStorage.getItem("choose-your-goat-userId"),
             totalBill: billCalculated,
-            geolocation: geolocation,
+            geolocation: order.geolocation,
           });
         }
         if (getCurrentDay() == "Sunday") {

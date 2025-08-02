@@ -10,6 +10,8 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
   const [tokenExists, setTokenExists] = useState(true);
   const [minDate, setMinDate] = useState("");
   const [areasList, setAreasList] = useState([]);
+  const [showLocationFields, setShowLocationFields] = useState(false);
+  const [locationLoading, setLocationLoading] = useState(false);
 
   const indianMobileNumberRegex = /^[6-9]\d{9}$/;
 
@@ -52,6 +54,41 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
     let tomorrow = now.toISOString().split("T")[0];
 
     setMinDate(currentHour < 20 ? today : tomorrow);
+  };
+
+  const handleFetchLocation = () => {
+    setLocationLoading(true);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setOrder((prev) => ({
+          ...prev,
+          geolocation: {
+            latitude: latitude.toFixed(6),
+            longitude: longitude.toFixed(6),
+          },
+        }));
+        setShowLocationFields(true);
+        setLocationLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching location:", error);
+        alert("Failed to fetch location. Please enable location services.");
+        setOrder((prev) => ({
+          ...prev,
+          geolocation: {
+            latitude: "",
+            longitude: "",
+          },
+        }));
+        setLocationLoading(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+      }
+    );
   };
 
   const accessToken = localStorage.getItem("choose-your-goat-token");
@@ -285,6 +322,49 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
 
                   {checkFormInputs && (!order?.userCity?.length || order?.userCity?.length < 1) && (
                     <span className="text-sm text-red-500 ps-1">Enter a valid City</span>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="landmark" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                    {" "}
+                    Location
+                    <span className="block text-xs text-gray-500">
+                      Allowing us to access your location helps us deliver your product faster and more accurately.
+                    </span>{" "}
+                  </label>
+
+                  {!showLocationFields && (
+                    <button
+                      type="button"
+                      className="mb-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition"
+                      onClick={handleFetchLocation}
+                    >
+                      {locationLoading ? "Fetching..." : "Fetch Location"}
+                    </button>
+                  )}
+
+                  {showLocationFields && (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-gray-900 dark:text-white w-24">Latitude:</span>
+                        <input
+                          type="text"
+                          readOnly
+                          value={order.geolocation?.latitude || ""}
+                          className="flex-1 border-none bg-transparent text-sm text-gray-900 dark:text-white focus:outline-none"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-gray-900 dark:text-white w-24">Longitude:</span>
+                        <input
+                          type="text"
+                          readOnly
+                          value={order.geolocation?.longitude || ""}
+                          className="flex-1 border-none bg-transparent text-sm text-gray-900 dark:text-white focus:outline-none"
+                        />
+                      </div>
+                    </div>
                   )}
                 </div>
 

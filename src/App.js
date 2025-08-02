@@ -30,7 +30,7 @@ const App = () => {
     userPhoneNumber: "",
     userAddress: "",
     landmark: "",
-    geolocation: "",
+    geolocation: {},
     totalBill: 0,
   });
   const [pincodes, setPincodes] = useState([]);
