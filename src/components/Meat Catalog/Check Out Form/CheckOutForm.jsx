@@ -15,15 +15,15 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
   const handleFormValidations = () => {
     setCheckformInputs(true);
     if (
-      order.userName === "" ||
+      order?.userName === "" ||
       !indianMobileNumberRegex.test(order.userPhoneNumber) ||
-      order.userAddress === "" ||
-      order.landmark === "" ||
-      order.userPinCode === "" ||
-      !order.userPinCode ||
-      order.userCity === "" ||
-      !order.userCity ||
-      (order.orderType === "chicken" && !order.scheduledDeliveryDate)
+      order?.userAddress === "" ||
+      order?.landmark === "" ||
+      order?.userPinCode === "" ||
+      !order?.userPinCode ||
+      order?.userCity === "" ||
+      !order?.userCity ||
+      (order?.orderType === "chicken" && !order?.scheduledDeliveryDate)
     ) {
       return;
     } else if (localStorage.getItem("choose-your-goat-token")) {
