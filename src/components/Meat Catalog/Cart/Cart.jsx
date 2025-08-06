@@ -136,25 +136,14 @@ const Cart = () => {
 
     // //get user name from db, if userName is not present, update it in the db
     try {
-      // const userRef = doc(db, "users", localStorage.getItem("choose-your-goat-userId"));
+      const userRef = doc(db, "users", localStorage.getItem("choose-your-goat-userId"));
+      const userSnap = await getDoc(userRef);
 
-      // let user = await getDoc(userRef);
-      // user = user.data();
-
-      // if (!user) {
-      //   throw new Error("user Doc not found");
-      // }
-
-      const q = query(collection(db, "users"), where("userId", "==", localStorage.getItem("choose-your-goat-userId")));
-      const querySnapshot = await getDocs(q);
-      if (querySnapshot.empty) {
-        return alert("user not found");
+      if (!userSnap.exists()) {
+        return alert("User not found");
       }
 
-      const userDoc = querySnapshot.docs[0];
-      const user = userDoc.data();
-
-      const userRef = doc(db, "users", userDoc.id);
+      const user = userSnap.data();
 
       if (!user.userName) {
         await updateDoc(userRef, { userName: order.userName });

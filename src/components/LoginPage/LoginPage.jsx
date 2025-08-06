@@ -1,10 +1,11 @@
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { auth, db } from "../../firebase/setup";
 import styles from "../Meat Catalog/Cart/Cart.module.css";
 import { useNavigate } from "react-router-dom";
 import { LuMoveLeft } from "react-icons/lu";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection, getDoc, setDoc, getDocs, query, where, doc } from "firebase/firestore";
+import { Context } from "../../App";
 
 const LoginPage = ({ fetchUserData }) => {
   const [mobileNumber, setMobileNumber] = useState("");
@@ -13,6 +14,8 @@ const LoginPage = ({ fetchUserData }) => {
   const [otpError, setOtpError] = useState("");
   const [confirmation, setConfirmation] = useState();
   const [showOtpBuffer, setShowOtpBuffer] = useState(false);
+
+  const { order, setOrder, goatsData, hensData } = useContext(Context);
 
   const navigate = useNavigate();
 
@@ -61,18 +64,16 @@ const LoginPage = ({ fetchUserData }) => {
 
   async function createUserIndb(userId) {
     try {
-      // check if user exists
-      const q = query(collection(db, "users"), where("userId", "==", userId));
-      const querySnapshot = await getDocs(q);
+      //--------------------------
+      const userRef = doc(db, "users", userId);
+      const userSnap = await getDoc(userRef);
 
-      if (!querySnapshot.empty) {
-        const userDoc = querySnapshot.docs[0];
-        return userDoc.data();
+      if (userSnap.exists()) {
+        console.log("User Exists");
+        return userSnap.data();
       } else {
-        await addDoc(collection(db, "users"), {
-          userId: userId,
-          userPhoneNumber: mobileNumber,
-        });
+        console.log("Creating user");
+        await setDoc(doc(db, "users", userId), { userPhoneNumber: mobileNumber });
       }
     } catch (e) {
       alert(e?.message);
@@ -94,6 +95,9 @@ const LoginPage = ({ fetchUserData }) => {
       setOtpError("");
 
       await fetchUserData();
+
+      console.log("order after fetch user");
+      console.log(order);
 
       let redirectQuery = extractQuery(window.location.search);
       if (redirectQuery.redirect) {

@@ -37,12 +37,11 @@ const App = () => {
 
   const getUser = async (userId) => {
     try {
-      const q = query(collection(db, "users"), where("userId", "==", userId));
-      const querySnapshot = await getDocs(q);
+      const userRef = doc(db, "users", userId);
+      const userSnap = await getDoc(userRef);
 
-      if (!querySnapshot.empty) {
-        const userDoc = querySnapshot.docs[0];
-        return userDoc.data();
+      if (userSnap.exists()) {
+        return userSnap.data();
       } else {
         alert("user not found");
       }
@@ -85,6 +84,8 @@ const App = () => {
     if (userToken) {
       try {
         const decodedToken = jwtDecode(userToken);
+        console.log("decodedToken");
+        console.log(decodedToken);
         const user = await getUser(decodedToken.sub);
         const userAddress = await getUserAddress(decodedToken.sub);
 
