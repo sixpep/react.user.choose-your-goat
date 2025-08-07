@@ -452,3 +452,32 @@
 .notify:disabled {
   cursor: not-allowed;
 }
+
+.lockedDiv {
+  background-color: #8a8a8a;
+  color: #ffffff;
+  font-weight: 500;
+  width: 11%;
+  min-width: 140px;
+  font-size: 1.2rem;
+  border-radius: 6px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  transition: background-color 0.3s;
+}
+
+.locked {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+}

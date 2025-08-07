@@ -12,6 +12,8 @@ import { addDoc, collection, doc, getDoc, getDocs, limit, query, where } from "f
 import { db } from "../../../firebase/setup";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { MdDoneOutline } from "react-icons/md";
+import { FaLock } from "react-icons/fa6";
+
 import { space } from "postcss/lib/list";
 
 const Tile = ({
@@ -20,6 +22,7 @@ const Tile = ({
   gender,
   netWeight,
   meatOnlyWeight,
+  reservedMuttonSharesReleased,
   totalShares,
   totalKeemaShares,
   approxShareSize,
@@ -370,7 +373,7 @@ const Tile = ({
             </div>
             <span>
               Each share weighs between 480 and 520 grams and includes one nalli, liver, and all cuts of the meat.
-              {!remainingMuttonShares && (
+              {!remainingMuttonShares && !reservedMuttonSharesReleased && (
                 <>
                   <br />
                   <span>Please click "Notify" to get notified when shares are available.</span>
@@ -385,7 +388,7 @@ const Tile = ({
                 </p>
                 {/* <p>₹ {muttonShareCost * numberOfMuttonShares}</p> */}
               </div>
-              {!remainingMuttonShares ? (
+              {!remainingMuttonShares && !reservedMuttonSharesReleased ? (
                 <div className={styles.notifyDiv}>
                   {!muttonNotified && !notifyingMutton && (
                     <button

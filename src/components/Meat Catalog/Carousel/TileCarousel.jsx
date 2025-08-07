@@ -35,6 +35,7 @@ const TileCarousel = ({ order, setOrder }) => {
                 goatImage={item.goatImage}
                 gender={item.gender}
                 netWeight={item.netWeight}
+                reservedMuttonSharesReleased={item.reservedMuttonSharesReleased ?? true}
                 meatOnlyWeight={item.meatOnlyWeight}
                 totalShares={item.totalShares}
                 approxShareSize={item.approxShareSize}
