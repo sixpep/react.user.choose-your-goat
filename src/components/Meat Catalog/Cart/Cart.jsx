@@ -300,7 +300,7 @@ const Cart = () => {
             geolocation: order.geolocation,
           });
         }
-        if (getCurrentDay() == "Sunday") {
+        if (getCurrentDay(true) == "Sun") {
           //send remainder mail
           sendEmailOrder(
             order.userName,
@@ -309,7 +309,10 @@ const Cart = () => {
             order.landmark,
             order.meatRequirements,
             order.totalBill,
-            order.scheduledDeliveryDate
+            order.scheduledDeliveryDate ||
+              new Date().toLocaleDateString("en-CA", {
+                timeZone: "Asia/Kolkata",
+              })
           );
         }
       });
@@ -483,6 +486,7 @@ const Cart = () => {
       console.log("Email sent successfully", resp);
     } catch (error) {
       console.log("error in sending order email");
+      console.log(error);
     }
   };
 
