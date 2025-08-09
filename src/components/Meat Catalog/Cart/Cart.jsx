@@ -300,21 +300,21 @@ const Cart = () => {
             geolocation: order.geolocation,
           });
         }
-        if (getCurrentDay(true) == "Sun") {
-          //send remainder mail
-          sendEmailOrder(
-            order.userName,
-            order.userPhoneNumber,
-            order.userAddress,
-            order.landmark,
-            order.meatRequirements,
-            order.totalBill,
-            order.scheduledDeliveryDate ||
-              new Date().toLocaleDateString("en-CA", {
-                timeZone: "Asia/Kolkata",
-              })
-          );
-        }
+        // if (getCurrentDay(true) == "Sun") {
+        //   //send remainder mail
+        //   sendEmailOrder(
+        //     order.userName,
+        //     order.userPhoneNumber,
+        //     order.userAddress,
+        //     order.landmark,
+        //     order.meatRequirements,
+        //     order.totalBill,
+        //     order.scheduledDeliveryDate ||
+        //       new Date().toLocaleDateString("en-CA", {
+        //         timeZone: "Asia/Kolkata",
+        //       })
+        //   );
+        // }
       });
 
       // If we reach here, transaction was successful
