@@ -98,7 +98,7 @@ const Cart = () => {
             }
           });
 
-          if (Object.keys(updateData).length > 0) {
+          if (Object.keys(updateData)?.length > 0) {
             await updateDoc(goatRef, updateData);
           } else {
             console.error("No valid fields to update.");
@@ -246,7 +246,9 @@ const Cart = () => {
         currentSelectedAddressDetails.landmark,
         order.meatRequirements,
         order.totalBill + deliveryFee,
-        order.scheduledDeliveryDate
+        order.scheduledDeliveryDate,
+        order.orderType,
+        order.orderedDate || Date.now()
       );
 
       setShowConfirmationLoading(false);
@@ -324,21 +326,25 @@ const Cart = () => {
             geolocation: currentSelectedAddressDetails.geolocation,
           });
         }
-        // if (getCurrentDay(true) == "Sun") {
-        //   //send remainder mail
-        //   sendEmailOrder(
-        //     order.userName,
-        //     order.userPhoneNumber,
-        //     order.userAddress,
-        //     order.landmark,
-        //     order.meatRequirements,
-        //     order.totalBill,
-        //     order.scheduledDeliveryDate ||
-        //       new Date().toLocaleDateString("en-CA", {
-        //         timeZone: "Asia/Kolkata",
-        //       })
-        //   );
-        // }
+
+        if (getCurrentDay(true) == "Sun") {
+          //send remainder mail
+
+          sendEmailOrder(
+            order.userName,
+            order.userPhoneNumber,
+            order.userAddress,
+            order.landmark,
+            order.meatRequirements,
+            order.totalBill,
+            order.scheduledDeliveryDate ||
+              new Date().toLocaleDateString("en-CA", {
+                timeZone: "Asia/Kolkata",
+              }),
+            order.orderType || "mutton",
+            order.orderedDate || Date.now()
+          );
+        }
       });
 
       // If we reach here, transaction was successful
@@ -446,7 +452,7 @@ const Cart = () => {
       setOtp(newOtp);
 
       // Move to the next input if a digit was entered
-      if (value !== "" && index < otp.length - 1) {
+      if (value !== "" && index < otp?.length - 1) {
         inputRefs.current[index + 1].focus();
       }
     }
@@ -496,9 +502,20 @@ const Cart = () => {
   //   }
   // };
 
-  const sendEmailOrder = async (userName, userPhoneNumber, userAddress, landmark, meatRequirements, totalBill, scheduledDeliveryDate) => {
+  const sendEmailOrder = async (
+    userName,
+    userPhoneNumber,
+    userAddress,
+    landmark,
+    meatRequirements,
+    totalBill,
+    scheduledDeliveryDate,
+    orderType,
+    orderedDate
+  ) => {
     try {
       const resp = await axios.post("https://sendneworderemail-ypvdab2dka-uc.a.run.app", {
+        // const resp = await axios.post("http://127.0.0.1:5001/choose-your-goat/us-central1/sendNewOrderEmail", {
         userName: userName,
         userPhoneNumber: userPhoneNumber,
         userAddress: userAddress,
@@ -506,6 +523,8 @@ const Cart = () => {
         meatRequirements: meatRequirements,
         totalBill: totalBill,
         scheduledDeliveryDate: scheduledDeliveryDate,
+        orderType: orderType,
+        orderedDate: orderedDate,
       });
       console.log("Email sent successfully", resp);
     } catch (error) {
@@ -515,7 +534,7 @@ const Cart = () => {
   };
 
   useEffect(() => {
-    if (order.meatRequirements.length <= 0) {
+    if (order.meatRequirements?.length <= 0) {
       window.location.href = "/";
     }
 
