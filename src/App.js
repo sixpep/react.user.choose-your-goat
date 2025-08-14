@@ -30,7 +30,7 @@ const App = () => {
     userPhoneNumber: "",
     userAddress: "",
     landmark: "",
-    geolocation: {},
+    geolocation: { latitude: "", longitude: "" },
     totalBill: 0,
   });
   const [pincodes, setPincodes] = useState([]);
@@ -56,7 +56,10 @@ const App = () => {
       const addressesQuery = await getDocs(query(collection(db, "addresses"), where("userId", "==", userId)));
 
       addressesQuery.docs.forEach((doc) => {
-        addresses.push(doc.data());
+        addresses.push({
+          id: doc.id, // ✅ include document ID
+          ...doc.data(), // ✅ spread the address data
+        });
       });
 
       return addresses;
@@ -89,6 +92,9 @@ const App = () => {
         const user = await getUser(decodedToken.sub);
         const userAddress = await getUserAddress(decodedToken.sub);
 
+        console.log("userAddress");
+        console.log(userAddress);
+
         setOrder((prev) => ({
           ...prev,
           userId: decodedToken.sub,
@@ -96,6 +102,7 @@ const App = () => {
           userName: user?.userName,
           userAddress: userAddress[0]?.userAddress,
           landmark: userAddress[0]?.landmark,
+          userAddressesList: userAddress,
         }));
       } catch (error) {
         console.log("no toek");

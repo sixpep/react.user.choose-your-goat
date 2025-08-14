@@ -7,10 +7,11 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { SiTicktick } from "react-icons/si";
 import { db, auth } from "../../../firebase/setup";
 import { useNavigate } from "react-router-dom";
-import { addDoc, collection, doc, updateDoc, getDoc, setDoc, runTransaction, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc, getDoc, setDoc, runTransaction, getDocs, query, where, or } from "firebase/firestore";
 import emailjs from "@emailjs/browser";
 import axios from "axios";
 import { getCurrentDay } from "../../../utils/getDay.utils";
+import SelectAddress from "../SelectAddress/SelectAddress";
 
 const Cart = () => {
   const { order, setOrder, goatsData, hensData } = useContext(Context);
@@ -21,6 +22,10 @@ const Cart = () => {
   const [showSendingOtpLoading, setShowSendingOtpLoading] = useState(false);
   const [showOtpError, setShowOtpError] = useState("");
   const [confirmation, setConfirmation] = useState();
+
+  const [createNewAddress, setCreateNewAddress] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState("");
+
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
@@ -130,7 +135,7 @@ const Cart = () => {
     }
   }
 
-  const placeOrder = async () => {
+  const placeOrder = async (addressSelected = false) => {
     setShowVerificationLoading(false);
     setShowConfirmationLoading(true);
 
@@ -157,24 +162,88 @@ const Cart = () => {
       return;
     }
 
-    //add location to order
-    // order.geolocation = await handleLocation();
+    /**
+     * create a new address document and add its id to the order document.
+     */
+    let selectedAddressIdByUser = "";
+    let userAddressesList = [...order.userAddressesList];
+    let currentSelectedAddressDetails = {};
+
+    if (addressSelected) {
+      selectedAddressIdByUser = order.selectedAddressId;
+      currentSelectedAddressDetails = userAddressesList.find((addr) => addr.id === selectedAddressIdByUser);
+    } else {
+      try {
+        let newAddressDoc = {
+          city: order.userCity,
+          landmark: order.landmark,
+          userAddress: order.userAddress,
+          userId: order.userId,
+          userPinCode: order.userPinCode,
+          geolocation: order.geolocation || { latitude: "", longitude: "" },
+          userName: order.userName,
+          userPhoneNumber: order.userPhoneNumber,
+        };
+        const docRef = await addDoc(collection(db, "addresses"), newAddressDoc);
+
+        userAddressesList.push({ id: docRef.id, ...newAddressDoc });
+        selectedAddressIdByUser = docRef.id;
+        currentSelectedAddressDetails = { id: docRef.id, ...newAddressDoc };
+      } catch (error) {
+        console.log("Error occured when creating a new address for user.");
+        alert("Error occured when saving the address. Please try again.");
+        return;
+      }
+    }
 
     if (order.orderType === "chicken") {
       const deliveryFee = 20;
-      const docRef = await addDoc(collection(db, "chickenOrders"), {
-        ...order,
-        totalBill: order.totalBill + deliveryFee,
-        orderedDate: new Date().getTime(),
+
+      console.log({
+        geolocation: currentSelectedAddressDetails.geolocation,
+        landmark: currentSelectedAddressDetails.landmark,
+        userAddress: currentSelectedAddressDetails.userAddress,
+        userCity: currentSelectedAddressDetails.city || "",
+        userPinCode: currentSelectedAddressDetails.userPinCode || "",
+
+        userName: order.userName,
+        userPhoneNumber: order.userPhoneNumber,
+
+        userAddressId: currentSelectedAddressDetails.id,
         userId: localStorage.getItem("choose-your-goat-userId"),
+
+        meatRequirements: order.meatRequirements,
+        orderType: "chicken",
+        orderedDate: new Date().getTime(),
+        scheduledDeliveryDate: order.scheduledDeliveryDate,
+        totalBill: order.totalBill + deliveryFee,
+      });
+      const docRef = await addDoc(collection(db, "chickenOrders"), {
+        geolocation: currentSelectedAddressDetails.geolocation,
+        landmark: currentSelectedAddressDetails.landmark,
+        userAddress: currentSelectedAddressDetails.userAddress,
+        userCity: currentSelectedAddressDetails.city || "",
+        userPinCode: currentSelectedAddressDetails.userPinCode || "",
+
+        userName: order.userName,
+        userPhoneNumber: order.userPhoneNumber,
+
+        userAddressId: currentSelectedAddressDetails.id,
+        userId: localStorage.getItem("choose-your-goat-userId"),
+
+        meatRequirements: order.meatRequirements,
+        orderType: "chicken",
+        orderedDate: new Date().getTime(),
+        scheduledDeliveryDate: order.scheduledDeliveryDate,
+        totalBill: order.totalBill + deliveryFee,
       });
       console.log(docRef);
 
       sendEmailOrder(
         order.userName,
         order.userPhoneNumber,
-        order.userAddress,
-        order.landmark,
+        currentSelectedAddressDetails.userAddress,
+        currentSelectedAddressDetails.landmark,
         order.meatRequirements,
         order.totalBill + deliveryFee,
         order.scheduledDeliveryDate
@@ -184,46 +253,6 @@ const Cart = () => {
       setOrderConfirmation(true);
       return;
     }
-
-    // else {
-    //   try {
-    //     const isUpdated = updateGoatDataQuantities();
-
-    //     if (isUpdated) {
-    //       for (let requirement of order.meatRequirements) {
-    //         const goat = goatsData.find((goatItem) => goatItem.docId === requirement.goatId);
-    //         const billCalculated = calculateTotalBill(requirement, goat);
-
-    //         const docRef = await addDoc(collection(db, "orders"), {
-    //           ...requirement,
-    //           userName: order.userName,
-    //           userPhoneNumber: order.userPhoneNumber,
-    //           userAddress: order.userAddress,
-    //           landmark: order.landmark,
-    //           pincode: order.userPinCode,
-    //           deliveryDate: goat.deliveryDateTimestamp,
-    //           orderedDate: new Date().getTime(),
-    //           userId: localStorage.getItem("choose-your-goat-userId"),
-    //           totalBill: billCalculated,
-    //         });
-    //         setShowConfirmationLoading(false);
-    //         setOrderConfirmation(true);
-
-    //         // const orderData = {
-    //         //   ...requirement,
-    //         //   userName: order.userName,
-    //         //   userPhoneNumber: order.userPhoneNumber,
-    //         //   userAddress: order.userAddress,
-    //         //   landmark: order.landmark,
-    //         //   deliveryDate: goat.deliveryDateTimestamp,
-    //         //   userId: localStorage.getItem("choose-your-goat-userId"),
-    //         // };
-    //       }
-    //     }
-    //   } catch (error) {
-    //     console.log("Error in placing order", error);
-    //   }
-    // }
 
     try {
       await runTransaction(db, async (transaction) => {
@@ -237,15 +266,6 @@ const Cart = () => {
           }
 
           const goatData = goatDoc.data();
-          // const mapping = {
-          //   numberOfMuttonShares: "remainingMuttonShares",
-          //   numberOfKeemaShares: "remainingKeemaShares",
-          //   numberOfHeadShares: "remainingHeads",
-          //   numberOfLegsShares: "remainingLegs",
-          //   numberOfBrainShares: "remainingBrains",
-          //   numberOfBotiShares: "remainingBotiShares",
-          //   numberOfExtras: "remainingExtras",
-          // };
 
           // Check for availability
           for (const key in requirement) {
@@ -288,16 +308,20 @@ const Cart = () => {
 
           transaction.set(orderRef, {
             ...requirement,
-            userName: order.userName,
-            userPhoneNumber: order.userPhoneNumber,
-            userAddress: order.userAddress,
-            landmark: order.landmark,
-            pincode: order.userPinCode,
             deliveryDate: goat.deliveryDateTimestamp,
             orderedDate: new Date().getTime(),
-            userId: localStorage.getItem("choose-your-goat-userId"),
             totalBill: billCalculated,
-            geolocation: order.geolocation,
+
+            userAddressId: currentSelectedAddressDetails.id,
+            userId: localStorage.getItem("choose-your-goat-userId"),
+
+            userName: order.userName,
+            userPhoneNumber: order.userPhoneNumber,
+
+            userAddress: currentSelectedAddressDetails.userAddress || "",
+            landmark: currentSelectedAddressDetails.landmark || "",
+            pincode: currentSelectedAddressDetails.userPinCode || "",
+            geolocation: currentSelectedAddressDetails.geolocation,
           });
         }
         // if (getCurrentDay(true) == "Sun") {
@@ -650,7 +674,15 @@ const Cart = () => {
         </div> */}
         <div id="recaptcha"></div>
 
-        <CheckOutForm sendOtp={sendOtp} placeOrder={placeOrder} />
+        {!createNewAddress && (
+          <SelectAddress
+            selectedAddressId={selectedAddressId}
+            setSelectedAddressId={setSelectedAddressId}
+            setCreateNewAddress={setCreateNewAddress}
+            placeOrder={placeOrder}
+          />
+        )}
+        {createNewAddress && <CheckOutForm sendOtp={sendOtp} placeOrder={placeOrder} />}
       </div>
 
       {/* <div className={styles.form}>
