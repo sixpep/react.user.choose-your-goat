@@ -26,9 +26,13 @@ const handlebars = require("handlebars");
 const cors = require("cors")({origin: true});
 
 // Read the email template from the templates directory
-const templatePath = path.join(__dirname, "templates", "emailTemplate.html");
-const templateSource = fs.readFileSync(templatePath, "utf-8");
-const template = handlebars.compile(templateSource);
+let templatePath = path.join(__dirname, "templates", "emailTemplate.html");
+let templateSource = fs.readFileSync(templatePath, "utf-8");
+const chickenTemplate = handlebars.compile(templateSource);
+
+templatePath = path.join(__dirname, "templates", "muttonEmailTemplate.html");
+templateSource = fs.readFileSync(templatePath, "utf-8");
+const muttonTemplate = handlebars.compile(templateSource);
 
 // Firebase function
 exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
@@ -42,6 +46,8 @@ exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
         meatRequirements,
         totalBill,
         scheduledDeliveryDate,
+        orderType,
+        orderedDate,
       } = req.body;
 
       // Validate required fields
@@ -51,13 +57,27 @@ exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
         !userAddress ||
         !meatRequirements ||
         !totalBill ||
-        !scheduledDeliveryDate
+        !scheduledDeliveryDate ||
+        !orderType ||
+        !orderedDate
       ) {
         return res.status(400).send("Missing required fields.");
       }
 
-      // Render the HTML template with dynamic data
-      const emailHtml = template({
+      const formattedOrderedDate = new Date(orderedDate).toLocaleString(
+          "en-GB",
+          {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+            timeZone: "Asia/Kolkata",
+          },
+      );
+
+      const tempateInputs = {
         userName,
         userPhoneNumber,
         userAddress,
@@ -65,7 +85,17 @@ exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
         meatRequirements,
         totalBill,
         scheduledDeliveryDate,
-      });
+        orderType,
+        formattedOrderedDate,
+      };
+      let emailHtml = "";
+
+      // Render the HTML template with dynamic data
+      if (orderType == "chicken") {
+        emailHtml = chickenTemplate(tempateInputs);
+      } else {
+        emailHtml = muttonTemplate(tempateInputs);
+      }
 
       // Configure nodemailer with Gmail service
       const transporter = nodemailer.createTransport({
@@ -84,8 +114,9 @@ exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
           "manoj.prince16@gmail.com",
           "suryatejasriram@gmail.com",
           "ganeshrathod412@gmail.com",
+          "suryasai42@gmail.com",
         ],
-        subject: "True Meat Chicken Order",
+        subject: `True Meat ${orderType} Order`,
         html: emailHtml,
       };
 
