@@ -333,8 +333,8 @@ const Cart = () => {
           sendEmailOrder(
             order.userName,
             order.userPhoneNumber,
-            order.userAddress,
-            order.landmark,
+            currentSelectedAddressDetails.userAddress,
+            currentSelectedAddressDetails.landmark,
             order.meatRequirements,
             order.totalBill,
             order.scheduledDeliveryDate ||
