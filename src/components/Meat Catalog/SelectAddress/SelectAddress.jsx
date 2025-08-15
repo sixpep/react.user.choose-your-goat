@@ -139,7 +139,7 @@ const SelectAddress = ({ selectedAddressId, setSelectedAddressId, setCreateNewAd
       <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Select Address</h2>
         {/* Place order button */}
-        {order.userAddressesList.length >= 3 && (
+        {order.userAddressesList?.length >= 3 && (
           <div
             role="button"
             aria-disabled={!placeOrderIsEnabled}
