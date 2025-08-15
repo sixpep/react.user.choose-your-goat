@@ -112,8 +112,8 @@ exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
         to: [
           "matamvamshikrishna@gmail.com",
           "manoj.prince16@gmail.com",
-          "suryatejasriram@gmail.com",
-          "ganeshrathod412@gmail.com",
+          // "suryatejasriram@gmail.com",
+          // "ganeshrathod412@gmail.com",
           "suryasai42@gmail.com",
         ],
         subject: `True Meat ${orderType} Order`,
