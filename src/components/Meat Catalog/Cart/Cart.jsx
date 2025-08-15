@@ -760,16 +760,33 @@ const Cart = () => {
       )}
 
       {orderConfirmation && (
-        <div class={styles.verifyOtpContainer}>
-          <div class={styles.popupContent}>
-            <div class={styles.checkmark}>
-              <SiTicktick color="#1D1E22" size={40} />
+        <div className={styles.overlay}>
+          <button
+            className={styles.backButton}
+            onClick={() => {
+              setOrderConfirmation(false);
+
+              if (order.orderType === "chicken") {
+                navigate("/chicken");
+              } else {
+                navigate("/mutton");
+              }
+            }} // close logic
+          >
+            ← Back
+          </button>
+
+          <div className={styles.verifyOtpContainer}>
+            <div className={styles.popupContent}>
+              <div className={styles.checkmark}>
+                <SiTicktick color="#1D1E22" size={40} />
+              </div>
+              <h1>Your order is confirmed!</h1>
+              <p>Thank you for your order</p>
+              <button className={styles.goHomeBtn} onClick={() => (window.location.href = "/orders")}>
+                My Orders
+              </button>
             </div>
-            <h1>Your order is confirmed!</h1>
-            <p>Thank you for your order</p>
-            <button class={styles.goHomeBtn} onClick={() => (window.location.href = "/orders")}>
-              My Orders
-            </button>
           </div>
         </div>
       )}
