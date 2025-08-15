@@ -43,6 +43,8 @@ const App = () => {
       if (userSnap.exists()) {
         return userSnap.data();
       } else {
+        localStorage.removeItem("choose-your-goat-token");
+        localStorage.removeItem("choose-your-goat-userId");
         alert("user not found");
       }
     } catch (error) {
@@ -92,9 +94,6 @@ const App = () => {
         const user = await getUser(decodedToken.sub);
         const userAddress = await getUserAddress(decodedToken.sub);
 
-        console.log("userAddress");
-        console.log(userAddress);
-
         setOrder((prev) => ({
           ...prev,
           userId: decodedToken.sub,
@@ -106,7 +105,9 @@ const App = () => {
         }));
       } catch (error) {
         console.log("no toek");
-        alert("no tokjen");
+        alert("no token");
+        localStorage.removeItem("choose-your-goat-token");
+        localStorage.removeItem("choose-your-goat-userId");
         console.error("Failed to fetch user:", error);
       }
     }

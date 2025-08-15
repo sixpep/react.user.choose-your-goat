@@ -146,6 +146,8 @@ const Tile = ({
         user = user.data();
 
         if (!user) {
+          localStorage.removeItem("choose-your-goat-token");
+          localStorage.removeItem("choose-your-goat-userId");
           throw new Error("User not found. Please login again.");
         }
 

@@ -145,6 +145,8 @@ const Cart = () => {
       const userSnap = await getDoc(userRef);
 
       if (!userSnap.exists()) {
+        localStorage.removeItem("choose-your-goat-token");
+        localStorage.removeItem("choose-your-goat-userId");
         return alert("User not found");
       }
 
