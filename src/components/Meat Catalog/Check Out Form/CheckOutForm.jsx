@@ -116,6 +116,9 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
 
     // order.userCity = cityMap[order.userPinCode];
 
+    order.userAddress = "";
+    order.landmark = "";
+
     updateMinDate();
     const interval = setInterval(updateMinDate, 60000);
     return () => clearInterval(interval);
