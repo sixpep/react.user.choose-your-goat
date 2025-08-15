@@ -546,7 +546,16 @@ const Cart = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.backBar}>
-          <div className={styles.backBtn} onClick={() => (order.orderType === "chicken" ? navigate("/chicken") : navigate("/mutton"))}>
+          <div
+            className={styles.backBtn}
+            onClick={() => {
+              if (createNewAddress) {
+                setCreateNewAddress(false);
+              } else {
+                order.orderType === "chicken" ? navigate("/chicken") : navigate("/mutton");
+              }
+            }}
+          >
             <i>
               <LuMoveLeft size={20} />
             </i>
