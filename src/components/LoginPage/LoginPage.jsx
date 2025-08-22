@@ -62,18 +62,22 @@ const LoginPage = ({ fetchUserData }) => {
     return resultQuery;
   }
 
-  async function createUserIndb(userId) {
+  async function createUserIndb(mobileNumber, userId) {
     try {
-      //--------------------------
-      const userRef = doc(db, "users", userId);
-      const userSnap = await getDoc(userRef);
+      const usersRef = collection(db, "users");
 
-      if (userSnap.exists()) {
+      // 🔍 Search for user with this mobileNumber
+      const q = query(usersRef, where("userPhoneNumber", "==", mobileNumber));
+      const querySnap = await getDocs(q);
+
+      if (!querySnap.empty) {
         console.log("User Exists");
-        return userSnap.data();
+        return querySnap.docs[0].data(); // return first match
       } else {
         console.log("Creating user");
-        await setDoc(doc(db, "users", userId), { userPhoneNumber: mobileNumber });
+        const newUserRef = doc(db, "users", userId); // keep userId as doc ID
+        await setDoc(newUserRef, { userPhoneNumber: mobileNumber });
+        return { userPhoneNumber: mobileNumber };
       }
     } catch (e) {
       alert(e?.message);
@@ -87,7 +91,7 @@ const LoginPage = ({ fetchUserData }) => {
       console.log("otpVerification", otpVerification);
 
       // create user in db
-      await createUserIndb(otpVerification.user.uid);
+      await createUserIndb(mobileNumber, otpVerification.user.uid);
 
       localStorage.setItem("choose-your-goat-token", otpVerification.user.accessToken);
       localStorage.setItem("choose-your-goat-userId", otpVerification.user.uid);

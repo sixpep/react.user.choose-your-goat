@@ -242,7 +242,8 @@ const Cart = () => {
       console.log(docRef);
 
       sendEmailOrder(
-        order.userName,
+        currentSelectedAddressDetails.userName,
+        // order.userName,
         order.userPhoneNumber,
         currentSelectedAddressDetails.userAddress,
         currentSelectedAddressDetails.landmark,
@@ -333,7 +334,8 @@ const Cart = () => {
           //send remainder mail
 
           sendEmailOrder(
-            order.userName,
+            // order.userName,
+            currentSelectedAddressDetails.userName,
             order.userPhoneNumber,
             currentSelectedAddressDetails.userAddress,
             currentSelectedAddressDetails.landmark,
@@ -407,7 +409,7 @@ const Cart = () => {
 
       setShowOtpInputPopup(false);
 
-      addUserToDb(otpConfirmation.user.uid, {
+      addUserToDb(order.userPhoneNumber, otpConfirmation.user.uid, {
         userName: order.userName,
         userPhoneNumber: order.userPhoneNumber,
       });
@@ -428,11 +430,29 @@ const Cart = () => {
     }
   };
 
-  const addUserToDb = async (userId, userData) => {
+  const addUserToDb = async (userPhoneNumber, userId, userData) => {
     try {
-      await setDoc(doc(db, "users", userId), userData);
+      const usersRef = collection(db, "users");
+
+      // 🔍 Search by phone number
+      const q = query(usersRef, where("userPhoneNumber", "==", userPhoneNumber));
+      const querySnap = await getDocs(q);
+
+      if (!querySnap.empty) {
+        // ✅ User exists → update existing doc
+        const existingDoc = querySnap.docs[0].ref;
+        await updateDoc(existingDoc, userData);
+        console.log("User updated successfully");
+        return { id: existingDoc.id, ...userData };
+      } else {
+        // ❌ Not found → create new doc with userId
+        const newUserRef = doc(db, "users", userId);
+        await setDoc(newUserRef, { ...userData, userPhoneNumber });
+        console.log("User created successfully");
+        return { id: newUserRef.id, ...userData };
+      }
     } catch (error) {
-      console.log("error in creating user", error);
+      console.log("Error in creating/updating user", error);
     }
   };
 

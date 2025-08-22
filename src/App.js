@@ -12,6 +12,7 @@ import LoginPage from "./components/LoginPage/LoginPage";
 import Homepage from "./components/Homepage/Homepage";
 import ChickenPage from "./components/ChickenPage/ChickenPage";
 import PopupModal from "./components/Modals/PopupModal";
+import { getTokenFromQuery } from "./utils/extractQuery.utils";
 
 export const Context = React.createContext();
 
@@ -37,6 +38,7 @@ const App = () => {
 
   const getUser = async (userId) => {
     try {
+      localStorage.setItem("choose-your-goat-userId", userId);
       const userRef = doc(db, "users", userId);
       const userSnap = await getDoc(userRef);
 
@@ -114,6 +116,18 @@ const App = () => {
   };
 
   useEffect(() => {
+    let tempToken = getTokenFromQuery(window.location.search);
+
+    console.log("tempToken");
+    console.log(tempToken);
+
+    if (tempToken) {
+      localStorage.removeItem("choose-your-goat-token");
+      localStorage.removeItem("choose-your-goat-userId");
+
+      localStorage.setItem("choose-your-goat-token", tempToken);
+    }
+
     setIsLoading(true);
     const unsubscribeGoats = onSnapshot(query(collection(db, "goats"), orderBy("deliveryDateTimestamp", "desc"), limit(3)), (snapshot) => {
       const updatedGoatsData = snapshot.docs.map((doc) => ({
@@ -138,29 +152,6 @@ const App = () => {
       console.log("Updated Hens Data", updatedHensData);
       setHensData(updatedHensData);
     });
-
-    // const fetchUserData = async () => {
-    //   const userToken = localStorage.getItem("choose-your-goat-token");
-
-    //   if (userToken) {
-    //     try {
-    //       const decodedToken = jwtDecode(userToken);
-    //       const user = await getUser(decodedToken.sub);
-    //       const userAddress = await getUserAddress(decodedToken.sub);
-
-    //       setOrder((prev) => ({
-    //         ...prev,
-    //         userId: decodedToken.sub,
-    //         userPhoneNumber: user?.userPhoneNumber,
-    //         userName: user?.userName,
-    //         userAddress: userAddress[0]?.userAddress,
-    //         landmark: userAddress[0]?.landmark,
-    //       }));
-    //     } catch (error) {
-    //       console.error("Failed to fetch user:", error);
-    //     }
-    //   }
-    // };
 
     fetchUserData();
 
