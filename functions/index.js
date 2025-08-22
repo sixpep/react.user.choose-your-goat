@@ -1,153 +1,155 @@
-// /**
-//  * Import function triggers from their respective submodules:
-//  *
-//  * const {onCall} = require("firebase-functions/v2/https");
-//  * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
-//  *
-//  * See a full list of supported triggers at https://firebase.google.com/docs/functions
-//  */
-
-// const { onRequest } = require("firebase-functions/v2/https");
-// const logger = require("firebase-functions/logger");
-
-// // Create and deploy your first functions
-// // https://firebase.google.com/docs/functions/get-started
-
-// // exports.helloWorld = onRequest((request, response) => {
-// //   logger.info("Hello logs!", {structuredData: true});
-// //   response.send("Hello from Firebase!");
-// // });
-
-const functions = require("firebase-functions");
+// functions/index.js
+const {onRequest} = require("firebase-functions/v2/https");
+const {setGlobalOptions} = require("firebase-functions/v2");
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
 const handlebars = require("handlebars");
-const cors = require("cors")({origin: true});
 
-// Read the email template from the templates directory
-let templatePath = path.join(__dirname, "templates", "emailTemplate.html");
-let templateSource = fs.readFileSync(templatePath, "utf-8");
-const chickenTemplate = handlebars.compile(templateSource);
+// Keep secrets inline as requested (note: for prod, use secrets)
+const GMAIL_USER = "firebase.cyg@gmail.com";
+const GMAIL_PASS = "xiks jshd qgvr ilvk";
 
-templatePath = path.join(__dirname, "templates", "muttonEmailTemplate.html");
-templateSource = fs.readFileSync(templatePath, "utf-8");
-const muttonTemplate = handlebars.compile(templateSource);
+// Global runtime config (keeps 1 warm instance)
+setGlobalOptions({
+  region: "us-central1", // pick your region; us-central1 if you prefer
+  timeoutSeconds: 120,
+  memory: "256MiB",
+  minInstances: 1, // <-- keeps it warm (Blaze plan)
+});
 
-// Firebase function
-exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
-  cors(req, res, async () => {
-    try {
-      console.log(
-          "Request start at ",
-          new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"}),
-      );
-      console.log("Request body");
-      console.log(req.body);
+// Preload templates once per instance
+const chickenTemplate = handlebars.compile(
+    fs.readFileSync(
+        path.join(__dirname, "templates", "emailTemplate.html"),
+        "utf-8",
+    ),
+);
+const muttonTemplate = handlebars.compile(
+    fs.readFileSync(
+        path.join(__dirname, "templates", "muttonEmailTemplate.html"),
+        "utf-8",
+    ),
+);
 
-      const {
-        userName,
-        userPhoneNumber,
-        userAddress,
-        landmark,
-        meatRequirements,
-        totalBill,
-        scheduledDeliveryDate,
-        orderType,
-        orderedDate,
-      } = req.body;
+console.log("Templates set");
 
-      // Validate required fields
-      if (
-        !userName ||
-        !userPhoneNumber ||
-        !userAddress ||
-        !meatRequirements ||
-        !totalBill ||
-        !scheduledDeliveryDate ||
-        !orderType ||
-        !orderedDate
-      ) {
-        console.log("Missing required fields.");
-        return res.status(400).send("Missing required fields.");
-      }
+// Reuse transporter (pooling helps on warm instances)
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {user: GMAIL_USER, pass: GMAIL_PASS},
+  pool: true,
+  maxConnections: 2,
+  maxMessages: 50,
+  rateDelta: 1000,
+  rateLimit: 5,
+});
 
-      const formattedOrderedDate = new Date(orderedDate).toLocaleString(
-          "en-GB",
-          {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-            timeZone: "Asia/Kolkata",
-          },
-      );
+console.log("transporter set");
 
-      const tempateInputs = {
-        userName,
-        userPhoneNumber,
-        userAddress,
-        landmark,
-        meatRequirements,
-        totalBill,
-        scheduledDeliveryDate,
-        orderType,
-        formattedOrderedDate,
-      };
+exports.sendNewOrderEmail = onRequest(async (req, res) => {
+  // CORS
+  res.set("Access-Control-Allow-Origin", "*");
+  res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") return res.status(204).send("");
 
-      console.log("formattedOrderedDate,tempateInputs");
-      console.log(formattedOrderedDate, tempateInputs);
+  if (req.method !== "POST") return res.status(405).send("Method Not Allowed");
 
-      let emailHtml = "";
+  try {
+    console.log(
+        "Request started at",
+        new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"}),
+    );
+    console.log("req.body");
+    console.log(req.body);
 
-      // Render the HTML template with dynamic data
-      if (orderType == "chicken") {
-        emailHtml = chickenTemplate(tempateInputs);
-      } else {
-        emailHtml = muttonTemplate(tempateInputs);
-      }
+    const {
+      userName,
+      userPhoneNumber,
+      userAddress,
+      landmark,
+      meatRequirements,
+      totalBill,
+      scheduledDeliveryDate,
+      orderType,
+      orderedDate,
+    } = req.body || {};
 
-      console.log("Template selected");
-
-      // Configure nodemailer with Gmail service
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "firebase.cyg@gmail.com",
-          pass: "xiks jshd qgvr ilvk",
-        },
-      });
-
-      console.log("Transported created");
-
-      // Email options
-      const mailOptions = {
-        from: "firebase.cyg@gmail.com", // Sender email
-        to: [
-          "matamvamshikrishna@gmail.com",
-          "manoj.prince16@gmail.com",
-          // "suryatejasriram@gmail.com",
-          // "ganeshrathod412@gmail.com",
-          "suryasai42@gmail.com",
-        ],
-        subject: `True Meat ${orderType} Order`,
-        html: emailHtml,
-      };
-
-      console.log("mailOptions created");
-
-      // Send the email
-      await transporter.sendMail(mailOptions);
-
-      console.log("Mail sent");
-
-      // Success response
-      res.status(200).send("Email sent successfully!");
-    } catch (error) {
-      console.error("Error sending email:", error);
-      res.status(500).send("Failed to send email.");
+    const missing = [];
+    if (!userName) missing.push("userName");
+    if (!userPhoneNumber) missing.push("userPhoneNumber");
+    if (!userAddress) missing.push("userAddress");
+    if (!meatRequirements) missing.push("meatRequirements");
+    if (!totalBill) missing.push("totalBill");
+    if (!scheduledDeliveryDate) missing.push("scheduledDeliveryDate");
+    if (!orderType) missing.push("orderType");
+    if (!orderedDate) missing.push("orderedDate");
+    if (missing.length) {
+      console.log("Missing fields", missing);
+      return res.status(400).json({error: "Missing fields", missing});
     }
-  });
+
+    const formattedOrderedDate = new Date(orderedDate).toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+      timeZone: "Asia/Kolkata",
+    });
+
+    const templateInputs = {
+      userName,
+      userPhoneNumber,
+      userAddress,
+      landmark,
+      meatRequirements,
+      totalBill,
+      scheduledDeliveryDate,
+      orderType,
+      formattedOrderedDate,
+    };
+
+    console.log("formattedOrderedDate,templateInputs");
+    console.log(formattedOrderedDate, templateInputs);
+
+    const emailHtml =
+      orderType === "chicken" ?
+        chickenTemplate(templateInputs) :
+        muttonTemplate(templateInputs);
+
+    const mailOptions = {
+      from: GMAIL_USER,
+      to: [
+        "matamvamshikrishna@gmail.com",
+        "manoj.prince16@gmail.com",
+        "suryasai42@gmail.com",
+      ],
+      subject: `True Meat ${orderType} Order`,
+      html: emailHtml,
+    };
+
+    // tiny retry for transient hiccups
+    let sent;
+    let lastErr;
+    for (let i = 1; i <= 2; i++) {
+      try {
+        sent = await transporter.sendMail(mailOptions);
+        break;
+      } catch (e) {
+        lastErr = e;
+        console.log("Retrying");
+        await new Promise((r) => setTimeout(r, 500));
+      }
+    }
+    if (!sent) throw lastErr || new Error("sendMail failed");
+
+    console.log("Email sent");
+    return res.status(200).send("Email sent successfully!");
+  } catch (err) {
+    console.error("sendNewOrderEmail error:", err);
+    return res.status(500).send("Failed to send email.");
+  }
 });
