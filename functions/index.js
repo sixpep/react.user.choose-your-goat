@@ -38,6 +38,13 @@ const muttonTemplate = handlebars.compile(templateSource);
 exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     try {
+      console.log(
+          "Request start at ",
+          new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"}),
+      );
+      console.log("Request body");
+      console.log(req.body);
+
       const {
         userName,
         userPhoneNumber,
@@ -61,6 +68,7 @@ exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
         !orderType ||
         !orderedDate
       ) {
+        console.log("Missing required fields.");
         return res.status(400).send("Missing required fields.");
       }
 
@@ -88,6 +96,10 @@ exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
         orderType,
         formattedOrderedDate,
       };
+
+      console.log("formattedOrderedDate,tempateInputs");
+      console.log(formattedOrderedDate, tempateInputs);
+
       let emailHtml = "";
 
       // Render the HTML template with dynamic data
@@ -97,6 +109,8 @@ exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
         emailHtml = muttonTemplate(tempateInputs);
       }
 
+      console.log("Template selected");
+
       // Configure nodemailer with Gmail service
       const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -105,6 +119,8 @@ exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
           pass: "xiks jshd qgvr ilvk",
         },
       });
+
+      console.log("Transported created");
 
       // Email options
       const mailOptions = {
@@ -120,8 +136,12 @@ exports.sendNewOrderEmail = functions.https.onRequest(async (req, res) => {
         html: emailHtml,
       };
 
+      console.log("mailOptions created");
+
       // Send the email
       await transporter.sendMail(mailOptions);
+
+      console.log("Mail sent");
 
       // Success response
       res.status(200).send("Email sent successfully!");
