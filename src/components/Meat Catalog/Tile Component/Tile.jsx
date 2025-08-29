@@ -363,13 +363,7 @@ const Tile = ({
                 <p>Mutton</p>
                 <span className={styles.availableNote}>
                   Available Shares :{" "}
-                  {totalShares > 0 && !remainingMuttonShares ? (
-                    <span>SOLD</span>
-                  ) : (
-                    <span>
-                      {!isActive ? 0 : remainingMuttonShares || 0}/{totalShares}
-                    </span>
-                  )}
+                  {totalShares > 0 && !remainingMuttonShares ? <span>SOLD</span> : <span>{!isActive ? 0 : remainingMuttonShares || 0}</span>}
                 </span>
               </div>
             </div>
@@ -465,7 +459,7 @@ const Tile = ({
                     ) : (
                       <span>
                         {!isActive ? 0 : remainingKeemaShares || 0}
-                        {totalKeemaShares ? `/${totalKeemaShares}` : ""}
+                        {/* {totalKeemaShares ? `` : ""} */}
                       </span>
                     )
                   ) : (
@@ -510,7 +504,7 @@ const Tile = ({
                     ) : (
                       <span>
                         {!isActive ? 0 : remainingHeads || 0}
-                        {totalHeads ? `/${totalHeads}` : ""}
+                        {/* {totalHeads ? `` : ""} */}
                       </span>
                     )
                   ) : (
@@ -568,7 +562,7 @@ const Tile = ({
                     ) : (
                       <span>
                         {!isActive ? 0 : remainingLegs || 0}
-                        {totalLegs ? `/${totalLegs}` : ""}
+                        {/* {totalLegs ? `/${totalLegs}` : ""} */}
                       </span>
                     )
                   ) : (
@@ -624,7 +618,7 @@ const Tile = ({
                     ) : (
                       <span>
                         {!isActive ? 0 : remainingBrains || 0}
-                        {totalBrains ? `/${totalBrains}` : ""}
+                        {/* {totalBrains ? `/${totalBrains}` : ""} */}
                       </span>
                     )
                   ) : (
@@ -685,7 +679,7 @@ const Tile = ({
                     ) : (
                       <span>
                         {!isActive ? 0 : remainingBotiShares || 0}
-                        {totalBotiShares ? `/${totalBotiShares}` : ""}
+                        {/* {totalBotiShares ? `/${totalBotiShares}` : ""} */}
                       </span>
                     )
                   ) : (
@@ -739,7 +733,7 @@ const Tile = ({
                     ) : (
                       <span>
                         {!isActive ? 0 : remainingExtras || 0}
-                        {totalExtras ? `/${totalExtras}` : ""}
+                        {/* {totalExtras ? `/${totalExtras}` : ""} */}
                       </span>
                     )
                   ) : (
