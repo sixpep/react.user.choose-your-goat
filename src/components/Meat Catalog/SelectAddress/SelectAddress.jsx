@@ -137,6 +137,21 @@ const SelectAddress = ({ selectedAddressId, setSelectedAddressId, setCreateNewAd
       )}
 
       <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Customize</h2>
+        <textarea
+          name="butcherInstructions"
+          id="butcherInstructions"
+          maxLength={350}
+          rows={3} // ✅ 3 lines height
+          className="mt-1 block w-full rounded-lg border border-gray-300 bg-white p-3 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500"
+          placeholder="Eg: Medium pieces, extra cleaning, separate liver…"
+          value={order.butcherInstructions || ""}
+          onChange={handleChangeInput}
+        />
+        <div className="mt-1 text-right text-xs text-gray-500">{order.butcherInstructions?.length || 0}/350</div>
+      </div>
+
+      <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Select Address</h2>
         {order.orderType == "chicken" && <span>*Delivery will take about 45 min.</span>}
         {/* Place order button */}

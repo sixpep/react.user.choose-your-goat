@@ -208,6 +208,7 @@ const Cart = () => {
         userCity: currentSelectedAddressDetails.city || "",
         userPinCode: currentSelectedAddressDetails.userPinCode || "",
 
+        butcherInstructions: order.butcherInstructions || "",
         userName: order.userName,
         userPhoneNumber: order.userPhoneNumber,
 
@@ -227,6 +228,7 @@ const Cart = () => {
         userCity: currentSelectedAddressDetails.city || "",
         userPinCode: currentSelectedAddressDetails.userPinCode || "",
 
+        butcherInstructions: order.butcherInstructions || "",
         userName: order.userName,
         userPhoneNumber: order.userPhoneNumber,
 
@@ -320,6 +322,7 @@ const Cart = () => {
             userAddressId: currentSelectedAddressDetails.id,
             userId: localStorage.getItem("choose-your-goat-userId"),
 
+            butcherInstructions: order.butcherInstructions || "",
             userName: order.userName,
             userPhoneNumber: order.userPhoneNumber,
 
