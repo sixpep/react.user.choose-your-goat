@@ -8,6 +8,7 @@ import { Context } from "../../App";
 import { motion } from "framer-motion";
 import { db } from "../../firebase/setup";
 import { where, collection, doc, getDoc, onSnapshot, query, orderBy, limit, getDocs } from "firebase/firestore";
+import { getCurrentDay } from "../../utils/getDay.utils";
 
 const ChickenPage = () => {
   const navigate = useNavigate();
@@ -110,17 +111,21 @@ const ChickenPage = () => {
           <img src="/images/wholeChickenBanner.png" alt="" />
         </div>
         <div className={styles.quanityControllers}>
-          {hensData.map((item, index) => (
-            <QuantityControllerComp
-              key={index}
-              henName={item.henName}
-              description={item.description}
-              chickenPrice={item.chickenPrice}
-              chickenWeight={item.chickenWeight}
-              docId={item.docId}
-              // isOrderAllowed={isOrderAllowed}
-            />
-          ))}
+          {hensData.map(
+            (item, index) =>
+              item.shortDayAvail &&
+              item.shortDayAvail.includes(getCurrentDay(true)) && (
+                <QuantityControllerComp
+                  key={index}
+                  henName={item.henName}
+                  description={item.description}
+                  chickenPrice={item.chickenPrice}
+                  chickenWeight={item.chickenWeight}
+                  docId={item.docId}
+                  // isOrderAllowed={isOrderAllowed}
+                />
+              )
+          )}
         </div>
       </div>
       <div className={styles.checkOutWrap}>
