@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styles from "./Homepage.module.css";
 import MeatTile from "./MeatTileComponent/MeatTile";
 import { motion } from "framer-motion";
 import { db } from "../../firebase/setup";
 import { collection, doc, getDoc, getDocs, onSnapshot, query, orderBy, limit, where } from "firebase/firestore";
+import { Context } from "../../App";
 
 // const Homepage = ({ selectLocationPopup, setSelectLocationPopup, setLocationName, locationName, isPopupVisible, setPopupVisible }) => {
 const Homepage = ({ isPopupVisible, setPopupVisible }) => {
   const [popupData, setPopupData] = useState({});
   const [muttonRestricted, setMuttonRestricted] = useState(false);
   const [chickenRestricted, setChickenRestricted] = useState(false);
+
+  const { order } = useContext(Context);
 
   const MeatTileProps = [
     {
@@ -107,7 +110,7 @@ const Homepage = ({ isPopupVisible, setPopupVisible }) => {
           </div>
           <div className={styles.greeting}>
             <p>
-              Hello <span>Meat Lover</span>
+              Hello <span> {order.userName && order.userName.length ? order.userName : "Meat Lover"} </span>
               <img src="/images/handWaveSymbol.png" alt="" />
             </p>
             <p>It's Meat Time!</p>
