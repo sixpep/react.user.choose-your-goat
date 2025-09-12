@@ -27,55 +27,56 @@ const TileCarousel = ({ order, setOrder }) => {
           transform: `translateX(-${currentIndex * 100}%)`,
         }}
       >
-        {goatsData.map((item, index) => {
-          return (
-            <div className="min-w-full" data-carousel-item key={index}>
-              <Tile
-                docId={item.docId}
-                goatImage={item.goatImage}
-                gender={item.gender}
-                netWeight={item.netWeight}
-                reservedMuttonSharesReleased={item.reservedMuttonSharesReleased ?? true}
-                meatOnlyWeight={item.meatOnlyWeight}
-                totalShares={item.totalShares}
-                approxShareSize={item.approxShareSize}
-                totalKeemaShares={item.totalKeemaShares}
-                cutSize={item.cutSize}
-                // updated prices based on pincode
-                muttonShareCost={item[pincode]?.muttonShareCost ?? item["general"]?.muttonShareCost ?? item.muttonShareCost}
-                keemaShareCost={item[pincode]?.keemaShareCost ?? item["general"]?.keemaShareCost ?? item.keemaShareCost}
-                headLegsBrainPrice={item[pincode]?.headLegsBrainPrice || item["general"]?.headLegsBrainPrice || item.headLegsBrainPrice}
-                headPrice={item[pincode]?.headPrice ?? item["general"]?.headPrice ?? item.headPrice}
-                legsPrice={item[pincode]?.legsPrice ?? item["general"]?.legsPrice ?? item.legsPrice}
-                brainPrice={item[pincode]?.brainPrice ?? item["general"]?.brainPrice ?? item.brainPrice}
-                botiShareCost={item[pincode]?.botiShareCost || item["general"]?.botiShareCost || item.botiShareCost}
-                extraCost={item[pincode]?.extraCost ?? item["general"]?.extraCost ?? item.extraCost}
-                //end of costs
-                deliveryDateTimestamp={item.deliveryDateTimestamp}
-                totalBotiShares={item.totalBotiShares}
-                remainingBotiShares={item.remainingBotiShares}
-                headLegsBrainAvailability={item.headLegsBrainAvailability}
-                remainingHeads={item.remainingHeads}
-                remainingBrains={item.remainingBrains}
-                remainingLegs={item.remainingLegs}
-                remainingMuttonShares={item.remainingMuttonShares}
-                remainingKeemaShares={item.remainingKeemaShares}
-                remainingExtras={item.remainingExtras}
-                nextUnlockText={item.nextUnlockText}
-                totalHeads={item.totalHeads}
-                totalLegs={item.totalLegs}
-                totalBrains={item.totalBrains}
-                totalExtras={item.totalExtras}
-                isActive={item.isActive}
-                order={order}
-                setOrder={setOrder}
-                finalCallMade={item?.finalCallMade}
-                handlePrev={handlePrev}
-                handleNext={handleNext}
-              />
-            </div>
-          );
-        })}
+        {pincode &&
+          goatsData.map((item, index) => {
+            return (
+              <div className="min-w-full" data-carousel-item key={index}>
+                <Tile
+                  docId={item.docId}
+                  goatImage={item.goatImage}
+                  gender={item.gender}
+                  netWeight={item.netWeight}
+                  reservedMuttonSharesReleased={item.reservedMuttonSharesReleased ?? true}
+                  meatOnlyWeight={item.meatOnlyWeight}
+                  totalShares={item.totalShares}
+                  approxShareSize={item.approxShareSize}
+                  totalKeemaShares={item.totalKeemaShares}
+                  cutSize={item.cutSize}
+                  // updated prices based on pincode
+                  muttonShareCost={item[pincode]?.muttonShareCost ?? item["general"]?.muttonShareCost ?? item.muttonShareCost}
+                  keemaShareCost={item[pincode]?.keemaShareCost ?? item["general"]?.keemaShareCost ?? item.keemaShareCost}
+                  headLegsBrainPrice={item[pincode]?.headLegsBrainPrice || item["general"]?.headLegsBrainPrice || item.headLegsBrainPrice}
+                  headPrice={item[pincode]?.headPrice ?? item["general"]?.headPrice ?? item.headPrice}
+                  legsPrice={item[pincode]?.legsPrice ?? item["general"]?.legsPrice ?? item.legsPrice}
+                  brainPrice={item[pincode]?.brainPrice ?? item["general"]?.brainPrice ?? item.brainPrice}
+                  botiShareCost={item[pincode]?.botiShareCost || item["general"]?.botiShareCost || item.botiShareCost}
+                  extraCost={item[pincode]?.extraCost ?? item["general"]?.extraCost ?? item.extraCost}
+                  //end of costs
+                  deliveryDateTimestamp={item.deliveryDateTimestamp}
+                  totalBotiShares={item.totalBotiShares}
+                  remainingBotiShares={item.remainingBotiShares}
+                  headLegsBrainAvailability={item.headLegsBrainAvailability}
+                  remainingHeads={item.remainingHeads}
+                  remainingBrains={item.remainingBrains}
+                  remainingLegs={item.remainingLegs}
+                  remainingMuttonShares={item.remainingMuttonShares}
+                  remainingKeemaShares={item.remainingKeemaShares}
+                  remainingExtras={item.remainingExtras}
+                  nextUnlockText={item.nextUnlockText}
+                  totalHeads={item.totalHeads}
+                  totalLegs={item.totalLegs}
+                  totalBrains={item.totalBrains}
+                  totalExtras={item.totalExtras}
+                  isActive={item.isActive}
+                  order={order}
+                  setOrder={setOrder}
+                  finalCallMade={item?.finalCallMade}
+                  handlePrev={handlePrev}
+                  handleNext={handleNext}
+                />
+              </div>
+            );
+          })}
       </div>
 
       {/* <button
