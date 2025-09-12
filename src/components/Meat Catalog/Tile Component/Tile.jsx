@@ -447,332 +447,691 @@ const Tile = ({
             </div>
           )}
 
-          <div className={styles.quantityControl}>
-            <div className={styles.label}>
-              <div className={styles.itemLabelWrap}>
-                <p>Keema</p>
-                <span className={styles.availableNote}>
-                  Available Shares :{" "}
-                  {finalCallMade ? (
-                    totalKeemaShares > 0 && !remainingKeemaShares ? (
-                      <span>SOLD</span>
-                    ) : (
-                      <span>
-                        {!isActive ? 0 : remainingKeemaShares || 0}
-                        {/* {totalKeemaShares ? `` : ""} */}
-                      </span>
-                    )
-                  ) : (
-                    <span style={{ display: "inline-flex", alignItems: "center" }}>
-                      <IoMdLock color="black" size={18} />
-                    </span>
-                  )}
-                </span>
-              </div>
-            </div>
-            <span>100% Boneless</span>
+          {/* ///// */}
 
-            <div className={styles.controlPrices}>
-              <div className={styles.price}>
-                <p>
-                  ₹ {keemaShareCost} <span>/250g</span>
-                </p>
-              </div>
-              <div
-                className={styles.quantityButtons}
-                style={{
-                  opacity: remainingKeemaShares < 1 || !isActive ? 0.5 : 1,
-                }}
-              >
-                <button onClick={() => handleDecrement("numberOfKeemaShares")}>-</button>
-                <p>{numberOfKeemaShares || 0}</p>
-                <button onClick={() => handleIncrement("numberOfKeemaShares", remainingKeemaShares)}>+</button>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.quantityControl}>
-            <div className={styles.label}>
-              <div className={styles.itemLabelWrap}>
-                <p>Head (తలకాయ) </p>
-                {/* <p>Goat Head</p> */}
-                <span className={styles.availableNote}>
-                  Available Shares :{" "}
-                  {finalCallMade ? (
-                    totalHeads > 0 && !remainingHeads ? (
-                      <span>SOLD</span>
+          {remainingKeemaShares > 0 && (
+            <div className={styles.quantityControl}>
+              <div className={styles.label}>
+                <div className={styles.itemLabelWrap}>
+                  <p>Keema</p>
+                  <span className={styles.availableNote}>
+                    Available Shares :{" "}
+                    {finalCallMade ? (
+                      totalKeemaShares > 0 && !remainingKeemaShares ? (
+                        <span>SOLD</span>
+                      ) : (
+                        <span>
+                          {!isActive ? 0 : remainingKeemaShares || 0}
+                          {/* {totalKeemaShares ? `` : ""} */}
+                        </span>
+                      )
                     ) : (
-                      <span>
-                        {!isActive ? 0 : remainingHeads || 0}
-                        {/* {totalHeads ? `` : ""} */}
+                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                        <IoMdLock color="black" size={18} />
                       </span>
-                    )
-                  ) : (
-                    <span style={{ display: "inline-flex", alignItems: "center" }}>
-                      <IoMdLock color="black" size={18} />
-                    </span>
-                  )}
-                </span>
+                    )}
+                  </span>
+                </div>
+              </div>
+              <span>100% Boneless</span>
+
+              <div className={styles.controlPrices}>
+                <div className={styles.price}>
+                  <p>
+                    ₹ {keemaShareCost} <span>/250g</span>
+                  </p>
+                </div>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingKeemaShares < 1 || !isActive ? 0.5 : 1,
+                  }}
+                >
+                  <button onClick={() => handleDecrement("numberOfKeemaShares")}>-</button>
+                  <p>{numberOfKeemaShares || 0}</p>
+                  <button onClick={() => handleIncrement("numberOfKeemaShares", remainingKeemaShares)}>+</button>
+                </div>
               </div>
             </div>
-            <div className={styles.controlPrices}>
-              <div className={styles.price}>
-                <p>
-                  ₹ {headPrice} <span>/1pc</span>
-                </p>
-                {/* <p>₹ {headPrice * numberOfHeadShares}</p> */}
+          )}
+
+          {remainingHeads > 0 && (
+            <div className={styles.quantityControl}>
+              <div className={styles.label}>
+                <div className={styles.itemLabelWrap}>
+                  <p>Head (తలకాయ) </p>
+                  {/* <p>Goat Head</p> */}
+                  <span className={styles.availableNote}>
+                    Available Shares :{" "}
+                    {finalCallMade ? (
+                      totalHeads > 0 && !remainingHeads ? (
+                        <span>SOLD</span>
+                      ) : (
+                        <span>
+                          {!isActive ? 0 : remainingHeads || 0}
+                          {/* {totalHeads ? `` : ""} */}
+                        </span>
+                      )
+                    ) : (
+                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                        <IoMdLock color="black" size={18} />
+                      </span>
+                    )}
+                  </span>
+                </div>
               </div>
-              <div
-                className={styles.quantityButtons}
-                style={{
-                  opacity: remainingHeads < 1 || !isActive ? 0.5 : 1,
-                }}
-              >
-                <button onClick={() => handleDecrement("numberOfHeadShares")}>-</button>
-                {/* <input type="text" readOnly value={numberOfHeadShares || 0} /> */}
-                <p>{numberOfHeadShares || 0}</p>
-                <button onClick={() => handleIncrement("numberOfHeadShares", remainingHeads)}>+</button>
+              <div className={styles.controlPrices}>
+                <div className={styles.price}>
+                  <p>
+                    ₹ {headPrice} <span>/1pc</span>
+                  </p>
+                  {/* <p>₹ {headPrice * numberOfHeadShares}</p> */}
+                </div>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingHeads < 1 || !isActive ? 0.5 : 1,
+                  }}
+                >
+                  <button onClick={() => handleDecrement("numberOfHeadShares")}>-</button>
+                  {/* <input type="text" readOnly value={numberOfHeadShares || 0} /> */}
+                  <p>{numberOfHeadShares || 0}</p>
+                  <button onClick={() => handleIncrement("numberOfHeadShares", remainingHeads)}>+</button>
+                </div>
               </div>
-            </div>
-            {/* <span>
+              {/* <span>
               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
               ab sit voluptate quis harum veniam?
             </span> */}
-            {/* <div className={styles.quantityLabels}>
+              {/* <div className={styles.quantityLabels}>
               <span>₹ {headPrice * headQuantity}/-</span>
             </div> */}
-            {/* <span
+              {/* <span
               className={styles.availableNote}
               style={{ color: remainingHeads > 0 ? "green" : "red" }}
             >
               (Available: {remainingHeads || 0} share)
             </span> */}
-          </div>
+            </div>
+          )}
 
-          <div className={styles.quantityControl}>
-            <div className={styles.label}>
-              <div className={styles.itemLabelWrap}>
-                <p>Legs (కాలు)</p>
-                {/* <p>Goat Legs</p> */}
-                <span className={styles.availableNote}>
-                  Available Shares :{" "}
-                  {finalCallMade ? (
-                    totalLegs > 0 && !remainingLegs ? (
-                      <span>SOLD</span>
+          {remainingLegs > 0 && (
+            <div className={styles.quantityControl}>
+              <div className={styles.label}>
+                <div className={styles.itemLabelWrap}>
+                  <p>Legs (కాలు)</p>
+                  {/* <p>Goat Legs</p> */}
+                  <span className={styles.availableNote}>
+                    Available Shares :{" "}
+                    {finalCallMade ? (
+                      totalLegs > 0 && !remainingLegs ? (
+                        <span>SOLD</span>
+                      ) : (
+                        <span>
+                          {!isActive ? 0 : remainingLegs || 0}
+                          {/* {totalLegs ? `/${totalLegs}` : ""} */}
+                        </span>
+                      )
                     ) : (
-                      <span>
-                        {!isActive ? 0 : remainingLegs || 0}
-                        {/* {totalLegs ? `/${totalLegs}` : ""} */}
+                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                        <IoMdLock color="black" size={18} />
                       </span>
-                    )
-                  ) : (
-                    <span style={{ display: "inline-flex", alignItems: "center" }}>
-                      <IoMdLock color="black" size={18} />
-                    </span>
-                  )}
-                </span>
+                    )}
+                  </span>
+                </div>
               </div>
-            </div>
-            <span>Each share includes four legs.</span>
-            <div className={styles.controlPrices}>
-              <div className={styles.price}>
-                <p>
-                  ₹ {legsPrice} <span>/4pc</span>
-                </p>
-                {/* <p>₹ {legsPrice * numberOfLegsShares}</p> */}
+              <span>Each share includes four legs.</span>
+              <div className={styles.controlPrices}>
+                <div className={styles.price}>
+                  <p>
+                    ₹ {legsPrice} <span>/4pc</span>
+                  </p>
+                  {/* <p>₹ {legsPrice * numberOfLegsShares}</p> */}
+                </div>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingLegs < 1 || !isActive ? 0.5 : 1,
+                  }}
+                >
+                  <button onClick={() => handleDecrement("numberOfLegsShares")}>-</button>
+                  {/* <input type="text" readOnly value={numberOfLegsShares || 0} /> */}
+                  <p>{numberOfLegsShares || 0}</p>
+                  <button onClick={() => handleIncrement("numberOfLegsShares", remainingLegs)}>+</button>
+                </div>
               </div>
-              <div
-                className={styles.quantityButtons}
-                style={{
-                  opacity: remainingLegs < 1 || !isActive ? 0.5 : 1,
-                }}
-              >
-                <button onClick={() => handleDecrement("numberOfLegsShares")}>-</button>
-                {/* <input type="text" readOnly value={numberOfLegsShares || 0} /> */}
-                <p>{numberOfLegsShares || 0}</p>
-                <button onClick={() => handleIncrement("numberOfLegsShares", remainingLegs)}>+</button>
-              </div>
-            </div>
 
-            {/* <div className={styles.quantityLabels}>
+              {/* <div className={styles.quantityLabels}>
               <span>₹ {legsPrice * legsQuantity}/-</span>
             </div> */}
-            {/* <span
+              {/* <span
               className={styles.availableNote}
               style={{ color: remainingLegs > 0 ? "green" : "red" }}
             >
               (Available: {remainingLegs || 0} share)
             </span> */}
-          </div>
-
-          <div className={styles.quantityControl}>
-            <div className={styles.label}>
-              <div className={styles.itemLabelWrap}>
-                <p>Brain (మెదడు)</p>
-                {/* <p>Goat Brain</p> */}
-                <span className={styles.availableNote}>
-                  Available Shares :{" "}
-                  {finalCallMade ? (
-                    totalBrains > 0 && !remainingBrains ? (
-                      <span>SOLD</span>
-                    ) : (
-                      <span>
-                        {!isActive ? 0 : remainingBrains || 0}
-                        {/* {totalBrains ? `/${totalBrains}` : ""} */}
-                      </span>
-                    )
-                  ) : (
-                    <span style={{ display: "inline-flex", alignItems: "center" }}>
-                      <IoMdLock color="black" size={18} />
-                    </span>
-                  )}
-                </span>
-              </div>
             </div>
-            <div className={styles.controlPrices}>
-              <div className={styles.price}>
-                <p>
-                  ₹ {brainPrice} <span>/1pc</span>
-                </p>
-                {/* <p>₹ {brainPrice * numberOfBrainShares}</p> */}
+          )}
+
+          {remainingBrains > 0 && (
+            <div className={styles.quantityControl}>
+              <div className={styles.label}>
+                <div className={styles.itemLabelWrap}>
+                  <p>Brain (మెదడు)</p>
+                  {/* <p>Goat Brain</p> */}
+                  <span className={styles.availableNote}>
+                    Available Shares :{" "}
+                    {finalCallMade ? (
+                      totalBrains > 0 && !remainingBrains ? (
+                        <span>SOLD</span>
+                      ) : (
+                        <span>
+                          {!isActive ? 0 : remainingBrains || 0}
+                          {/* {totalBrains ? `/${totalBrains}` : ""} */}
+                        </span>
+                      )
+                    ) : (
+                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                        <IoMdLock color="black" size={18} />
+                      </span>
+                    )}
+                  </span>
+                </div>
               </div>
-              <div
-                className={styles.quantityButtons}
-                style={{
-                  opacity: remainingBrains < 1 || !isActive ? 0.5 : 1,
-                }}
-              >
-                <button onClick={() => handleDecrement("numberOfBrainShares")}>-</button>
-                {/* <input
+              <div className={styles.controlPrices}>
+                <div className={styles.price}>
+                  <p>
+                    ₹ {brainPrice} <span>/1pc</span>
+                  </p>
+                  {/* <p>₹ {brainPrice * numberOfBrainShares}</p> */}
+                </div>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingBrains < 1 || !isActive ? 0.5 : 1,
+                  }}
+                >
+                  <button onClick={() => handleDecrement("numberOfBrainShares")}>-</button>
+                  {/* <input
                     type="text"
                     readOnly
                     value={numberOfBrainShares || 0}
                   /> */}
-                <p>{numberOfBrainShares || 0}</p>
-                <button onClick={() => handleIncrement("numberOfBrainShares", remainingBrains)}>+</button>
+                  <p>{numberOfBrainShares || 0}</p>
+                  <button onClick={() => handleIncrement("numberOfBrainShares", remainingBrains)}>+</button>
+                </div>
               </div>
-            </div>
-            {/* <span>
+              {/* <span>
               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
               ab sit voluptate quis harum veniam?
             </span> */}
-            {/* <div className={styles.quantityLabels}>
+              {/* <div className={styles.quantityLabels}>
               <span>₹ {brainPrice * brainQuantity}/-</span>
             </div> */}
-            {/* <span
+              {/* <span
               className={styles.availableNote}
             >
               (Available: {remainingBrains || 0} )
             </span> */}
-          </div>
+            </div>
+          )}
 
-          <div className={styles.quantityControl}>
-            <div className={styles.label}>
-              <div className={styles.itemLabelWrap}>
-                <p>Boti (బోటి)</p>
-                {/* <p>Goat Boti</p> */}
-                <span className={styles.availableNote}>
-                  Available Shares :{" "}
-                  {finalCallMade ? (
-                    totalBotiShares > 0 && !remainingBotiShares ? (
-                      <span>SOLD</span>
+          {remainingBotiShares > 0 && (
+            <div className={styles.quantityControl}>
+              <div className={styles.label}>
+                <div className={styles.itemLabelWrap}>
+                  <p>Boti (బోటి)</p>
+                  {/* <p>Goat Boti</p> */}
+                  <span className={styles.availableNote}>
+                    Available Shares :{" "}
+                    {finalCallMade ? (
+                      totalBotiShares > 0 && !remainingBotiShares ? (
+                        <span>SOLD</span>
+                      ) : (
+                        <span>
+                          {!isActive ? 0 : remainingBotiShares || 0}
+                          {/* {totalBotiShares ? `/${totalBotiShares}` : ""} */}
+                        </span>
+                      )
                     ) : (
-                      <span>
-                        {!isActive ? 0 : remainingBotiShares || 0}
-                        {/* {totalBotiShares ? `/${totalBotiShares}` : ""} */}
+                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                        <IoMdLock color="black" size={18} />
                       </span>
-                    )
-                  ) : (
-                    <span style={{ display: "inline-flex", alignItems: "center" }}>
-                      <IoMdLock color="black" size={18} />
-                    </span>
-                  )}
-                </span>
+                    )}
+                  </span>
+                </div>
               </div>
-            </div>
-            <span>Each share of boti weighs between 650 grams to 750 grams.</span>
+              <span>Each share of boti weighs between 650 grams to 750 grams.</span>
 
-            <div className={styles.controlPrices}>
-              <div className={styles.price}>
-                <p>₹ {botiShareCost}</p>
-                {/* <p>₹ {botiShareCost * numberOfBotiShares}</p> */}
+              <div className={styles.controlPrices}>
+                <div className={styles.price}>
+                  <p>₹ {botiShareCost}</p>
+                  {/* <p>₹ {botiShareCost * numberOfBotiShares}</p> */}
+                </div>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingBotiShares < 1 || !isActive ? 0.5 : 1,
+                  }}
+                >
+                  <button onClick={() => handleDecrement("numberOfBotiShares")}>-</button>
+                  {/* <input type="text" readOnly value={numberOfBotiShares || 0} /> */}
+                  <p>{numberOfBotiShares || 0}</p>
+                  <button onClick={() => handleIncrement("numberOfBotiShares", remainingBotiShares)}>+</button>
+                </div>
               </div>
-              <div
-                className={styles.quantityButtons}
-                style={{
-                  opacity: remainingBotiShares < 1 || !isActive ? 0.5 : 1,
-                }}
-              >
-                <button onClick={() => handleDecrement("numberOfBotiShares")}>-</button>
-                {/* <input type="text" readOnly value={numberOfBotiShares || 0} /> */}
-                <p>{numberOfBotiShares || 0}</p>
-                <button onClick={() => handleIncrement("numberOfBotiShares", remainingBotiShares)}>+</button>
-              </div>
-            </div>
-            {/* <div className={styles.quantityLabels}>
+              {/* <div className={styles.quantityLabels}>
               <span>₹ {botiShareCost * botiQuantity}/-</span>
             </div> */}
-            {/* <span
+              {/* <span
               className={styles.availableNote}
               style={{ color: remainingBotiShares > 0 ? "green" : "red" }}
             >
               (Available : {remainingBotiShares} shares)
             </span> */}
-          </div>
+            </div>
+          )}
 
-          <div className={styles.quantityControl}>
-            <div className={styles.label}>
-              <div className={styles.itemLabelWrap}>
-                <p>Gizzards</p>
-                {/* <p>Goat Boti</p> */}
-                <span className={styles.availableNote}>
-                  Available Shares :{" "}
-                  {finalCallMade ? (
-                    totalExtras > 0 && !remainingExtras ? (
-                      <span>SOLD</span>
+          {remainingExtras > 0 && (
+            <div className={styles.quantityControl}>
+              <div className={styles.label}>
+                <div className={styles.itemLabelWrap}>
+                  <p>Gizzards</p>
+                  {/* <p>Goat Boti</p> */}
+                  <span className={styles.availableNote}>
+                    Available Shares :{" "}
+                    {finalCallMade ? (
+                      totalExtras > 0 && !remainingExtras ? (
+                        <span>SOLD</span>
+                      ) : (
+                        <span>
+                          {!isActive ? 0 : remainingExtras || 0}
+                          {/* {totalExtras ? `/${totalExtras}` : ""} */}
+                        </span>
+                      )
                     ) : (
-                      <span>
-                        {!isActive ? 0 : remainingExtras || 0}
-                        {/* {totalExtras ? `/${totalExtras}` : ""} */}
+                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                        <IoMdLock color="black" size={18} />
                       </span>
-                    )
-                  ) : (
-                    <span style={{ display: "inline-flex", alignItems: "center" }}>
-                      <IoMdLock color="black" size={18} />
-                    </span>
-                  )}
-                </span>
+                    )}
+                  </span>
+                </div>
               </div>
-            </div>
-            <span>100g liver, Heart (1), Kidneys (2), Testicles (2), Tilli(1).</span>
+              <span>100g liver, Heart (1), Kidneys (2), Testicles (2), Tilli(1).</span>
 
-            <div className={styles.controlPrices}>
-              <div className={styles.price}>
-                <p>₹ {extraCost}</p>
-                {/* <p>₹ {botiShareCost * numberOfBotiShares}</p> */}
+              <div className={styles.controlPrices}>
+                <div className={styles.price}>
+                  <p>₹ {extraCost}</p>
+                  {/* <p>₹ {botiShareCost * numberOfBotiShares}</p> */}
+                </div>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingExtras < 1 || !isActive ? 0.5 : 1,
+                  }}
+                >
+                  <button onClick={() => handleDecrement("numberOfExtras")}>-</button>
+                  {/* <input type="text" readOnly value={numberOfBotiShares || 0} /> */}
+                  <p>{numberOfExtras || 0}</p>
+                  <button onClick={() => handleIncrement("numberOfExtras", remainingExtras)}>+</button>
+                </div>
               </div>
-              <div
-                className={styles.quantityButtons}
-                style={{
-                  opacity: remainingExtras < 1 || !isActive ? 0.5 : 1,
-                }}
-              >
-                <button onClick={() => handleDecrement("numberOfExtras")}>-</button>
-                {/* <input type="text" readOnly value={numberOfBotiShares || 0} /> */}
-                <p>{numberOfExtras || 0}</p>
-                <button onClick={() => handleIncrement("numberOfExtras", remainingExtras)}>+</button>
-              </div>
-            </div>
-            {/* <div className={styles.quantityLabels}>
+              {/* <div className={styles.quantityLabels}>
               <span>₹ {botiShareCost * botiQuantity}/-</span>
             </div> */}
-            {/* <span
+              {/* <span
               className={styles.availableNote}
               style={{ color: remainingBotiShares > 0 ? "green" : "red" }}
             >
               (Available : {remainingBotiShares} shares)
             </span> */}
-          </div>
+            </div>
+          )}
+
+          {/* /// */}
+
+          {/* ///// */}
+
+          {remainingKeemaShares === 0 && (
+            <div className={styles.quantityControl}>
+              <div className={styles.label}>
+                <div className={styles.itemLabelWrap}>
+                  <p>Keema</p>
+                  <span className={styles.availableNote}>
+                    Available Shares :{" "}
+                    {finalCallMade ? (
+                      totalKeemaShares > 0 && !remainingKeemaShares ? (
+                        <span>SOLD</span>
+                      ) : (
+                        <span>
+                          {!isActive ? 0 : remainingKeemaShares || 0}
+                          {/* {totalKeemaShares ? `` : ""} */}
+                        </span>
+                      )
+                    ) : (
+                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                        <IoMdLock color="black" size={18} />
+                      </span>
+                    )}
+                  </span>
+                </div>
+              </div>
+              <span>100% Boneless</span>
+
+              <div className={styles.controlPrices}>
+                <div className={styles.price}>
+                  <p>
+                    ₹ {keemaShareCost} <span>/250g</span>
+                  </p>
+                </div>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingKeemaShares < 1 || !isActive ? 0.5 : 1,
+                  }}
+                >
+                  <button onClick={() => handleDecrement("numberOfKeemaShares")}>-</button>
+                  <p>{numberOfKeemaShares || 0}</p>
+                  <button onClick={() => handleIncrement("numberOfKeemaShares", remainingKeemaShares)}>+</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {remainingHeads === 0 && (
+            <div className={styles.quantityControl}>
+              <div className={styles.label}>
+                <div className={styles.itemLabelWrap}>
+                  <p>Head (తలకాయ) </p>
+                  {/* <p>Goat Head</p> */}
+                  <span className={styles.availableNote}>
+                    Available Shares :{" "}
+                    {finalCallMade ? (
+                      totalHeads > 0 && !remainingHeads ? (
+                        <span>SOLD</span>
+                      ) : (
+                        <span>
+                          {!isActive ? 0 : remainingHeads || 0}
+                          {/* {totalHeads ? `` : ""} */}
+                        </span>
+                      )
+                    ) : (
+                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                        <IoMdLock color="black" size={18} />
+                      </span>
+                    )}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.controlPrices}>
+                <div className={styles.price}>
+                  <p>
+                    ₹ {headPrice} <span>/1pc</span>
+                  </p>
+                  {/* <p>₹ {headPrice * numberOfHeadShares}</p> */}
+                </div>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingHeads < 1 || !isActive ? 0.5 : 1,
+                  }}
+                >
+                  <button onClick={() => handleDecrement("numberOfHeadShares")}>-</button>
+                  {/* <input type="text" readOnly value={numberOfHeadShares || 0} /> */}
+                  <p>{numberOfHeadShares || 0}</p>
+                  <button onClick={() => handleIncrement("numberOfHeadShares", remainingHeads)}>+</button>
+                </div>
+              </div>
+              {/* <span>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
+              ab sit voluptate quis harum veniam?
+            </span> */}
+              {/* <div className={styles.quantityLabels}>
+              <span>₹ {headPrice * headQuantity}/-</span>
+            </div> */}
+              {/* <span
+              className={styles.availableNote}
+              style={{ color: remainingHeads > 0 ? "green" : "red" }}
+            >
+              (Available: {remainingHeads || 0} share)
+            </span> */}
+            </div>
+          )}
+
+          {remainingLegs === 0 && (
+            <div className={styles.quantityControl}>
+              <div className={styles.label}>
+                <div className={styles.itemLabelWrap}>
+                  <p>Legs (కాలు)</p>
+                  {/* <p>Goat Legs</p> */}
+                  <span className={styles.availableNote}>
+                    Available Shares :{" "}
+                    {finalCallMade ? (
+                      totalLegs > 0 && !remainingLegs ? (
+                        <span>SOLD</span>
+                      ) : (
+                        <span>
+                          {!isActive ? 0 : remainingLegs || 0}
+                          {/* {totalLegs ? `/${totalLegs}` : ""} */}
+                        </span>
+                      )
+                    ) : (
+                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                        <IoMdLock color="black" size={18} />
+                      </span>
+                    )}
+                  </span>
+                </div>
+              </div>
+              <span>Each share includes four legs.</span>
+              <div className={styles.controlPrices}>
+                <div className={styles.price}>
+                  <p>
+                    ₹ {legsPrice} <span>/4pc</span>
+                  </p>
+                  {/* <p>₹ {legsPrice * numberOfLegsShares}</p> */}
+                </div>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingLegs < 1 || !isActive ? 0.5 : 1,
+                  }}
+                >
+                  <button onClick={() => handleDecrement("numberOfLegsShares")}>-</button>
+                  {/* <input type="text" readOnly value={numberOfLegsShares || 0} /> */}
+                  <p>{numberOfLegsShares || 0}</p>
+                  <button onClick={() => handleIncrement("numberOfLegsShares", remainingLegs)}>+</button>
+                </div>
+              </div>
+
+              {/* <div className={styles.quantityLabels}>
+              <span>₹ {legsPrice * legsQuantity}/-</span>
+            </div> */}
+              {/* <span
+              className={styles.availableNote}
+              style={{ color: remainingLegs > 0 ? "green" : "red" }}
+            >
+              (Available: {remainingLegs || 0} share)
+            </span> */}
+            </div>
+          )}
+
+          {remainingBrains === 0 && (
+            <div className={styles.quantityControl}>
+              <div className={styles.label}>
+                <div className={styles.itemLabelWrap}>
+                  <p>Brain (మెదడు)</p>
+                  {/* <p>Goat Brain</p> */}
+                  <span className={styles.availableNote}>
+                    Available Shares :{" "}
+                    {finalCallMade ? (
+                      totalBrains > 0 && !remainingBrains ? (
+                        <span>SOLD</span>
+                      ) : (
+                        <span>
+                          {!isActive ? 0 : remainingBrains || 0}
+                          {/* {totalBrains ? `/${totalBrains}` : ""} */}
+                        </span>
+                      )
+                    ) : (
+                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                        <IoMdLock color="black" size={18} />
+                      </span>
+                    )}
+                  </span>
+                </div>
+              </div>
+              <div className={styles.controlPrices}>
+                <div className={styles.price}>
+                  <p>
+                    ₹ {brainPrice} <span>/1pc</span>
+                  </p>
+                  {/* <p>₹ {brainPrice * numberOfBrainShares}</p> */}
+                </div>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingBrains < 1 || !isActive ? 0.5 : 1,
+                  }}
+                >
+                  <button onClick={() => handleDecrement("numberOfBrainShares")}>-</button>
+                  {/* <input
+                    type="text"
+                    readOnly
+                    value={numberOfBrainShares || 0}
+                  /> */}
+                  <p>{numberOfBrainShares || 0}</p>
+                  <button onClick={() => handleIncrement("numberOfBrainShares", remainingBrains)}>+</button>
+                </div>
+              </div>
+              {/* <span>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat
+              ab sit voluptate quis harum veniam?
+            </span> */}
+              {/* <div className={styles.quantityLabels}>
+              <span>₹ {brainPrice * brainQuantity}/-</span>
+            </div> */}
+              {/* <span
+              className={styles.availableNote}
+            >
+              (Available: {remainingBrains || 0} )
+            </span> */}
+            </div>
+          )}
+
+          {remainingBotiShares === 0 && (
+            <div className={styles.quantityControl}>
+              <div className={styles.label}>
+                <div className={styles.itemLabelWrap}>
+                  <p>Boti (బోటి)</p>
+                  {/* <p>Goat Boti</p> */}
+                  <span className={styles.availableNote}>
+                    Available Shares :{" "}
+                    {finalCallMade ? (
+                      totalBotiShares > 0 && !remainingBotiShares ? (
+                        <span>SOLD</span>
+                      ) : (
+                        <span>
+                          {!isActive ? 0 : remainingBotiShares || 0}
+                          {/* {totalBotiShares ? `/${totalBotiShares}` : ""} */}
+                        </span>
+                      )
+                    ) : (
+                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                        <IoMdLock color="black" size={18} />
+                      </span>
+                    )}
+                  </span>
+                </div>
+              </div>
+              <span>Each share of boti weighs between 650 grams to 750 grams.</span>
+
+              <div className={styles.controlPrices}>
+                <div className={styles.price}>
+                  <p>₹ {botiShareCost}</p>
+                  {/* <p>₹ {botiShareCost * numberOfBotiShares}</p> */}
+                </div>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingBotiShares < 1 || !isActive ? 0.5 : 1,
+                  }}
+                >
+                  <button onClick={() => handleDecrement("numberOfBotiShares")}>-</button>
+                  {/* <input type="text" readOnly value={numberOfBotiShares || 0} /> */}
+                  <p>{numberOfBotiShares || 0}</p>
+                  <button onClick={() => handleIncrement("numberOfBotiShares", remainingBotiShares)}>+</button>
+                </div>
+              </div>
+              {/* <div className={styles.quantityLabels}>
+              <span>₹ {botiShareCost * botiQuantity}/-</span>
+            </div> */}
+              {/* <span
+              className={styles.availableNote}
+              style={{ color: remainingBotiShares > 0 ? "green" : "red" }}
+            >
+              (Available : {remainingBotiShares} shares)
+            </span> */}
+            </div>
+          )}
+
+          {remainingExtras === 0 && (
+            <div className={styles.quantityControl}>
+              <div className={styles.label}>
+                <div className={styles.itemLabelWrap}>
+                  <p>Gizzards</p>
+                  {/* <p>Goat Boti</p> */}
+                  <span className={styles.availableNote}>
+                    Available Shares :{" "}
+                    {finalCallMade ? (
+                      totalExtras > 0 && !remainingExtras ? (
+                        <span>SOLD</span>
+                      ) : (
+                        <span>
+                          {!isActive ? 0 : remainingExtras || 0}
+                          {/* {totalExtras ? `/${totalExtras}` : ""} */}
+                        </span>
+                      )
+                    ) : (
+                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                        <IoMdLock color="black" size={18} />
+                      </span>
+                    )}
+                  </span>
+                </div>
+              </div>
+              <span>100g liver, Heart (1), Kidneys (2), Testicles (2), Tilli(1).</span>
+
+              <div className={styles.controlPrices}>
+                <div className={styles.price}>
+                  <p>₹ {extraCost}</p>
+                  {/* <p>₹ {botiShareCost * numberOfBotiShares}</p> */}
+                </div>
+                <div
+                  className={styles.quantityButtons}
+                  style={{
+                    opacity: remainingExtras < 1 || !isActive ? 0.5 : 1,
+                  }}
+                >
+                  <button onClick={() => handleDecrement("numberOfExtras")}>-</button>
+                  {/* <input type="text" readOnly value={numberOfBotiShares || 0} /> */}
+                  <p>{numberOfExtras || 0}</p>
+                  <button onClick={() => handleIncrement("numberOfExtras", remainingExtras)}>+</button>
+                </div>
+              </div>
+              {/* <div className={styles.quantityLabels}>
+              <span>₹ {botiShareCost * botiQuantity}/-</span>
+            </div> */}
+              {/* <span
+              className={styles.availableNote}
+              style={{ color: remainingBotiShares > 0 ? "green" : "red" }}
+            >
+              (Available : {remainingBotiShares} shares)
+            </span> */}
+            </div>
+          )}
+
+          {/* /// */}
 
           {/* <div className={styles.quantityControl}>
             <div className={styles.label}>
