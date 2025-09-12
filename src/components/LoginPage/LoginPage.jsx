@@ -94,7 +94,7 @@ const LoginPage = ({ fetchUserData }) => {
       await createUserIndb(mobileNumber, otpVerification.user.uid);
 
       localStorage.setItem("choose-your-goat-token", otpVerification.user.accessToken);
-      localStorage.setItem("choose-your-goat-userId", otpVerification.user.uid);
+
       setShowOtpBuffer(false);
       setOtpError("");
 

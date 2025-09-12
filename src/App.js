@@ -36,15 +36,51 @@ const App = () => {
   });
   const [pincodes, setPincodes] = useState([]);
 
-  const getUser = async (userId) => {
+  async function getDuplicatePhoneNumbers() {
     try {
-      localStorage.setItem("choose-your-goat-userId", userId);
-      const userRef = doc(db, "users", userId);
-      const userSnap = await getDoc(userRef);
+      const querySnapshot = await getDocs(collection(db, "users"));
+      const phoneCountMap = {};
 
-      if (userSnap.exists()) {
-        return userSnap.data();
+      querySnapshot.forEach((doc) => {
+        const phone = doc.data().userPhoneNumber;
+        if (phone) {
+          phoneCountMap[phone] = (phoneCountMap[phone] || 0) + 1;
+        }
+      });
+
+      const duplicates = Object.entries(phoneCountMap)
+        .filter(([phone, count]) => count > 1)
+        .map(([phone]) => phone);
+
+      return duplicates;
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      return [];
+    }
+  }
+
+  const getUser = async (phoneNumber) => {
+    try {
+      localStorage.setItem("choose-your-goat-phoneNumber", phoneNumber);
+      const userRef = query(collection(db, "users"), where("userPhoneNumber", "==", phoneNumber), limit(1));
+
+      const userSnap = await getDocs(userRef);
+
+      console.log("userSnap");
+      console.log(userSnap);
+
+      let usersData = [];
+
+      if (!userSnap.empty) {
+        userSnap.forEach((doc) => {
+          usersData.push({ userId: doc.id, ...doc.data() });
+        });
+        usersData = usersData[0];
+        localStorage.setItem("choose-your-goat-userId", usersData.userId);
+
+        return usersData;
       } else {
+        // Handle the case: no document found
         localStorage.removeItem("choose-your-goat-token");
         localStorage.removeItem("choose-your-goat-userId");
         alert("user not found");
@@ -91,14 +127,27 @@ const App = () => {
     if (userToken) {
       try {
         const decodedToken = jwtDecode(userToken);
-        console.log("decodedToken");
-        console.log(decodedToken);
-        const user = await getUser(decodedToken.sub);
-        const userAddress = await getUserAddress(decodedToken.sub);
+        // console.log("decodedToken");
+        // console.log(decodedToken);
+
+        let phoneNumber = decodedToken.phone_number;
+        phoneNumber = phoneNumber.replace(/^(\+91)/, "");
+        // console.log(phoneNumber);
+
+        // const user = await getUser(decodedToken.sub);
+        const user = await getUser(phoneNumber);
+
+        // console.log("await getDuplicatePhoneNumbers()");
+        // console.log(await getDuplicatePhoneNumbers());
+
+        // console.log("User data");
+        // console.log(user);
+
+        const userAddress = await getUserAddress(user.userId);
 
         setOrder((prev) => ({
           ...prev,
-          userId: decodedToken.sub,
+          userId: user.userId,
           userPhoneNumber: user?.userPhoneNumber,
           userName: user?.userName,
           userAddress: userAddress[0]?.userAddress,
@@ -106,7 +155,7 @@ const App = () => {
           userAddressesList: userAddress,
         }));
       } catch (error) {
-        console.log("no toek");
+        console.log("no token");
         alert("no token");
         localStorage.removeItem("choose-your-goat-token");
         localStorage.removeItem("choose-your-goat-userId");
@@ -118,8 +167,8 @@ const App = () => {
   useEffect(() => {
     let tempToken = getTokenFromQuery(window.location.search);
 
-    console.log("tempToken");
-    console.log(tempToken);
+    // console.log("tempToken");
+    // console.log(tempToken);
 
     if (tempToken) {
       localStorage.removeItem("choose-your-goat-token");

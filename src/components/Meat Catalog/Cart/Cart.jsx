@@ -401,7 +401,6 @@ const Cart = () => {
     try {
       const otpValue = otp.join("");
       const otpConfirmation = await confirmation.confirm(otpValue);
-      localStorage.setItem("choose-your-goat-userId", otpConfirmation.user.uid);
 
       window.localStorage.setItem("choose-your-goat-token", otpConfirmation.user.accessToken);
 
@@ -412,10 +411,13 @@ const Cart = () => {
 
       setShowOtpInputPopup(false);
 
-      addUserToDb(order.userPhoneNumber, otpConfirmation.user.uid, {
+      let userForNow = addUserToDb(order.userPhoneNumber, otpConfirmation.user.uid, {
         userName: order.userName,
         userPhoneNumber: order.userPhoneNumber,
       });
+
+      localStorage.setItem("choose-your-goat-phoneNumber", order.userPhoneNumber);
+      localStorage.setItem("choose-your-goat-userId", userForNow.id);
 
       addUserAddressToDb({
         userId: otpConfirmation.user.uid,
