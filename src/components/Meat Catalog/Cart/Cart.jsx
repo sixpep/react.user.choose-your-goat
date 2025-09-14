@@ -320,6 +320,7 @@ const Cart = () => {
             totalBill: billCalculated,
 
             userAddressId: currentSelectedAddressDetails.id,
+            userCity: currentSelectedAddressDetails.city || "",
             userId: localStorage.getItem("choose-your-goat-userId"),
 
             butcherInstructions: order.butcherInstructions || "",

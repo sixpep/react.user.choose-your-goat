@@ -133,7 +133,7 @@ const UserOrders = () => {
                     <p>Total Bill: {order.totalBill}</p>
                   </div>
                   <div className={styles.orderDetails}>
-                    <p>Address: {`${order.userAddress}, ${order.landmark}, ${order.userCity}, ${order.userPinCode}`}</p>
+                    <p>Address: {`${order.userAddress}, ${order.landmark}, ${order.userCity}, ${order.userPinCode || order.pincode}`}</p>
                   </div>
                   {order.status && (
                     <div className={styles.orderDetails}>
