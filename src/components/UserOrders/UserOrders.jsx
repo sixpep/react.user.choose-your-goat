@@ -130,6 +130,9 @@ const UserOrders = () => {
                     <p>Delivery Date: {new Date(order.deliveryDate).toLocaleDateString()}</p>
                   </div>
                   <div className={styles.orderDetails}>
+                    <p>Delivey Fee: {order.deliveryFee ? order.deliveryFee : 0}</p>
+                  </div>
+                  <div className={styles.orderDetails}>
                     <p>Total Bill: {order.totalBill}</p>
                   </div>
                   <div className={styles.orderDetails}>

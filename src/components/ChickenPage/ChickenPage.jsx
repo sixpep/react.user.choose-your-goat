@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { db } from "../../firebase/setup";
 import { where, collection, doc, getDoc, onSnapshot, query, orderBy, limit, getDocs } from "firebase/firestore";
 import { getCurrentDay } from "../../utils/getDay.utils";
+import { lowDeliveryFeePincodes } from "../../staticValues";
 
 const ChickenPage = () => {
   const navigate = useNavigate();
@@ -134,7 +135,14 @@ const ChickenPage = () => {
           <h6>The final price may vary based on the size of the chicken.</h6>
         </div>
         <p>
-          Total Price: <span> ₹{order.totalBill}</span>
+          Total Price:{" "}
+          <span>
+            {" "}
+            ₹{order.totalBill} +{" "}
+            <span style={{ fontSize: "14px" }}>
+              {`${lowDeliveryFeePincodes.includes(localStorage.getItem("true-meat-location")) ? 35 : 55}(delivery fee)`}
+            </span>
+          </span>
         </p>
         <button
           // onClick={() => navigate("/cart")}

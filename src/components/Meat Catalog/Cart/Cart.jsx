@@ -12,6 +12,7 @@ import emailjs from "@emailjs/browser";
 import axios from "axios";
 import { getCurrentDay } from "../../../utils/getDay.utils";
 import SelectAddress from "../SelectAddress/SelectAddress";
+import { lowDeliveryFeePincodes } from "../../../staticValues";
 
 const Cart = () => {
   const { order, setOrder, goatsData, hensData } = useContext(Context);
@@ -29,6 +30,7 @@ const Cart = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
+  const deliveryFee = lowDeliveryFeePincodes.includes(localStorage.getItem("true-meat-location")) ? 35 : 55;
 
   const keyNames = {
     numberOfMuttonShares: "Mutton",
@@ -199,8 +201,6 @@ const Cart = () => {
     }
 
     if (order.orderType === "chicken") {
-      const deliveryFee = 20;
-
       console.log({
         geolocation: currentSelectedAddressDetails.geolocation,
         landmark: currentSelectedAddressDetails.landmark,
@@ -219,6 +219,7 @@ const Cart = () => {
         orderType: "chicken",
         orderedDate: new Date().getTime(),
         scheduledDeliveryDate: order.scheduledDeliveryDate,
+        deliveryFee: deliveryFee,
         totalBill: order.totalBill + deliveryFee,
       });
       const docRef = await addDoc(collection(db, "chickenOrders"), {
@@ -239,6 +240,7 @@ const Cart = () => {
         orderType: "chicken",
         orderedDate: new Date().getTime(),
         scheduledDeliveryDate: order.scheduledDeliveryDate,
+        deliveryFee: deliveryFee,
         totalBill: order.totalBill + deliveryFee,
       });
       console.log(docRef);
@@ -317,7 +319,8 @@ const Cart = () => {
             ...requirement,
             deliveryDate: goat.deliveryDateTimestamp,
             orderedDate: new Date().getTime(),
-            totalBill: billCalculated,
+            deliveryFee: deliveryFee,
+            totalBill: billCalculated + deliveryFee,
 
             userAddressId: currentSelectedAddressDetails.id,
             userCity: currentSelectedAddressDetails.city || "",
@@ -344,7 +347,7 @@ const Cart = () => {
             currentSelectedAddressDetails.userAddress,
             currentSelectedAddressDetails.landmark,
             order.meatRequirements,
-            order.totalBill,
+            order.totalBill + deliveryFee,
             order.scheduledDeliveryDate ||
               new Date().toLocaleDateString("en-CA", {
                 timeZone: "Asia/Kolkata",
@@ -493,43 +496,6 @@ const Cart = () => {
     }
   };
 
-  // const sendEmailOrder = async (
-  //   userName,
-  //   userPhoneNumber,
-  //   userAddress,
-  //   landmark,
-  //   meatRequirements,
-  //   totalBill
-  // ) => {
-  //   try {
-  //     const serviceID = "service_iw7ipns"; // Replace with your EmailJS service ID
-  //     const templateID = "template_cxzybxo"; // Replace with your EmailJS template ID
-  //     const publicKey = "omRK8BgK3Wa3-ZxiI"; // Replace with your EmailJS public key
-
-  //     // Template parameters to fill in the email
-  //     const templateParams = {
-  //       userName,
-  //       userPhoneNumber,
-  //       userAddress,
-  //       landmark,
-  //       meatRequirements,
-  //       totalBill,
-  //     };
-
-  //     const response = await emailjs.send(
-  //       serviceID,
-  //       templateID,
-  //       templateParams,
-  //       publicKey
-  //     );
-  //     console.log("Email sent successfully:", response.status, response.text);
-  //     return { success: true, message: "Email sent successfully" };
-  //   } catch (error) {
-  //     console.error("Failed to send email:", error);
-  //     return { success: false, message: "Failed to send email", error };
-  //   }
-  // };
-
   const sendEmailOrder = async (
     userName,
     userPhoneNumber,
@@ -619,27 +585,9 @@ const Cart = () => {
                             <p>
                               {keyNames[keyName]} ( {goatObj[keyName]} shares )
                             </p>
-                            {/* <div className={styles.quantityButtons}>
-                          <button>-</button>
-                          <input
-                            type="text"
-                            id={keyName}
-                            readOnly
-                            value={goatObj[keyName]}
-                          />
-                          <button>+</button>
-                        </div> */}
                           </div>
                           <p>
                             ₹
-                            {/* {goatObj[keyName] *
-                              (goatsData.find((item) => item.docId === goatObj.goatId)
-                                ? goatsData.find((item) => item.docId === goatObj.goatId)[localStorage.getItem("true-meat-location")]?.[
-                                    priceNames[keyName]
-                                  ] ??
-                                  goatsData.find((item) => item.docId === goatObj.goatId)["general"]?.[priceNames[keyName]] ??
-                                  goatsData.find((item) => item.docId === goatObj.goatId)[priceNames[keyName]]
-                                : 0)} */}
                             {(() => {
                               const goatCount = goatObj[keyName];
                               const goat = goatsData.find((item) => item.docId === goatObj.goatId);
@@ -663,71 +611,27 @@ const Cart = () => {
               ))}
 
           <div className="w-full">
-            {order.orderType === "chicken" && (
-              <div className=" w-full divide-y divide-gray-200 px-4 dark:divide-gray-800">
-                <dl className="flex items-center justify-between gap-4">
-                  <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Delivery fee</dt>
-                  <dd className="text-base font-medium text-gray-900 dark:text-white">₹ 20/-</dd>
-                </dl>
-              </div>
-            )}
+            {/* {order.orderType === "chicken" && ( */}
+            <div className=" w-full divide-y divide-gray-200 px-4 dark:divide-gray-800">
+              <dl className="flex items-center justify-between gap-4">
+                <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Delivery fee</dt>
+                <dd className="text-base font-medium text-gray-900 dark:text-white">₹ {deliveryFee}/-</dd>
+              </dl>
+            </div>
+            {/* )} */}
 
             <div className=" w-full divide-y divide-gray-200 px-4 dark:divide-gray-800">
               <dl className="flex items-center justify-between gap-4 py-3">
                 <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Subtotal</dt>
                 <dd className="text-base font-medium text-gray-900 dark:text-white">
-                  ₹{order.orderType === "chicken" ? order.totalBill + 20 : order.totalBill}
+                  {/* ₹{order.orderType === "chicken" ? order.totalBill + deliveryFee : order.totalBill} */}₹{order.totalBill + deliveryFee}
                   /-
-                  {/* ₹ {order.totalBill + 20}/- */}
                 </dd>
               </dl>
             </div>
           </div>
-
-          {/* <div className={styles.cartItemsWrap}>
-            <div className={styles.cartItem}>
-              <p>Mutton</p>
-              <div className={styles.quantityButtons}>
-                <button>-</button>
-                <input
-                  type="text"
-                  id="numberOfMuttonShares"
-                  readOnly
-                  value={20}
-                />
-                <button>+</button>
-              </div>
-
-              <p>₹ {2 * 400}/-</p>
-            </div>
-            <div className={styles.cartItem}>
-              <p>Talkaya</p>
-              <div className={styles.quantityButtons}>
-                <button>-</button>
-                <input
-                  type="text"
-                  id="numberOfMuttonShares"
-                  readOnly
-                  value={20}
-                />
-                <button>+</button>
-              </div>
-
-              <p>₹ {350}/-</p>
-            </div>
-          </div> */}
         </div>
 
-        {/* <div className="-my-3 divide-y divide-gray-200 px-4 dark:divide-gray-800">
-          <dl className="flex items-center justify-between gap-4 py-3">
-            <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-              Subtotal
-            </dt>
-            <dd className="text-base font-medium text-gray-900 dark:text-white">
-              ₹ {order.totalBill}
-            </dd>
-          </dl>
-        </div> */}
         <div id="recaptcha"></div>
 
         {!createNewAddress && (
@@ -740,12 +644,6 @@ const Cart = () => {
         )}
         {createNewAddress && <CheckOutForm sendOtp={sendOtp} placeOrder={placeOrder} />}
       </div>
-
-      {/* <div className={styles.form}>
-        <button onClick={sendOtp}>Send OTP</button>
-        <div id="recaptcha"></div>
-        <button onClick={verifyOtp}>Verify OTP</button>
-      </div> */}
 
       {showSendingOtpLoading && (
         <div className={styles.verifyOtpContainer}>

@@ -8,6 +8,7 @@ import CheckOutForm from "./Check Out Form/CheckOutForm";
 import TileCarousel from "./Carousel/TileCarousel";
 import PopupModal from "../Modals/PopupModal";
 import { Context } from "../../App";
+import { lowDeliveryFeePincodes } from "../../staticValues";
 
 const Catalog = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const Catalog = () => {
   const [showFutureGoatPopup, setShowFutureGoatPopup] = useState(false);
   const [nextGoatDate, setNextGoatDate] = useState(null);
   const { goatsData } = useContext(Context);
+  const deliveryFee = lowDeliveryFeePincodes.includes(localStorage.getItem("true-meat-location")) ? 35 : 55;
 
   useEffect(() => {
     const fetchNextGoatDate = async () => {
@@ -79,7 +81,14 @@ const Catalog = () => {
 
       <div className={styles.checkOutWrap}>
         <p>
-          Total Price: <span> ₹ {order.totalBill}</span>
+          Total Price:{" "}
+          <span>
+            {" "}
+            ₹ {order.totalBill} +{" "}
+            <span style={{ fontSize: "14px" }}>
+              {`${lowDeliveryFeePincodes.includes(localStorage.getItem("true-meat-location")) ? 35 : 55}(delivery fee)`}
+            </span>
+          </span>
         </p>
         {/* <button onClick={() => navigate("/cart")} disabled={order.totalBill <= 0} style={{ opacity: order.meatRequirements.length < 1 ? 0.5 : 1 }}> */}
         <button onClick={onMuttonBag} disabled={order.totalBill <= 0} style={{ opacity: order.meatRequirements.length < 1 ? 0.5 : 1 }}>
