@@ -9,5 +9,5 @@ module.exports = {
   },
   chickenRestrictedAt: ["502319", "500032"],
   muttonRestrictedAt: [],
-  lowDeliveryFeePincodes: ["502001"],
+  lowDeliveryFeePincodes: ["502001", "502295"],
 };
