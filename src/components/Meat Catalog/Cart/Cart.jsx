@@ -176,6 +176,17 @@ const Cart = () => {
     if (addressSelected) {
       selectedAddressIdByUser = order.selectedAddressId;
       currentSelectedAddressDetails = userAddressesList.find((addr) => addr.id === selectedAddressIdByUser);
+
+      console.log("Pincode comparision");
+      console.log(currentSelectedAddressDetails.userPinCode, localStorage.getItem("true-meat-location"));
+
+      if (currentSelectedAddressDetails.userPinCode !== localStorage.getItem("true-meat-location")) {
+        console.log("Error occured due to mismatch of selected pincode and selected address pincode.");
+        alert(
+          "Selected pincode is not the same as the pincodes in selected address. Please change the pincode at the top of the page or create a new address in this location."
+        );
+        return;
+      }
     } else {
       try {
         let newAddressDoc = {
