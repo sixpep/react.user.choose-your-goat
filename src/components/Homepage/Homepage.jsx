@@ -22,7 +22,7 @@ const Homepage = ({ isPopupVisible, setPopupVisible }) => {
       restrictedAt: muttonRestricted,
     },
     {
-      title: "Chicken",
+      title: "Chicken & Eggs",
       imgSrc: "/images/chickenRightEdge.png",
       tilePath: "/chicken",
       restrictedAt: chickenRestricted,
