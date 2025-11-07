@@ -66,6 +66,36 @@ const UserOrders = () => {
             console.error("Error listening to chicken orders:", error);
           }
         );
+
+        onSnapshot(
+          collection(db, "eggOrders"),
+          (chickenQuerySnapshot) => {
+            chickenQuerySnapshot.forEach((doc) => {
+              const eggOrderData = doc.data();
+
+              if (eggOrderData.userId === userId) {
+                userOrders.push(eggOrderData);
+              }
+            });
+
+            console.log("userOrders", userOrders);
+
+            userOrders.sort((a, b) => {
+              // Get the timestamp for comparison
+              const timestampA = a.orderedDate || a.deliveryDate;
+              const timestampB = b.orderedDate || b.deliveryDate;
+
+              // Sort in descending order
+              return timestampB - timestampA;
+            });
+
+            setUserOrders(userOrders);
+            setShowFetchingOrdersLoading(false);
+          },
+          (error) => {
+            console.error("Error listening to chicken orders:", error);
+          }
+        );
       },
       (error) => {
         console.error("Error listening to orders:", error);
@@ -104,7 +134,105 @@ const UserOrders = () => {
           </div>
         ) : userOrders.length > 0 ? (
           userOrders.map((order) => {
-            if (order.orderType !== "chicken") {
+            if (order.orderType === "chicken") {
+              return (
+                <div
+                  key={order.id}
+                  style={{
+                    border: "1px solid #ccc",
+                    margin: "10px",
+                    padding: "10px",
+                  }}
+                >
+                  <div className={styles.goatRequirements}>
+                    {order.meatRequirements.map((item) => (
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <p>
+                          {item.henName} : {item.quantity}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className={styles.orderDetails}>
+                    <p>Delivery Date: {new Date(order.scheduledDeliveryDate || order.deliveryDate || order.orderedDate).toLocaleDateString()}</p>
+                  </div>
+                  <div className={styles.orderDetails}>
+                    <p>Total Bill: {order.totalBill}</p>
+                  </div>
+                  <div className={styles.orderDetails}>
+                    <p>Address: {`${order.userAddress}, ${order.landmark}, ${order.userCity}, ${order.userPinCode}`}</p>
+                  </div>
+                  {order.status && (
+                    <div className={styles.orderDetails}>
+                      <p>
+                        Status:{" "}
+                        <spam
+                          style={{
+                            color: "red",
+                          }}
+                        >
+                          {order.status}
+                        </spam>
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            } else if (order.orderType === "egg") {
+              return (
+                <div
+                  key={order.id}
+                  style={{
+                    border: "1px solid #ccc",
+                    margin: "10px",
+                    padding: "10px",
+                  }}
+                >
+                  <div className={styles.goatRequirements}>
+                    {order.meatRequirements.map((item) => (
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <p>
+                          {item.eggName} : {item.quantity}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className={styles.orderDetails}>
+                    <p>Delivery Date: {new Date(order.scheduledDeliveryDate || order.deliveryDate || order.orderedDate).toLocaleDateString()}</p>
+                  </div>
+                  <div className={styles.orderDetails}>
+                    <p>Total Bill: {order.totalBill}</p>
+                  </div>
+                  <div className={styles.orderDetails}>
+                    <p>Address: {`${order.userAddress}, ${order.landmark}, ${order.userCity}, ${order.userPinCode}`}</p>
+                  </div>
+                  {order.status && (
+                    <div className={styles.orderDetails}>
+                      <p>
+                        Status:{" "}
+                        <spam
+                          style={{
+                            color: "red",
+                          }}
+                        >
+                          {order.status}
+                        </spam>
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            } else {
               return (
                 <div
                   key={order.id}
@@ -137,55 +265,6 @@ const UserOrders = () => {
                   </div>
                   <div className={styles.orderDetails}>
                     <p>Address: {`${order.userAddress}, ${order.landmark}, ${order.userCity}, ${order.userPinCode || order.pincode}`}</p>
-                  </div>
-                  {order.status && (
-                    <div className={styles.orderDetails}>
-                      <p>
-                        Status:{" "}
-                        <spam
-                          style={{
-                            color: "red",
-                          }}
-                        >
-                          {order.status}
-                        </spam>
-                      </p>
-                    </div>
-                  )}
-                </div>
-              );
-            } else {
-              return (
-                <div
-                  key={order.id}
-                  style={{
-                    border: "1px solid #ccc",
-                    margin: "10px",
-                    padding: "10px",
-                  }}
-                >
-                  <div className={styles.goatRequirements}>
-                    {order.meatRequirements.map((item) => (
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <p>
-                          {item.henName} : {item.quantity}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                  <div className={styles.orderDetails}>
-                    <p>Delivery Date: {new Date(order.scheduledDeliveryDate || order.deliveryDate || order.orderedDate).toLocaleDateString()}</p>
-                  </div>
-                  <div className={styles.orderDetails}>
-                    <p>Total Bill: {order.totalBill}</p>
-                  </div>
-                  <div className={styles.orderDetails}>
-                    <p>Address: {`${order.userAddress}, ${order.landmark}, ${order.userCity}, ${order.userPinCode}`}</p>
                   </div>
                   {order.status && (
                     <div className={styles.orderDetails}>

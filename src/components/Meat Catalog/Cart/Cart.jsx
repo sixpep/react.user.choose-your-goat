@@ -15,7 +15,7 @@ import SelectAddress from "../SelectAddress/SelectAddress";
 import { lowDeliveryFeePincodes } from "../../../staticValues";
 
 const Cart = () => {
-  const { order, setOrder, goatsData, hensData } = useContext(Context);
+  const { order, setOrder, goatsData, hensData, eggsData } = useContext(Context);
   const [showOtpInputPopup, setShowOtpInputPopup] = useState(false);
   const [showVerificationLoading, setShowVerificationLoading] = useState(false);
   const [showConfirmationLoading, setShowConfirmationLoading] = useState(false);
@@ -249,6 +249,47 @@ const Cart = () => {
 
         meatRequirements: order.meatRequirements,
         orderType: "chicken",
+        orderedDate: new Date().getTime(),
+        scheduledDeliveryDate: order.scheduledDeliveryDate,
+        deliveryFee: deliveryFee,
+        totalBill: order.totalBill + deliveryFee,
+      });
+      console.log(docRef);
+
+      sendEmailOrder(
+        currentSelectedAddressDetails.userName,
+        // order.userName,
+        order.userPhoneNumber,
+        currentSelectedAddressDetails.userAddress,
+        currentSelectedAddressDetails.landmark,
+        order.meatRequirements,
+        order.totalBill + deliveryFee,
+        order.scheduledDeliveryDate,
+        order.orderType,
+        order.orderedDate || Date.now()
+      );
+
+      setShowConfirmationLoading(false);
+      setOrderConfirmation(true);
+      return;
+    }
+    if (order.orderType === "egg") {
+      const docRef = await addDoc(collection(db, "eggOrders"), {
+        geolocation: currentSelectedAddressDetails.geolocation,
+        landmark: currentSelectedAddressDetails.landmark,
+        userAddress: currentSelectedAddressDetails.userAddress,
+        userCity: currentSelectedAddressDetails.city || "",
+        userPinCode: currentSelectedAddressDetails.userPinCode || "",
+
+        butcherInstructions: order.butcherInstructions || "",
+        userName: order.userName,
+        userPhoneNumber: order.userPhoneNumber,
+
+        userAddressId: currentSelectedAddressDetails.id,
+        userId: localStorage.getItem("choose-your-goat-userId"),
+
+        meatRequirements: order.meatRequirements,
+        orderType: "egg",
         orderedDate: new Date().getTime(),
         scheduledDeliveryDate: order.scheduledDeliveryDate,
         deliveryFee: deliveryFee,
@@ -557,7 +598,13 @@ const Cart = () => {
               if (createNewAddress) {
                 setCreateNewAddress(false);
               } else {
-                order.orderType === "chicken" ? navigate("/chicken") : navigate("/mutton");
+                if (order.orderType === "chicken") {
+                  navigate("/chicken");
+                } else if (order.orderType === "egg") {
+                  navigate("/egg");
+                } else {
+                  navigate("/mutton");
+                }
               }
             }}
           >
@@ -579,6 +626,24 @@ const Cart = () => {
                       <div className={styles.priceValues}>
                         <p>
                           {item?.henName} {`(${item.quantity})`}
+                        </p>
+                      </div>
+                      <p>₹ {totalPrice}/-</p>
+                    </div>
+                  </div>
+                );
+              })
+            : order.orderType === "egg"
+            ? order.meatRequirements.map((item, index) => {
+                const eggData = eggsData.find((egg) => egg.docId === item.eggId);
+                const totalPrice = eggData ? eggData.eggPrice * item.quantity : 0;
+
+                return (
+                  <div className={styles.cartItemsWrap}>
+                    <div className={styles.cartItem} key={index}>
+                      <div className={styles.priceValues}>
+                        <p>
+                          {item?.eggName} {`(${item.quantity})`}
                         </p>
                       </div>
                       <p>₹ {totalPrice}/-</p>
@@ -714,6 +779,8 @@ const Cart = () => {
 
               if (order.orderType === "chicken") {
                 navigate("/chicken");
+              } else if (order.orderType == "egg") {
+                navigate("/egg");
               } else {
                 navigate("/mutton");
               }

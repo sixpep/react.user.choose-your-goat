@@ -11,6 +11,7 @@ const Homepage = ({ isPopupVisible, setPopupVisible }) => {
   const [popupData, setPopupData] = useState({});
   const [muttonRestricted, setMuttonRestricted] = useState(false);
   const [chickenRestricted, setChickenRestricted] = useState(false);
+  const [eggsRestricted, setEggsRestricted] = useState(false);
 
   const { order } = useContext(Context);
 
@@ -22,10 +23,16 @@ const Homepage = ({ isPopupVisible, setPopupVisible }) => {
       restrictedAt: muttonRestricted,
     },
     {
-      title: "Chicken & Eggs",
+      title: "Chicken",
       imgSrc: "/images/chickenRightEdge.png",
       tilePath: "/chicken",
       restrictedAt: chickenRestricted,
+    },
+    {
+      title: "Eggs",
+      imgSrc: "/images/eggRightEdge.png",
+      tilePath: "/egg",
+      restrictedAt: eggsRestricted,
     },
   ];
 
@@ -60,6 +67,7 @@ const Homepage = ({ isPopupVisible, setPopupVisible }) => {
 
         setChickenRestricted(!pincodes.chickenOrders);
         setMuttonRestricted(!pincodes.muttonOrders);
+        setEggsRestricted(!pincodes.eggOrders);
       } catch (error) {
         return error;
       }

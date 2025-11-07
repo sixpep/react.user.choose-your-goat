@@ -26,7 +26,8 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
       !order?.userPinCode ||
       order?.userCity === "" ||
       !order?.userCity ||
-      (order?.orderType === "chicken" && !order?.scheduledDeliveryDate)
+      (order?.orderType === "chicken" && !order?.scheduledDeliveryDate) ||
+      (order?.orderType === "egg" && !order?.scheduledDeliveryDate)
     ) {
       return;
     } else if (localStorage.getItem("choose-your-goat-token")) {
@@ -186,7 +187,7 @@ const CheckOutForm = ({ sendOtp, placeOrder }) => {
                   </div>
                 </div>
 
-                {order.orderType === "chicken" && (
+                {(order.orderType === "chicken" || order.orderType === "egg") && (
                   <div>
                     <label htmlFor="phone-input-3" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                       {" "}

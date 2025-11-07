@@ -11,6 +11,7 @@ import UserOrders from "./components/UserOrders/UserOrders";
 import LoginPage from "./components/LoginPage/LoginPage";
 import Homepage from "./components/Homepage/Homepage";
 import ChickenPage from "./components/ChickenPage/ChickenPage";
+import EggsPage from "./components/ChickenPage/EggsPage";
 import PopupModal from "./components/Modals/PopupModal";
 import { getTokenFromQuery } from "./utils/extractQuery.utils";
 
@@ -22,6 +23,7 @@ const App = () => {
   const [locationName, setLocationName] = useState("");
   const [goatsData, setGoatsData] = useState([]);
   const [hensData, setHensData] = useState([]);
+  const [eggsData, setEggsData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const [order, setOrder] = useState({
@@ -202,6 +204,18 @@ const App = () => {
       setHensData(updatedHensData);
     });
 
+    const unsubscribeEggs = onSnapshot(collection(db, "eggs"), (snapshot) => {
+      const updatedEggsData = snapshot.docs.map((doc) => ({
+        docId: doc.id,
+        ...doc.data(),
+      }));
+
+      updatedEggsData.sort((a, b) => b.deliveryDateTimestamp - a.deliveryDateTimestamp);
+
+      console.log("Updated Eggs Data", updatedEggsData);
+      setEggsData(updatedEggsData);
+    });
+
     fetchUserData();
 
     // for location popup
@@ -223,6 +237,7 @@ const App = () => {
     return () => {
       unsubscribeGoats();
       unsubscribeHens();
+      unsubscribeEggs();
     };
   }, []);
 
@@ -231,7 +246,7 @@ const App = () => {
   };
 
   return (
-    <Context.Provider value={{ order, setOrder, goatsData, setGoatsData, hensData }}>
+    <Context.Provider value={{ order, setOrder, goatsData, setGoatsData, hensData, eggsData }}>
       <div className="appContainer">
         <Navbar selectLocationPopup={selectLocationPopup} setSelectLocationPopup={setSelectLocationPopup} locationName={locationName} />
         <BrowserRouter>
@@ -254,6 +269,7 @@ const App = () => {
             <Route path="/login" element={<LoginPage fetchUserData={fetchUserData} />} />
             <Route path="/mutton" element={<Catalog />} />
             <Route path="/chicken" element={<ChickenPage />} />
+            <Route path="/egg" element={<EggsPage />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/orders" element={<UserOrders />} />
           </Routes>

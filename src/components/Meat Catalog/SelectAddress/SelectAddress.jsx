@@ -108,11 +108,12 @@ const SelectAddress = ({ selectedAddressId, setSelectedAddressId, setCreateNewAd
 
     setMinDate(currentHour < 20 ? today : tomorrow);
   };
-  const placeOrderIsEnabled = selectedAddressId.length > 0 && (order.orderType !== "chicken" || !!order.scheduledDeliveryDate);
+  const placeOrderIsEnabled =
+    selectedAddressId.length > 0 && ((order.orderType !== "chicken" && order.orderType !== "egg") || !!order.scheduledDeliveryDate);
 
   return (
     <section className="mb-4 bg-white py-4 pb-20 antialiased dark:bg-gray-900 md:pb-16 shadow-inner max-h-[99vh] overflow-y-auto z-30">
-      {order.orderType === "chicken" && (
+      {(order.orderType === "chicken" || order.orderType === "egg") && (
         <div>
           <label htmlFor="phone-input-3" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
             {" "}
@@ -153,7 +154,7 @@ const SelectAddress = ({ selectedAddressId, setSelectedAddressId, setCreateNewAd
 
       <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Select Address</h2>
-        {order.orderType == "chicken" && <span>*Delivery will take about 45 min.</span>}
+        {(order.orderType === "chicken" || order.orderType === "egg") && <span>*Delivery will take about 45 min.</span>}
         {/* Place order button */}
         {order.userAddressesList?.length >= 3 && (
           <div
