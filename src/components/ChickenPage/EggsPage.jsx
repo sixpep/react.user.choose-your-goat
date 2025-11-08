@@ -23,9 +23,7 @@ const EggPage = () => {
   useEffect(() => {
     async function checkPermission() {
       try {
-        let permissionDoc = await getDocs(
-          query(collection(db, "availability"), where("pincode", "==", localStorage.getItem("true-meat-location")), limit(1))
-        );
+        let permissionDoc = await getDocs(query(collection(db, "availability"), where("pincode", "==", localStorage.getItem("true-meat-location")), limit(1)));
 
         if (!permissionDoc.empty) {
           const data = permissionDoc.docs[0].data();
@@ -83,23 +81,17 @@ const EggPage = () => {
           </div>
         </div>
 
-        <div className={styles.banner}>
+        {/*
+          <div className={styles.banner}>
           <img src="/images/eggBanner.png" alt="Egg Banner" />
-        </div>
+        </div>*/}
 
         <div className={styles.quanityControllers}>
           {eggsData.map(
             (item, index) =>
               item.shortDayAvail &&
               item.shortDayAvail.includes(getCurrentDay(true)) && (
-                <QuantityControllerComp
-                  key={index}
-                  eggName={item.eggName}
-                  description={item.description}
-                  eggPrice={item.eggPrice}
-                  eggCount={item.eggCount}
-                  docId={item.docId}
-                />
+                <QuantityControllerComp key={index} eggName={item.eggName} description={item.description} eggPrice={item.eggPrice} eggCount={item.eggCount} docId={item.docId} />
               )
           )}
         </div>
@@ -113,10 +105,7 @@ const EggPage = () => {
         <p>
           Total Price:{" "}
           <span>
-            ₹{order.totalBill} +{" "}
-            <span style={{ fontSize: "14px" }}>
-              {`${lowDeliveryFeePincodes.includes(localStorage.getItem("true-meat-location")) ? 35 : 55} (delivery fee)`}
-            </span>
+            ₹{order.totalBill} + <span style={{ fontSize: "14px" }}>{`${lowDeliveryFeePincodes.includes(localStorage.getItem("true-meat-location")) ? 35 : 55} (delivery fee)`}</span>
           </span>
         </p>
         <button
