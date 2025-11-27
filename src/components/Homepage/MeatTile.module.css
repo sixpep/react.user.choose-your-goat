@@ -1,0 +1,41 @@
+.tile {
+  background-color: #f9f7f3;
+  border-radius: 14px;
+  padding: 1rem 0.6rem;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.2s;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.tile:hover {
+  transform: translateY(-3px);
+}
+
+.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.image {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+.title {
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.status {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #777;
+}
