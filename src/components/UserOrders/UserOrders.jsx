@@ -1,350 +1,162 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./UserOrders.module.css";
-import { collection, onSnapshot } from "firebase/firestore";
 import { Context } from "../../App";
 import { db } from "../../firebase/setup";
-import { LuMoveLeft } from "react-icons/lu";
-import { useNavigate } from "react-router-dom";
-import { color } from "framer-motion";
+import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 
-const UserOrders = () => {
-  const [userOrders, setUserOrders] = useState([]);
-  const [userLoggedIn, setUserLoggedIn] = useState(true);
-  const [showFetchingOrdersLoading, setShowFetchingOrdersLoading] = useState(true);
+function UserOrders() {
   const navigate = useNavigate();
+  const { userId } = useContext(Context);
+  console.log(userId);
 
-  const { order } = useContext(Context);
-  const userId = order.userId;
-  //   const userId = "LO7kskxIKiUczDaEiMnTMATWzrl1";
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (localStorage.getItem("choose-your-goat-token")) {
-      setUserLoggedIn(true);
-    } else {
-      setUserLoggedIn(false);
-    }
-
-    const unsubscribe = onSnapshot(
-      collection(db, "orders"),
-      (querySnapshot) => {
-        const userOrders = [];
-
-        querySnapshot.forEach((doc) => {
-          const orderData = doc.data();
-
-          if (orderData.userId === userId) {
-            userOrders.push(orderData);
-          }
-        });
-
-        onSnapshot(
-          collection(db, "chickenOrders"),
-          (chickenQuerySnapshot) => {
-            chickenQuerySnapshot.forEach((doc) => {
-              const chickenOrderData = doc.data();
-
-              if (chickenOrderData.userId === userId) {
-                userOrders.push(chickenOrderData);
-              }
-            });
-
-            console.log("userOrders", userOrders);
-
-            userOrders.sort((a, b) => {
-              // Get the timestamp for comparison
-              const timestampA = a.orderedDate || a.deliveryDate;
-              const timestampB = b.orderedDate || b.deliveryDate;
-
-              // Sort in descending order
-              return timestampB - timestampA;
-            });
-
-            setUserOrders(userOrders);
-            setShowFetchingOrdersLoading(false);
-          },
-          (error) => {
-            console.error("Error listening to chicken orders:", error);
-          }
-        );
-
-        onSnapshot(
-          collection(db, "eggOrders"),
-          (chickenQuerySnapshot) => {
-            chickenQuerySnapshot.forEach((doc) => {
-              const eggOrderData = doc.data();
-
-              if (eggOrderData.userId === userId) {
-                userOrders.push(eggOrderData);
-              }
-            });
-
-            console.log("userOrders", userOrders);
-
-            userOrders.sort((a, b) => {
-              // Get the timestamp for comparison
-              const timestampA = a.orderedDate || a.deliveryDate;
-              const timestampB = b.orderedDate || b.deliveryDate;
-
-              // Sort in descending order
-              return timestampB - timestampA;
-            });
-
-            setUserOrders(userOrders);
-            setShowFetchingOrdersLoading(false);
-          },
-          (error) => {
-            console.error("Error listening to chicken orders:", error);
-          }
-        );
-      },
-      (error) => {
-        console.error("Error listening to orders:", error);
+    const fetchOrders = async () => {
+      if (!userId) {
+        setLoading(false);
+        return;
       }
-    );
 
-    return () => unsubscribe();
+      try {
+        const q = query(collection(db, "orders"), where("userId", "==", userId), orderBy("createdAt", "desc"));
+
+        const snap = await getDocs(q);
+        const list = snap.docs.map((d) => ({
+          id: d.id,
+          ...d.data(),
+        }));
+
+        setOrders(list);
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to fetch orders", err);
+        setError("Could not load your orders. Please try again.");
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
   }, [userId]);
 
-  const keyNames = {
-    numberOfMuttonShares: "Mutton",
-    numberOfKeemaShares: "Keema",
-    numberOfHeadShares: "Head",
-    numberOfLegsShares: "Legs",
-    numberOfBrainShares: "Brain",
-    numberOfBotiShares: "Boti",
-    numberOfExtras: "Extras",
+  const handleBack = () => {
+    navigate("/home");
   };
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.backBar}>
-        <div className={styles.backBtn} onClick={() => navigate("/")}>
-          <i>
-            <LuMoveLeft size={20} />
-          </i>
-          <p>Back</p>
+  const formatDate = (ts) => {
+    if (!ts) return "-";
+    // Firestore Timestamp -> Date
+    const date = ts.toDate && typeof ts.toDate === "function" ? ts.toDate() : new Date(ts);
+    return date.toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const getStatusLabel = (status) => {
+    if (!status) return "Pending";
+    return status.charAt(0).toUpperCase() + status.slice(1);
+  };
+
+  const getOrderTitle = (order) => {
+    if (!order.items || order.items.length === 0) return "No items";
+    const first = order.items[0];
+    if (order.items.length === 1) return first.title;
+    return `${first.title} + ${order.items.length - 1} more`;
+  };
+
+  const getShortId = (id) => {
+    if (!id) return "";
+    if (id.length <= 6) return id;
+    return id.slice(-6).toUpperCase();
+  };
+
+  const hasOrders = orders.length > 0;
+
+  if (!userId) {
+    return (
+      <div className={styles.page}>
+        <header className={styles.header}>
+          <button className={styles.backBtn} onClick={handleBack}>
+            ←
+          </button>
+          <div className={styles.headerTitleBlock}>
+            <div className={styles.headerTitle}>My Orders</div>
+          </div>
+        </header>
+        <div className={styles.infoBlock}>
+          <p>You need to login to view your orders.</p>
+          <button className={styles.primaryBtn} onClick={() => navigate("/login")}>
+            Go to login
+          </button>
         </div>
       </div>
+    );
+  }
 
-      {userLoggedIn ? (
-        showFetchingOrdersLoading ? (
-          <div className={styles.verifyOtpContainer}>
-            <div className={styles.loader}></div>
-            <h6>Fetching your orders!</h6>
-          </div>
-        ) : userOrders.length > 0 ? (
-          userOrders.map((order) => {
-            if (order.orderType === "chicken") {
-              return (
-                <div
-                  key={order.id}
-                  style={{
-                    border: "1px solid #ccc",
-                    margin: "10px",
-                    padding: "10px",
-                  }}
-                >
-                  <div className={styles.goatRequirements}>
-                    {order.meatRequirements.map((item) => (
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <p>
-                          {item.henName} : {item.quantity}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                  <div className={styles.orderDetails}>
-                    <p>Delivery Date: {new Date(order.scheduledDeliveryDate || order.deliveryDate || order.orderedDate).toLocaleDateString()}</p>
-                  </div>
-                  <div className={styles.orderDetails}>
-                    <p>Total Bill: {order.totalBill}</p>
-                  </div>
-                  <div className={styles.orderDetails}>
-                    <p>Address: {`${order.userAddress}, ${order.landmark}, ${order.userCity}, ${order.userPinCode}`}</p>
-                  </div>
-                  {order.status && (
-                    <div className={styles.orderDetails}>
-                      <p>
-                        Status:{" "}
-                        <spam
-                          style={{
-                            color: "red",
-                          }}
-                        >
-                          {order.status}
-                        </spam>
-                      </p>
-                    </div>
-                  )}
-                </div>
-              );
-            } else if (order.orderType === "egg") {
-              return (
-                <div
-                  key={order.id}
-                  style={{
-                    border: "1px solid #ccc",
-                    margin: "10px",
-                    padding: "10px",
-                  }}
-                >
-                  <div className={styles.goatRequirements}>
-                    {order.meatRequirements.map((item) => (
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <p>
-                          {item.eggName} : {item.quantity}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                  <div className={styles.orderDetails}>
-                    <p>Delivery Date: {new Date(order.scheduledDeliveryDate || order.deliveryDate || order.orderedDate).toLocaleDateString()}</p>
-                  </div>
-                  <div className={styles.orderDetails}>
-                    <p>Total Bill: {order.totalBill}</p>
-                  </div>
-                  <div className={styles.orderDetails}>
-                    <p>Address: {`${order.userAddress}, ${order.landmark}, ${order.userCity}, ${order.userPinCode}`}</p>
-                  </div>
-                  {order.status && (
-                    <div className={styles.orderDetails}>
-                      <p>
-                        Status:{" "}
-                        <spam
-                          style={{
-                            color: "red",
-                          }}
-                        >
-                          {order.status}
-                        </spam>
-                      </p>
-                    </div>
-                  )}
-                </div>
-              );
-            } else {
-              return (
-                <div
-                  key={order.id}
-                  style={{
-                    border: "1px solid #ccc",
-                    margin: "10px",
-                    padding: "10px",
-                  }}
-                >
-                  <div className={styles.goatRequirements}>
-                    {Object.keys(order).map((keyName) =>
-                      keyNames[keyName] ? (
-                        <div key={keyName}>
-                          <p>
-                            {keyNames[keyName]} : {order[keyName]}
-                          </p>
-                        </div>
-                      ) : null
-                    )}
-                  </div>
+  return (
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <button className={styles.backBtn} onClick={handleBack}>
+          ←
+        </button>
+        <div className={styles.headerTitleBlock}>
+          <div className={styles.headerTitle}>My Orders</div>
+          <div className={styles.headerSubtitle}>{hasOrders ? `${orders.length} order${orders.length > 1 ? "s" : ""}` : "No orders yet"}</div>
+        </div>
+      </header>
 
-                  <div className={styles.orderDetails}>
-                    <p>Delivery Date: {new Date(order.deliveryDate).toLocaleDateString()}</p>
-                  </div>
-                  <div className={styles.orderDetails}>
-                    <p>Delivey Fee: {order.deliveryFee ? order.deliveryFee : 0}</p>
-                  </div>
-                  <div className={styles.orderDetails}>
-                    <p>Total Bill: {order.totalBill}</p>
-                  </div>
-                  <div className={styles.orderDetails}>
-                    <p>Address: {`${order.userAddress}, ${order.landmark}, ${order.userCity}, ${order.userPinCode || order.pincode}`}</p>
-                  </div>
-                  {order.status && (
-                    <div className={styles.orderDetails}>
-                      <p>
-                        Status:{" "}
-                        <spam
-                          style={{
-                            color: "red",
-                          }}
-                        >
-                          {order.status}
-                        </spam>
-                      </p>
-                    </div>
-                  )}
-                </div>
-              );
-            }
-          })
-        ) : (
-          <h1 className="text-center border-2 border-dotted py-4 font-semibold">No orders for this user!</h1>
-        )
-      ) : (
-        <p style={{ textAlign: "center", margin: "2rem 0" }}>Please login to see orders!</p>
-      )}
+      {loading && <div className={styles.infoBlock}>Loading your orders...</div>}
 
-      {/* {userLoggedIn && showFetchingOrdersLoading && (
-        <div className={styles.verifyOtpContainer}>
-          <div className={styles.loader}></div>
-          <h6>Fetching your orders!</h6>
+      {error && <div className={styles.errorText}>{error}</div>}
+
+      {!loading && !hasOrders && !error && (
+        <div className={styles.infoBlock}>
+          <p>You haven&apos;t placed any orders yet.</p>
+          <button className={styles.primaryBtn} onClick={() => navigate("/home")}>
+            Start ordering
+          </button>
         </div>
       )}
 
-      {userLoggedIn && userOrders.length > 0 ? (
-        userOrders?.map((order) => (
-          <div
-            key={order.id}
-            style={{
-              border: "1px solid #ccc",
-              margin: "10px",
-              padding: "10px",
-            }}
-          >
-            <div className={styles.goatRequirements}>
-              {Object.keys(order).map((keyName) => {
-                if (keyNames[keyName])
-                  return (
-                    <div>
-                      <p>
-                        {keyNames[keyName]} : {order[keyName]}
-                      </p>
-                    </div>
-                  );
-              })}
-            </div>
+      {!loading && hasOrders && (
+        <div className={styles.listWrapper}>
+          {orders.map((order) => (
+            <div key={order.id} className={styles.card}>
+              <div className={styles.cardTopRow}>
+                <div>
+                  <div className={styles.orderId}>Order #{getShortId(order.id)}</div>
+                  <div className={styles.orderTitle}>{getOrderTitle(order)}</div>
+                </div>
+                <span className={`${styles.statusBadge} ${styles[`status_${order.status || "pending"}`]}`}>{getStatusLabel(order.status)}</span>
+              </div>
 
-            <div className={styles.orderDetails}>
-              <p>
-                Delivery Date :{" "}
-                {new Date(order.deliveryDate).toLocaleDateString()}
-              </p>
+              <div className={styles.cardMiddleRow}>
+                <div className={styles.orderMeta}>{formatDate(order.createdAt)}</div>
+                <div className={styles.orderMeta}>{order.deliveryPincode ? `Pincode: ${order.deliveryPincode}` : ""}</div>
+              </div>
+
+              <div className={styles.cardBottomRow}>
+                <div className={styles.totalBlock}>
+                  <span className={styles.totalLabel}>Total</span>
+                  <span className={styles.totalValue}>₹{order.cartTotal}</span>
+                </div>
+                <div className={styles.itemsCount}>
+                  {order.cartCount} item
+                  {order.cartCount > 1 ? "s" : ""}
+                </div>
+              </div>
             </div>
-            <div className={styles.orderDetails}>
-              <p>Total Bill : {order.totalBill}</p>
-            </div>
-          </div>
-        ))
-      ) : (
-        <h1 className="text-center border-2 border-dotted py-4 font-semibold">
-          No orders for this users
-        </h1>
+          ))}
+        </div>
       )}
-
-      {!userLoggedIn && (
-        <p style={{ textAlign: "center", margin: "2rem 0" }}>
-          Please login to see orders!
-        </p>
-      )} */}
     </div>
   );
-};
+}
 
 export default UserOrders;

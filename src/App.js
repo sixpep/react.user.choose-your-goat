@@ -12,6 +12,7 @@ import CartPage from "./components/CartPage/CartPage";
 import SelectAddressPage from "./components/Address/SelectAddressPage";
 import AddAddressPage from "./components/Address/AddAddressPage";
 import EditAddressPage from "./components/Address/EditAddressPage";
+import UserOrders from "./components/UserOrders/UserOrders";
 
 export const Context = React.createContext();
 
@@ -274,6 +275,7 @@ const App = () => {
             <Route path="/select-address" element={<SelectAddressPage />} />
             <Route path="/add-address" element={<AddAddressPage />} />
             <Route path="/edit-address/:addressId" element={<EditAddressPage />} />
+            <Route path="/orders" element={<UserOrders />} />
             {/* later: /mutton, /chicken, /egg, /cart, /orders, /login */}
           </Routes>
         </BrowserRouter>

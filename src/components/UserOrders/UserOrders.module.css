@@ -1,49 +1,186 @@
-.container h2 {
-  padding: 0rem 1rem;
+.page {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding-bottom: 3rem;
 }
 
-.backBar {
-  padding: 0.8rem;
+/* Header */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
 }
 
 .backBtn {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
+  border: none;
+  background: #f3f4f6;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-.loader {
-  width: 50px;
-  --b: 8px;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  padding: 1px;
-  background: conic-gradient(#0000 10%, #f03355) content-box;
-  -webkit-mask: repeating-conic-gradient(
-      #0000 0deg,
-      #000 1deg 20deg,
-      #0000 21deg 36deg
-    ),
-    radial-gradient(
-      farthest-side,
-      #0000 calc(100% - var(--b) - 1px),
-      #000 calc(100% - var(--b))
-    );
-  -webkit-mask-composite: destination-in;
-  mask-composite: intersect;
-  animation: l4 1s infinite steps(10);
-}
-@keyframes l4 {
-  to {
-    transform: rotate(1turn);
-  }
-}
-
-.verifyOtpContainer {
+.headerTitleBlock {
   display: flex;
   flex-direction: column;
+}
+
+.headerTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.headerSubtitle {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Info / Empty */
+
+.infoBlock {
+  padding: 24px 16px;
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.primaryBtn {
+  margin-top: 10px;
+  border: none;
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #111827;
+  color: #ffffff;
+}
+
+/* Error */
+
+.errorText {
+  padding: 8px 16px;
+  font-size: 12px;
+  color: #b91c1c;
+}
+
+/* List */
+
+.listWrapper {
+  padding: 12px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card {
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cardTopRow {
+  display: flex;
   align-items: center;
-  gap: 1rem;
-  margin: 2rem 0;
+  justify-content: space-between;
+}
+
+.orderId {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.orderTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.statusBadge {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  text-transform: capitalize;
+}
+
+/* Status colors */
+
+.status_pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status_confirmed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status_out_for_delivery {
+  background: #e0f2fe;
+  color: #1d4ed8;
+}
+
+.status_delivered {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.status_cancelled {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Meta */
+
+.cardMiddleRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.orderMeta {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Bottom row */
+
+.cardBottomRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.totalBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.totalLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+}
+
+.totalValue {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.itemsCount {
+  font-size: 12px;
+  color: #4b5563;
 }
