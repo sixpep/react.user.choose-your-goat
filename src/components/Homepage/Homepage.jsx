@@ -5,7 +5,7 @@ import MeatTile from "./MeatTile";
 import { Context } from "../../App";
 
 function Homepage() {
-  const { deliveryLocation, locationMeta } = useContext(Context);
+  const { deliveryLocation, locationMeta, openLocationModal } = useContext(Context);
   const navigate = useNavigate();
 
   const isLoggedIn = !!localStorage.getItem("token");
@@ -53,8 +53,9 @@ function Homepage() {
   };
 
   const handleChangeLocation = () => {
-    localStorage.removeItem("deliveryPincode");
-    window.location.reload(); // App.js will show location modal again
+    if (openLocationModal) {
+      openLocationModal();
+    }
   };
 
   const banners = [
@@ -119,6 +120,11 @@ function Homepage() {
             <img key={banner.id} src={banner.image} alt="banner" className={styles.bannerImageOnly} />
           ))}
         </div>
+      </div>
+
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionLine1}>What would you</div>
+        <div className={styles.sectionLine2}>like to order?</div>
       </div>
 
       {/* Category tiles */}

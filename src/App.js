@@ -73,6 +73,12 @@ const App = () => {
     setLocationError("");
   };
 
+  const openLocationModal = () => {
+    setLocationError("");
+    setLocationConfirmedUI(false);
+    setIsLocationModalOpen(true);
+  };
+
   useEffect(() => {
     const initLocation = async () => {
       const start = Date.now();
@@ -135,6 +141,7 @@ const App = () => {
       value={{
         deliveryLocation,
         locationMeta,
+        openLocationModal,
       }}
     >
       <div className="appContainer fadeIn">

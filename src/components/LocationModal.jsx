@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { Context } from "../App";
 
 function LocationModal({ onConfirm, error, isConfirmed, onContinue, pincode }) {
   const [inputValue, setInputValue] = useState("");
+
+  const { deliveryLocation } = useContext(Context);
+
+  console.log(deliveryLocation, isConfirmed);
 
   if (isConfirmed) {
     return (
@@ -115,8 +120,27 @@ function LocationModal({ onConfirm, error, isConfirmed, onContinue, pincode }) {
           width: "90%",
           maxWidth: 420,
           boxShadow: "0 12px 30px rgba(0,0,0,0.18)",
+          position: "relative",
         }}
       >
+        {/* Close button (only if user already has a pincode) */}
+        {deliveryLocation && !isConfirmed && (
+          <button
+            onClick={onContinue}
+            style={{
+              position: "absolute",
+              top: 10,
+              right: 12,
+              border: "none",
+              background: "transparent",
+              fontSize: 20,
+              cursor: "pointer",
+              color: "#6b7280",
+            }}
+          >
+            ✕
+          </button>
+        )}
         <h2
           style={{
             margin: "4px 0 4px",
