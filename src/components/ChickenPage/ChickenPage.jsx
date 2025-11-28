@@ -1,199 +1,152 @@
-import React, { useContext, useEffect, useState } from "react";
-import styles from "./ChickenPage.module.css";
-import { LuMoveLeft } from "react-icons/lu";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import QuantityControllerComp from "./QuantityControllerComp/QuantityControllerComp";
-import { BsHandbag } from "react-icons/bs";
+import styles from "./ChickenPage.module.css";
 import { Context } from "../../App";
-import { motion } from "framer-motion";
-import { db } from "../../firebase/setup";
-import { where, collection, doc, getDoc, onSnapshot, query, orderBy, limit, getDocs } from "firebase/firestore";
-import { getCurrentDay } from "../../utils/getDay.utils";
-import { lowDeliveryFeePincodes } from "../../staticValues";
 
-const ChickenPage = () => {
+// Temporary static products — later replace with Firestore
+const CHICKEN_PRODUCTS = [
+  {
+    id: "chicken_skinless_500",
+    title: "Skinless Chicken - 500g",
+    price: 175,
+    unit: "500g",
+    description: "Fresh, skinless cut, ideal for curry and fry.",
+    isActive: true,
+  },
+  {
+    id: "chicken_boneless_250",
+    title: "Boneless Chicken - 250g",
+    price: 160,
+    unit: "250g",
+    description: "Tender boneless cubes, perfect for tikka and grills.",
+    isActive: true,
+  },
+  {
+    id: "chicken_leg_quarter",
+    title: "Leg Quarters - 2 pcs",
+    price: 190,
+    unit: "2 pieces",
+    description: "Juicy leg pieces for roast and biryani.",
+    isActive: false, // example of disabled product
+  },
+];
+
+function ChickenPage() {
   const navigate = useNavigate();
-  // const [isOrderAllowed, setIsOrderAllowed] = useState(false);
-  const { hensData, order } = useContext(Context);
+  const { locationMeta, addToCart, cart, cartCount, cartTotal, updateCartItemQuantity } = useContext(Context);
 
-  const [ordersAllowed, setOrdersAllowed] = useState(true);
-  const [wentWrong, setWentWrong] = useState(false);
+  const allowChicken = locationMeta?.allowChickenOrders ?? false;
 
-  // useEffect(() => {
-  //   const checkTime = () => {
-  //     const currentHour = new Date().getHours();
-  //     if (currentHour >= 8 && currentHour < 20) {
-  //       setIsOrderAllowed(true);
-  //     } else {
-  //       setIsOrderAllowed(false);
-  //     }
-  //   };
-  //   checkTime();
-  //   const interval = setInterval(checkTime, 60000);
+  const handleBack = () => {
+    navigate("/home");
+  };
 
-  //   return () => clearInterval(interval);
-  // }, []);
+  const handleAdd = (product) => {
+    if (!allowChicken || !product.isActive) return;
 
-  useEffect(() => {
-    async function checkPermision() {
-      try {
-        let permisionsDoc = await getDocs(
-          query(collection(db, "availability"), where("pincode", "==", localStorage.getItem("true-meat-location")), limit(1))
-        );
-        if (!permisionsDoc.empty) {
-          permisionsDoc = permisionsDoc.docs[0].data();
+    const currentQty = getQuantityInCart(product.id);
 
-          if (permisionsDoc.chickenOrders) {
-            setOrdersAllowed(true);
-          } else {
-            setOrdersAllowed(false);
-          }
-        } else {
-          setOrdersAllowed(true);
-        }
-      } catch (error) {
-        console.log(error);
-        setWentWrong(true);
-      }
-    }
-
-    checkPermision();
-  }, []);
-
-  function onChickenBag() {
-    if (localStorage.getItem("choose-your-goat-userId")) {
-      navigate("/cart");
+    if (currentQty === 0) {
+      // first time add
+      addToCart({
+        id: `${product.id}-${Date.now()}`,
+        type: "chicken",
+        skuId: product.id,
+        title: product.title,
+        pricePerUnit: product.price,
+        quantity: 1,
+        totalPrice: product.price,
+      });
     } else {
-      navigate("/login?redirect=/cart");
+      // increase existing
+      updateCartItemQuantity("chicken", product.id, currentQty + 1);
     }
-  }
+  };
+
+  const handleDecrease = (product) => {
+    const currentQty = getQuantityInCart(product.id);
+    if (currentQty <= 0) return;
+    updateCartItemQuantity("chicken", product.id, currentQty - 1);
+  };
+
+  const getQuantityInCart = (productId) => {
+    const line = cart.items.find((item) => item.type === "chicken" && item.skuId === productId);
+    return line?.quantity || 0;
+  };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
-        <div className={styles.backBar}>
-          <div className={styles.backBtn} onClick={() => (window.location.pathname = "/home")}>
-            <i>
-              <LuMoveLeft size={20} />
-            </i>
-          </div>
-        </div>
-        {/* <div className={styles.deliveryNote}>
-          <motion.p
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              repeatType: "loop",
-              ease: "easeInOut",
-            }}
-          >
-            We are currently serving only in Sangareddy
-          </motion.p>
-        </div> */}
-        <div className={styles.header}>
-          <div className={styles.headerTitle}>
-            <h6>
-              Fresh <br />
-              Chicken{" "}
-              <div className={styles.iconWrap}>
-                <img src="/images/chickenIcon.png" alt="" />
-              </div>
-            </h6>
-          </div>
-          <div className={styles.deliveryDate}>
-            <p>Delivery</p>
-            <h6>
-              Every Day <br /> <span>(8AM to 8PM)</span>
-            </h6>
-          </div>
-        </div>
-        <div className={styles.wholeChickenBanner}>
-          <img src="/images/wholeChickenBanner.png" alt="" />
-        </div>
-        <div className={styles.quanityControllers}>
-          {hensData.map(
-            (item, index) =>
-              item.shortDayAvail &&
-              item.shortDayAvail.includes(getCurrentDay(true)) && (
-                <QuantityControllerComp
-                  key={index}
-                  henName={item.henName}
-                  description={item.description}
-                  chickenPrice={item.chickenPrice}
-                  chickenWeight={item.chickenWeight}
-                  docId={item.docId}
-                  // isOrderAllowed={isOrderAllowed}
-                />
-              )
-          )}
-        </div>
-      </div>
-      <div className={styles.checkOutWrap}>
-        <div className={styles.asterikNote}>
-          <p style={{ color: "#BC1414" }}>* </p>
-          <h6>The final price may vary based on the size of the chicken.</h6>
-        </div>
-        <p>
-          Total Price:{" "}
-          <span>
-            {" "}
-            ₹{order.totalBill} +{" "}
-            <span style={{ fontSize: "14px" }}>
-              {`${lowDeliveryFeePincodes.includes(localStorage.getItem("true-meat-location")) ? 35 : 55}(delivery fee)`}
-            </span>
-          </span>
-        </p>
-        <button
-          // onClick={() => navigate("/cart")}
-          onClick={onChickenBag}
-          disabled={order.totalBill <= 0}
-          style={{
-            opacity: order.meatRequirements.length < 1 ? 0.5 : 1,
-          }}
-        >
-          <BsHandbag />
-          <p>Bag</p>
+    <div className={styles.page}>
+      {/* Simple header for Chicken page */}
+      <header className={styles.header}>
+        <button className={styles.backBtn} onClick={handleBack}>
+          ←
         </button>
-      </div>
-      {!ordersAllowed && (
-        <div className={styles.popup}>
-          <div className={styles.popupContent}>
-            <div>
-              <strong>Sorry!, We are currently not accepting chicken orders at your location.</strong>
-            </div>
-            <button
-              className={styles.closeButton}
-              onClick={() => {
-                window.location.href = "/home";
-                // setOrdersAllowed(true);
-              }}
-            >
-              Close
-            </button>
-          </div>
+        <div className={styles.headerTitleBlock}>
+          <div className={styles.headerTitle}>Chicken</div>
+          <div className={styles.headerSubtitle}>Fresh cuts, ready to cook</div>
         </div>
-      )}
-      {wentWrong && (
-        <div className={styles.popup}>
-          <div className={styles.popupContent}>
-            <div>
-              <strong>Something went wrong. Please try again.</strong>
+      </header>
+
+      {/* Availability message based on location */}
+      {!allowChicken && <div className={styles.infoBanner}>We are not accepting chicken orders for your location right now.</div>}
+
+      <div className={styles.listWrapper}>
+        {CHICKEN_PRODUCTS.map((product) => {
+          const qty = getQuantityInCart(product.id);
+          const disabled = !allowChicken || !product.isActive;
+
+          return (
+            <div key={product.id} className={`${styles.card} ${disabled ? styles.cardDisabled : ""}`}>
+              {/* If you have images later, use <img src={product.imageUrl} ... /> */}
+              <div className={styles.cardContent}>
+                <div className={styles.cardTitle}>{product.title}</div>
+                <div className={styles.cardUnit}>{product.unit}</div>
+                <div className={styles.cardDesc}>{product.description}</div>
+
+                <div className={styles.cardBottomRow}>
+                  <div className={styles.priceBlock}>
+                    ₹{product.price}
+                    <span className={styles.priceUnit}> / {product.unit}</span>
+                  </div>
+
+                  {qty === 0 ? (
+                    <button className={styles.addBtn} onClick={() => handleAdd(product)} disabled={disabled}>
+                      {disabled ? "Not available" : "Add"}
+                    </button>
+                  ) : (
+                    <div className={styles.qtyControl}>
+                      <button className={styles.qtyBtn} onClick={() => handleDecrease(product)}>
+                        -
+                      </button>
+                      <span className={styles.qtyValue}>{qty}</span>
+                      <button className={styles.qtyBtn} onClick={() => handleAdd(product)}>
+                        +
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-            <button
-              className={styles.closeButton}
-              onClick={() => {
-                window.location.href = "/home";
-                // setOrdersAllowed(true);
-              }}
-            >
-              Close
-            </button>
+          );
+        })}
+
+        {CHICKEN_PRODUCTS.length === 0 && <div className={styles.emptyState}>No chicken items are listed yet.</div>}
+      </div>
+
+      {/* Cart footer for this page */}
+      {cartCount > 0 && (
+        <div className={styles.cartFooter} onClick={() => navigate("/cart")}>
+          <div className={styles.cartFooterIconWrap}>
+            <img src="/icons/cart.svg" alt="cart" className={styles.cartFooterIcon} />
+            <span className={styles.cartBadge}>{cartCount}</span>
           </div>
+          <span className={styles.cartFooterText}>
+            ₹{cartTotal} • {cartCount} item{cartCount > 1 ? "s" : ""} • Proceed to checkout
+          </span>
         </div>
       )}
     </div>
   );
-};
+}
 
 export default ChickenPage;

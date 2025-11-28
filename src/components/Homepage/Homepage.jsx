@@ -5,7 +5,7 @@ import MeatTile from "./MeatTile";
 import { Context } from "../../App";
 
 function Homepage() {
-  const { deliveryLocation, locationMeta, openLocationModal } = useContext(Context);
+  const { deliveryLocation, locationMeta, openLocationModal, cartCount, cartTotal } = useContext(Context);
   const navigate = useNavigate();
 
   const isLoggedIn = !!localStorage.getItem("token");
@@ -15,22 +15,6 @@ function Homepage() {
   const allowMutton = locationMeta?.allowMuttonOrders ?? false;
   const allowChicken = locationMeta?.allowChickenOrders ?? false;
   const allowEggs = locationMeta?.allowEggOrders ?? false;
-
-  // Cart from localStorage (JSON)
-  const rawCart = localStorage.getItem("cart");
-  let cartCount = 0;
-  if (rawCart) {
-    try {
-      const parsed = JSON.parse(rawCart);
-      if (Array.isArray(parsed)) {
-        cartCount = parsed.length;
-      } else if (Array.isArray(parsed.items)) {
-        cartCount = parsed.items.length;
-      }
-    } catch (e) {
-      cartCount = 0;
-    }
-  }
 
   const handleLogin = () => {
     navigate("/login");
@@ -141,7 +125,9 @@ function Homepage() {
             <img src="/icons/cart.svg" alt="cart" className={styles.cartFooterIcon} />
             <span className={styles.cartBadge}>{cartCount}</span>
           </div>
-          <span className={styles.cartFooterText}>Proceed to checkout</span>
+          <span className={styles.cartFooterText}>
+            ₹{cartTotal} • {cartCount} item{cartCount > 1 ? "s" : ""} • Proceed to checkout
+          </span>
         </div>
       )}
     </div>

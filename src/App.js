@@ -2,27 +2,30 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "./firebase/setup";
 
 import LocationModal from "./components/LocationModal";
 import Homepage from "./components/Homepage/Homepage";
+import ChickenPage from "./components/ChickenPage/ChickenPage";
 
 export const Context = React.createContext();
 
 const App = () => {
   // 🔹 Location state
-  const [deliveryLocation, setDeliveryLocation] = useState(null); // pincode
-  const [locationMeta, setLocationMeta] = useState(null); // { pincode, areas, allowMuttonOrders, ... }
+  const [deliveryLocation, setDeliveryLocation] = useState(null);
+  const [locationMeta, setLocationMeta] = useState(null);
 
   // 🔹 Modal & UI state
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [locationError, setLocationError] = useState("");
   const [locationConfirmedUI, setLocationConfirmedUI] = useState(false);
 
-  // 🔹 Splash screen state
+  // 🔹 Splash state
   const [showSplash, setShowSplash] = useState(true);
+
+  // 🔹 Cart state (shared across app)
+  const [cart, setCart] = useState({ items: [] });
 
   // ───────────────────────────
   //  Location / Pincode logic
@@ -85,22 +88,18 @@ const App = () => {
       const stored = localStorage.getItem("deliveryPincode");
 
       if (!stored) {
-        // No saved pincode → ask user
         setLocationMeta(null);
         setIsLocationModalOpen(true);
       } else {
-        // Re-verify stored pincode and get flags
         const locInfo = await verifyLocation(stored);
 
         if (!locInfo) {
-          // Pincode no longer serviceable → reset and ask again
           localStorage.removeItem("deliveryPincode");
           setDeliveryLocation(null);
           setLocationMeta(null);
           setIsLocationModalOpen(true);
           setLocationError("We no longer deliver to this location. Please choose another.");
         } else {
-          // Still valid → hydrate state and continue silently
           setDeliveryLocation(locInfo.pincode);
           setLocationMeta(locInfo);
           setIsLocationModalOpen(false);
@@ -108,26 +107,116 @@ const App = () => {
         }
       }
 
-      // 🔹 Ensure splash shows for at least 2 seconds
+      // ensure splash shows at least 2s
       const elapsed = Date.now() - start;
-      const minimum = 2000; // 2 seconds
+      const minimum = 2000;
       const remaining = Math.max(0, minimum - elapsed);
-
-      setTimeout(() => {
-        setShowSplash(false);
-      }, remaining);
+      setTimeout(() => setShowSplash(false), remaining);
     };
 
     initLocation();
   }, []);
 
-  // 🔹 Splash screen: full black with logo
+  // ───────────────────────────
+  //  Cart logic (shared)
+  // ───────────────────────────
+
+  // init cart from localStorage once
+  useEffect(() => {
+    const stored = localStorage.getItem("cart");
+    if (!stored) return;
+    try {
+      const parsed = JSON.parse(stored);
+      if (parsed && Array.isArray(parsed.items)) {
+        setCart(parsed);
+      }
+    } catch (e) {
+      console.error("Failed to parse cart from localStorage", e);
+    }
+  }, []);
+
+  // sync cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
+  // item must have: type, skuId, title, pricePerUnit, quantity
+  const addToCart = (item) => {
+    setCart((prev) => {
+      const items = [...prev.items];
+
+      const index = items.findIndex((i) => i.type === item.type && i.skuId === item.skuId);
+
+      if (index !== -1) {
+        const newQty = (items[index].quantity || 0) + (item.quantity || 0 || 1);
+        const updated = {
+          ...items[index],
+          quantity: newQty,
+          totalPrice: newQty * items[index].pricePerUnit,
+        };
+        items[index] = updated;
+      } else {
+        const quantity = item.quantity || 1;
+        items.push({
+          ...item,
+          quantity,
+          totalPrice: quantity * item.pricePerUnit,
+        });
+      }
+
+      return { ...prev, items };
+    });
+  };
+
+  const updateCartItemQuantity = (type, skuId, quantity) => {
+    setCart((prev) => {
+      const items = [...prev.items];
+      const index = items.findIndex((i) => i.type === type && i.skuId === skuId);
+
+      if (index === -1) return prev;
+
+      if (quantity <= 0) {
+        // remove line item if quantity becomes 0
+        items.splice(index, 1);
+      } else {
+        items[index] = {
+          ...items[index],
+          quantity,
+          totalPrice: quantity * items[index].pricePerUnit,
+        };
+      }
+
+      return { ...prev, items };
+    });
+  };
+
+  // predicate is a function that receives an item and returns true if it should be removed
+  const removeFromCart = (predicate) => {
+    setCart((prev) => ({
+      ...prev,
+      items: prev.items.filter((item) => !predicate(item)),
+    }));
+  };
+
+  const clearCart = () => {
+    setCart({ items: [] });
+  };
+
+  // total count = sum of quantities
+  const cartCount = cart.items.reduce((sum, item) => sum + (item.quantity || 0), 0);
+
+  const cartTotal = cart.items.reduce((sum, item) => sum + (item.totalPrice || item.pricePerUnit * (item.quantity || 0)), 0);
+
+  // ───────────────────────────
+  //  Splash screen
+  // ───────────────────────────
+
   if (showSplash) {
     return (
       <div className="appContainer">
-        <div className="splashScreen">
+        <div className="splashScreen splashBlack">
           <img
-            src="/logo-white.png" // make sure this path is correct
+            src="/logo-white.png" // your white logo on black background
             alt="True Meat"
             className="splashLogo"
           />
@@ -142,6 +231,13 @@ const App = () => {
         deliveryLocation,
         locationMeta,
         openLocationModal,
+        cart,
+        addToCart,
+        updateCartItemQuantity,
+        removeFromCart,
+        clearCart,
+        cartCount,
+        cartTotal,
       }}
     >
       <div className="appContainer fadeIn">
@@ -153,6 +249,8 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/home" element={<Homepage />} />
+            <Route path="/chicken" element={<ChickenPage />} />
+            {/* later: /mutton, /chicken, /egg, /cart, /orders, /login */}
           </Routes>
         </BrowserRouter>
       </div>
