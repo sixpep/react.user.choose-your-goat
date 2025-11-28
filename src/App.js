@@ -8,6 +8,7 @@ import { db } from "./firebase/setup";
 import LocationModal from "./components/LocationModal";
 import Homepage from "./components/Homepage/Homepage";
 import ChickenPage from "./components/ChickenPage/ChickenPage";
+import CartPage from "./components/CartPage/CartPage";
 
 export const Context = React.createContext();
 
@@ -250,6 +251,7 @@ const App = () => {
             <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/home" element={<Homepage />} />
             <Route path="/chicken" element={<ChickenPage />} />
+            <Route path="/cart" element={<CartPage />} />
             {/* later: /mutton, /chicken, /egg, /cart, /orders, /login */}
           </Routes>
         </BrowserRouter>
