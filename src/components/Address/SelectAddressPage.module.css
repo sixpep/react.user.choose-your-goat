@@ -1,0 +1,193 @@
+.page {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding-bottom: 4.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.backBtn {
+  border: none;
+  background: #f3f4f6;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.headerTitleBlock {
+  display: flex;
+  flex-direction: column;
+}
+
+.headerTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.headerSubtitle {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.infoText {
+  padding: 16px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.emptyState {
+  padding: 32px 16px;
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.primaryBtn {
+  border: none;
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #111827;
+  color: #ffffff;
+}
+
+.addressList {
+  padding: 12px 16px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.addressCard {
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.addressCardSelected {
+  border-color: #111827;
+  background: #f9fafb;
+}
+
+.addressTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.addressName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.defaultTag {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #e5f3ff;
+  color: #1d4ed8;
+}
+
+.addressText {
+  font-size: 12px;
+  color: #4b5563;
+  margin-top: 2px;
+}
+
+.actionsRow {
+  padding: 6px 16px 80px;
+}
+
+.secondaryBtn {
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  background: #f9fafb;
+  cursor: pointer;
+}
+
+.errorText {
+  padding: 8px 16px;
+  font-size: 12px;
+  color: #b91c1c;
+}
+
+/* Footer */
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 100;
+}
+
+.footerSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.footerTotal {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.footerMeta {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.footerBtn {
+  border: none;
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #111827;
+  color: #ffffff;
+}
+
+.footerBtn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.addressActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.addressActionBtn {
+  border: none;
+  background: transparent;
+  font-size: 11px;
+  color: #ef4444;
+  cursor: pointer;
+}

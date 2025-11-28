@@ -9,6 +9,9 @@ import LocationModal from "./components/LocationModal";
 import Homepage from "./components/Homepage/Homepage";
 import ChickenPage from "./components/ChickenPage/ChickenPage";
 import CartPage from "./components/CartPage/CartPage";
+import SelectAddressPage from "./components/Address/SelectAddressPage";
+import AddAddressPage from "./components/Address/AddAddressPage";
+import EditAddressPage from "./components/Address/EditAddressPage";
 
 export const Context = React.createContext();
 
@@ -27,6 +30,20 @@ const App = () => {
 
   // 🔹 Cart state (shared across app)
   const [cart, setCart] = useState({ items: [] });
+
+  // dummy userId for now (later replace with real auth)
+  const [userId] = useState(() => {
+    const stored = localStorage.getItem("userId");
+    if (stored) return stored;
+    const dummy = "test-user-1";
+    localStorage.setItem("userId", dummy);
+    return dummy;
+  });
+
+  const [userProfile] = useState({
+    name: "Test User", // later: from your login/user fetch
+    phone: "9999999999", // later: from real user
+  });
 
   // ───────────────────────────
   //  Location / Pincode logic
@@ -239,6 +256,8 @@ const App = () => {
         clearCart,
         cartCount,
         cartTotal,
+        userId,
+        userProfile,
       }}
     >
       <div className="appContainer fadeIn">
@@ -252,6 +271,9 @@ const App = () => {
             <Route path="/home" element={<Homepage />} />
             <Route path="/chicken" element={<ChickenPage />} />
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/select-address" element={<SelectAddressPage />} />
+            <Route path="/add-address" element={<AddAddressPage />} />
+            <Route path="/edit-address/:addressId" element={<EditAddressPage />} />
             {/* later: /mutton, /chicken, /egg, /cart, /orders, /login */}
           </Routes>
         </BrowserRouter>

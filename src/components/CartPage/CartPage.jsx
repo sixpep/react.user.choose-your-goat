@@ -32,11 +32,7 @@ function CartPage() {
 
   const handlePlaceOrder = () => {
     if (cartCount === 0) return;
-
-    // TEMP: Just simulate success and clear cart
-    alert("Order placed! (dummy action for now)");
-    clearCart();
-    navigate("/home");
+    navigate("/select-address");
   };
 
   const getTypeLabel = (type) => {
