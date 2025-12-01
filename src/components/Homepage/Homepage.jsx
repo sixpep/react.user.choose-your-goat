@@ -4,12 +4,15 @@ import styles from "./Homepage.module.css";
 import MeatTile from "./MeatTile";
 import { Context } from "../../App";
 
+import { auth } from "../../firebase/setup";
+import { signOut } from "firebase/auth";
+
 function Homepage() {
-  const { deliveryLocation, locationMeta, openLocationModal, cartCount, cartTotal } = useContext(Context);
+  const { deliveryLocation, locationMeta, openLocationModal, cartCount, cartTotal, userId, userProfile } = useContext(Context);
   const navigate = useNavigate();
 
-  const isLoggedIn = !!localStorage.getItem("token");
-  const storedName = localStorage.getItem("userName");
+  const isLoggedIn = !!userId;
+  const storedName = userProfile?.name?.trim();
   const greetingName = isLoggedIn && storedName ? storedName : "Meat Lover";
 
   const allowMutton = locationMeta?.allowMuttonOrders ?? false;
@@ -20,11 +23,9 @@ function Homepage() {
     navigate("/login");
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("userName");
-    window.location.reload();
+  const handleLogout = async () => {
+    await signOut(auth);
+    navigate("/home");
   };
 
   const handleCart = () => {
@@ -33,6 +34,10 @@ function Homepage() {
   };
 
   const handleOrders = () => {
+    if (!isLoggedIn) {
+      navigate("/login");
+      return;
+    }
     navigate("/orders");
   };
 
