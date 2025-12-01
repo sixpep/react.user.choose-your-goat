@@ -5,7 +5,7 @@ import { Context } from "../../App";
 
 function CartPage() {
   const navigate = useNavigate();
-  const { cart, cartCount, cartTotal, updateCartItemQuantity, removeFromCart, clearCart } = useContext(Context);
+  const { cart, cartCount, cartTotal, updateCartItemQuantity, removeFromCart, clearCart, userId } = useContext(Context);
 
   const handleBack = () => {
     navigate("/home");
@@ -32,6 +32,13 @@ function CartPage() {
 
   const handlePlaceOrder = () => {
     if (cartCount === 0) return;
+
+    if (!userId) {
+      // force login before going to address selection
+      navigate("/login");
+      return;
+    }
+
     navigate("/select-address");
   };
 
