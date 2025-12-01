@@ -35,7 +35,7 @@ function CartPage() {
 
     if (!userId) {
       // force login before going to address selection
-      navigate("/login");
+      navigate("/login?redirectTo=/cart");
       return;
     }
 

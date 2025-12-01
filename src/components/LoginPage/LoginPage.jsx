@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./LoginPage.module.css";
 import { auth, db } from "../../firebase/setup";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
@@ -15,6 +15,10 @@ function LoginPage() {
   const [error, setError] = useState("");
 
   const [confirmationResult, setConfirmationResult] = useState(null);
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const redirectTo = params.get("redirectTo") || "/home";
 
   // Clean up global recaptcha on unmount
   useEffect(() => {
@@ -100,11 +104,11 @@ function LoginPage() {
       const snap = await getDoc(userRef);
 
       if (snap.exists()) {
-        // Existing user → profile already created
-        navigate("/home", { replace: true });
+        // existing user
+        navigate(redirectTo, { replace: true });
       } else {
-        // New user → no profile yet
-        navigate("/signup-details", { replace: true });
+        // new user → go to signup details, but pass redirectTo forward
+        navigate(`/signup-details?redirectTo=${redirectTo}`, { replace: true });
       }
     } catch (err) {
       console.error("Error verifying OTP", err);

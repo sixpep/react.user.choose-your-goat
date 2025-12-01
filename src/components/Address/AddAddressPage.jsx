@@ -10,7 +10,7 @@ function AddAddressPage() {
   const { userId, userProfile, deliveryLocation, locationMeta } = useContext(Context);
 
   const [fullName, setFullName] = useState(userProfile?.name || "");
-  const [phoneNumber, setPhoneNumber] = useState(userProfile?.phone || "");
+  const [phoneNumber, setPhoneNumber] = useState(userProfile?.phoneNumber || "");
   const [line1, setLine1] = useState("");
   const [line2, setLine2] = useState("");
   const [area, setArea] = useState("");

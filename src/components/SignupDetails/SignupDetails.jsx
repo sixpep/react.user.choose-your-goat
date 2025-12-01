@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./SignupDetails.module.css";
 import { Context } from "../../App";
 import { db, auth } from "../../firebase/setup";
@@ -38,6 +38,10 @@ function SignupDetails() {
   const [referralCode, setReferralCode] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const redirectTo = params.get("redirectTo") || "/home";
 
   // Load phone number from current Firebase user
   useEffect(() => {
@@ -124,7 +128,7 @@ function SignupDetails() {
         setUserProfile(userDocData);
       }
 
-      navigate("/home", { replace: true });
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       console.error("Failed to save signup details", err);
       setError("Could not save your details. Please try again.");
