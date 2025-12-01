@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "./firebase/setup";
+import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
+import { db, auth } from "./firebase/setup";
+import { onAuthStateChanged } from "firebase/auth";
 
 import LocationModal from "./components/LocationModal";
 import Homepage from "./components/Homepage/Homepage";
@@ -13,6 +14,8 @@ import SelectAddressPage from "./components/Address/SelectAddressPage";
 import AddAddressPage from "./components/Address/AddAddressPage";
 import EditAddressPage from "./components/Address/EditAddressPage";
 import UserOrders from "./components/UserOrders/UserOrders";
+import LoginPage from "./components/LoginPage/LoginPage";
+import SignupDetails from "./components/SignupDetails/SignupDetails";
 
 export const Context = React.createContext();
 
@@ -32,19 +35,9 @@ const App = () => {
   // 🔹 Cart state (shared across app)
   const [cart, setCart] = useState({ items: [] });
 
-  // dummy userId for now (later replace with real auth)
-  const [userId] = useState(() => {
-    const stored = localStorage.getItem("userId");
-    if (stored) return stored;
-    const dummy = "test-user-1";
-    localStorage.setItem("userId", dummy);
-    return dummy;
-  });
-
-  const [userProfile] = useState({
-    name: "Test User", // later: from your login/user fetch
-    phone: "9999999999", // later: from real user
-  });
+  const [userId, setUserId] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
   // ───────────────────────────
   //  Location / Pincode logic
@@ -134,6 +127,35 @@ const App = () => {
     };
 
     initLocation();
+
+    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (!firebaseUser) {
+        // Logged out
+        setUserId(null);
+        setUserProfile(null);
+        setAuthChecked(true);
+        return;
+      }
+
+      const uid = firebaseUser.uid;
+      setUserId(uid);
+
+      // Check if user profile exists
+      const ref = doc(db, "users", uid);
+      const snap = await getDoc(ref);
+
+      if (snap.exists()) {
+        // Existing user
+        setUserProfile(snap.data());
+      } else {
+        // New user → go to signup details page
+        setUserProfile(null);
+      }
+
+      setAuthChecked(true);
+    });
+
+    return () => unsub();
   }, []);
 
   // ───────────────────────────
@@ -244,6 +266,10 @@ const App = () => {
     );
   }
 
+  if (!authChecked) {
+    return <div>Loading...</div>; // small fallback
+  }
+
   return (
     <Context.Provider
       value={{
@@ -259,6 +285,8 @@ const App = () => {
         cartTotal,
         userId,
         userProfile,
+        setUserProfile,
+        authChecked,
       }}
     >
       <div className="appContainer fadeIn">
@@ -276,6 +304,8 @@ const App = () => {
             <Route path="/add-address" element={<AddAddressPage />} />
             <Route path="/edit-address/:addressId" element={<EditAddressPage />} />
             <Route path="/orders" element={<UserOrders />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup-details" element={<SignupDetails />} />
             {/* later: /mutton, /chicken, /egg, /cart, /orders, /login */}
           </Routes>
         </BrowserRouter>
