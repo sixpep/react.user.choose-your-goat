@@ -4,16 +4,22 @@ import { auth, db } from "../../firebase/setup";
 import styles from "../Meat Catalog/Cart/Cart.module.css";
 import { useNavigate } from "react-router-dom";
 import { LuMoveLeft } from "react-icons/lu";
-import { addDoc, collection, getDoc, setDoc, getDocs, query, where, doc } from "firebase/firestore";
+import { addDoc, collection, getDoc, setDoc, getDocs, query, where, doc, limit } from "firebase/firestore";
 import { Context } from "../../App";
+import { generateReferralCode } from "../../utils/referalCodeGeneration.utils";
 
 const LoginPage = ({ fetchUserData }) => {
   const [mobileNumber, setMobileNumber] = useState("");
+  const [referralCode, setReferralCode] = useState("");
   const [mobileNumberError, setMobileNumberError] = useState("");
+  const [referralCodeError, setReferralCodeError] = useState("");
+  const [referredById, setReferredById] = useState(null);
   const [otp, setOtp] = useState("");
   const [otpError, setOtpError] = useState("");
   const [confirmation, setConfirmation] = useState();
   const [showOtpBuffer, setShowOtpBuffer] = useState(false);
+  const [numberVerified, setNumberVerified] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(false);
 
   const { order, setOrder, goatsData, hensData } = useContext(Context);
 
@@ -31,6 +37,25 @@ const LoginPage = ({ fetchUserData }) => {
     setShowOtpBuffer(true);
 
     try {
+      //check if given referral is a valid, if the number is new number and referral code is entered.
+      if (isNewUser && referralCode.trim().length > 0) {
+        const userRef = query(collection(db, "users"), where("referralCode", "==", referralCode.trim()), limit(1));
+        const userSnap = await getDocs(userRef);
+
+        console.log("cheking referralcode");
+        console.log(userSnap.size);
+
+        if (userSnap.empty) {
+          setReferralCodeError("Invalid code. Please check and enter again.");
+          return;
+        } else {
+          setReferralCodeError("");
+          userSnap.forEach((doc) => {
+            setReferredById(doc.id);
+          });
+        }
+      }
+
       const recaptcha = new RecaptchaVerifier(auth, "recaptcha", {
         size: "invisible",
       });
@@ -42,10 +67,37 @@ const LoginPage = ({ fetchUserData }) => {
       setConfirmation(confirm);
       setShowOtpBuffer(false);
     } catch (error) {
-      setShowOtpBuffer(false);
       console.log("error in sending otp!", error);
+    } finally {
+      setShowOtpBuffer(false);
     }
   };
+
+  async function checkForUser(mobileNumber) {
+    console.log("Called checkForUser");
+    setMobileNumber(mobileNumber);
+    setNumberVerified(false);
+    setIsNewUser(false);
+
+    if (mobileNumber.length === 10) {
+      try {
+        //validate mobile number
+        const userRef = query(collection(db, "users"), where("userPhoneNumber", "==", mobileNumber), limit(1));
+        const userSnap = await getDocs(userRef);
+
+        if (userSnap.empty) {
+          setIsNewUser(true);
+          console.log("user not found");
+        } else {
+          console.log("user found");
+        }
+      } catch (error) {
+        console.log("error in checkForUser!", error);
+      } finally {
+        setNumberVerified(true);
+      }
+    }
+  }
 
   function extractQuery(queryString) {
     if (!queryString.startsWith("?")) return {};
@@ -62,7 +114,7 @@ const LoginPage = ({ fetchUserData }) => {
     return resultQuery;
   }
 
-  async function createUserIndb(mobileNumber, userId) {
+  async function createUserIndb(mobileNumber, userId, referredBy) {
     try {
       const usersRef = collection(db, "users");
 
@@ -76,8 +128,16 @@ const LoginPage = ({ fetchUserData }) => {
       } else {
         console.log("Creating user");
         const newUserRef = doc(db, "users", userId); // keep userId as doc ID
-        await setDoc(newUserRef, { userPhoneNumber: mobileNumber });
-        return { userPhoneNumber: mobileNumber };
+        await setDoc(newUserRef, {
+          userPhoneNumber: mobileNumber,
+          referredBy,
+          referralCode: await generateReferralCode(),
+        });
+        return {
+          userPhoneNumber: mobileNumber,
+          referredBy,
+          referralCode: await generateReferralCode(),
+        };
       }
     } catch (e) {
       alert(e?.message);
@@ -91,7 +151,7 @@ const LoginPage = ({ fetchUserData }) => {
       console.log("otpVerification", otpVerification);
 
       // create user in db
-      await createUserIndb(mobileNumber, otpVerification.user.uid);
+      await createUserIndb(mobileNumber, otpVerification.user.uid, referredById);
 
       localStorage.setItem("choose-your-goat-token", otpVerification.user.accessToken);
 
@@ -141,13 +201,32 @@ const LoginPage = ({ fetchUserData }) => {
                     type="number"
                     name="mobileNumber"
                     id="mobileNumber"
+                    disabled={!!confirmation}
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="999-999-9999"
                     required=""
-                    onChange={(e) => setMobileNumber(e.target.value)}
+                    onChange={(e) => checkForUser(e.target.value)}
                   />
                   {mobileNumberError && <span className="text-sm text-red-500 ps-1">{mobileNumberError}</span>}
                 </div>
+                {isNewUser && (!confirmation || (confirmation && !!referralCode.length)) && (
+                  <div>
+                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Have a Referral Code?
+                    </label>
+                    <input
+                      type="text"
+                      name="referralCode"
+                      id="referralCode"
+                      disabled={!!confirmation}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="Enter your friend's referral code."
+                      required=""
+                      onChange={(e) => setReferralCode(e.target.value)}
+                    />
+                    {referralCodeError && <span className="text-sm text-red-500 ps-1">{referralCodeError}</span>}
+                  </div>
+                )}
                 {confirmation && (
                   <div>
                     <label htmlFor="number" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -197,8 +276,11 @@ const LoginPage = ({ fetchUserData }) => {
                 </span>
                 <button
                   onClick={confirmation ? verifyOtp : sendOtp}
+                  disabled={!numberVerified || showOtpBuffer}
                   style={{ backgroundColor: "#1d1e22", color: "white" }}
-                  className="w-full text-white flex justify-center bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                  className={`w-full text-white flex justify-center bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 ${
+                    numberVerified ? "" : "opacity-50 cursor-not-allowed"
+                  }`}
                 >
                   {showOtpBuffer ? <div className={styles.loginLoader}></div> : confirmation ? "Verify OTP" : "Send OTP"}
                 </button>

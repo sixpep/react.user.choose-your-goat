@@ -14,6 +14,7 @@ import ChickenPage from "./components/ChickenPage/ChickenPage";
 import EggsPage from "./components/ChickenPage/EggsPage";
 import PopupModal from "./components/Modals/PopupModal";
 import { getTokenFromQuery } from "./utils/extractQuery.utils";
+import UserProfile from "./components/UserProfilePage/UserProfile";
 
 export const Context = React.createContext();
 
@@ -34,6 +35,8 @@ const App = () => {
     userAddress: "",
     landmark: "",
     geolocation: { latitude: "", longitude: "" },
+    referralCode: "",
+    referredById: "",
     totalBill: 0,
   });
   const [pincodes, setPincodes] = useState([]);
@@ -155,6 +158,8 @@ const App = () => {
           userAddress: userAddress[0]?.userAddress,
           landmark: userAddress[0]?.landmark,
           userAddressesList: userAddress,
+          referralCode: user.referralCode,
+          referredById: user.referredById,
         }));
       } catch (error) {
         console.log("no token");
@@ -272,6 +277,7 @@ const App = () => {
             <Route path="/egg" element={<EggsPage />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/orders" element={<UserOrders />} />
+            <Route path="/profile" element={<UserProfile />} />
           </Routes>
         </BrowserRouter>
         {!isPopupVisible && selectLocationPopup && (
