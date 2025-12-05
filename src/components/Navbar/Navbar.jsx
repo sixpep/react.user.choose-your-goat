@@ -9,6 +9,10 @@ const Navbar = ({ selectLocationPopup, setSelectLocationPopup, locationName }) =
     window.location.reload();
   };
 
+  const goToProfile = () => {
+    window.location.href = "/profile";
+  };
+
   const handleOrdersButton = () => {
     window.location.href = "orders";
   };
@@ -31,8 +35,15 @@ const Navbar = ({ selectLocationPopup, setSelectLocationPopup, locationName }) =
                 <span>{locationName || "Pincode"}</span>
               </button>
               <button onClick={handleOrdersButton}>Orders</button>
-              <button onClick={handleLogOut}>
+              {/* <button onClick={handleLogOut}>
                 <IoIosLogOut size={24} />
+              </button> */}
+              <button onClick={goToProfile} className={styles.profileBtn}>
+                <img
+                  src="/images/userIcon_48x48.png"
+                  alt="profile"
+                  style={{ width: "24px", height: "24px" }} // match the 24px icon
+                />
               </button>
             </>
           ) : (
