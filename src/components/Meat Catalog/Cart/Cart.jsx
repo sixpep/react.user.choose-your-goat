@@ -452,6 +452,8 @@ const Cart = () => {
   };
 
   const verifyOtp = async () => {
+    //depricated function, returning it early for safety -> nsskv
+    return;
     setShowVerificationLoading(true);
     setShowOtpInputPopup(false);
     try {
@@ -492,6 +494,8 @@ const Cart = () => {
   };
 
   const addUserToDb = async (userPhoneNumber, userId, userData) => {
+    //depricated function, returning it early for safety -> nsskv
+    return;
     try {
       const usersRef = collection(db, "users");
 
@@ -518,6 +522,8 @@ const Cart = () => {
   };
 
   const addUserAddressToDb = async (userData) => {
+    //depricated function, returning it early for safety -> nsskv
+    return;
     try {
       await addDoc(collection(db, "addresses"), userData);
       console.log("Address doc written");
