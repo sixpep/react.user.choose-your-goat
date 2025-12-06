@@ -38,6 +38,8 @@ const App = () => {
     referralCode: "",
     referredById: "",
     totalBill: 0,
+    walletBalance: 0,
+    referralAmountSettled: 0,
   });
   const [pincodes, setPincodes] = useState([]);
 
@@ -160,6 +162,8 @@ const App = () => {
           userAddressesList: userAddress,
           referralCode: user.referralCode,
           referredById: user.referredById,
+          walletBalance: user.walletBalance,
+          referralAmountSettled: user.referralAmountSettled,
         }));
       } catch (error) {
         console.log("no token");

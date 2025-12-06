@@ -37,6 +37,7 @@ const isCodeTaken = async (code) => {
   return false;
 };
 
+//assign referal code.
 export const assignReferralCodesToAllUsers = async () => {
   console.log("🚀 Starting referral code assignment...");
 
@@ -69,6 +70,58 @@ export const assignReferralCodesToAllUsers = async () => {
         // 4. Add to batch
         batch.update(doc(db, "users", userDoc.id), {
           referralCode: newCode,
+        });
+
+        successCount++;
+      } catch (error) {
+        console.error(`❌ Failed for ${userDoc.id}:`, error.message);
+      }
+    }
+
+    // 5. Execute batch (max 500 ops per batch)
+    if (batch._mutations.length > 0) {
+      await batch.commit();
+      console.log(`🎉 Batch committed! ${successCount} codes assigned, ${skipCount} skipped`);
+    } else {
+      console.log("ℹ️  No changes needed");
+    }
+
+    return { successCount, skipCount, total: usersSnap.size };
+  } catch (error) {
+    console.error("💥 Batch assignment failed:", error);
+    throw error;
+  }
+};
+
+//assign wallet to all user.
+export const assignWalletToAllUsers = async () => {
+  console.log("🚀 Starting referral code assignment...");
+
+  try {
+    // 1. Fetch all users
+    const usersSnap = await getDocs(collection(db, "users"));
+    console.log(`📋 Found ${usersSnap.size} users`);
+
+    const batch = writeBatch(db);
+    let successCount = 0;
+    let skipCount = 0;
+
+    // 2. Process each user
+    for (const userDoc of usersSnap.docs) {
+      const userData = userDoc.data();
+
+      // Skip if already has valid code
+      if (userData.walletBalance) {
+        console.log(`⏭️  Skipping ${userDoc.id}: ${userData.walletBalance}`);
+        skipCount++;
+        continue;
+      }
+
+      try {
+        // 4. Add to batch
+        batch.update(doc(db, "users", userDoc.id), {
+          walletBalance: 0,
+          referralAmountSettled: 0,
         });
 
         successCount++;

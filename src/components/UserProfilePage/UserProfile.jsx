@@ -4,7 +4,7 @@ import { Context } from "../../App";
 import { LuMoveLeft } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 
-import { assignReferralCodesToAllUsers } from "../../utils/referalCodeGeneration.utils";
+import { assignReferralCodesToAllUsers, assignWalletToAllUsers } from "../../utils/referalCodeGeneration.utils";
 
 const MOBILE_BREAKPOINT = 768;
 
@@ -15,7 +15,6 @@ const UserProfile = () => {
   const [isMobileView, setIsMobileView] = useState(typeof window !== "undefined" && window.innerWidth <= MOBILE_BREAKPOINT);
   const [copyStatus, setCopyStatus] = useState("");
   const [shareError, setShareError] = useState("");
-  const [referrerDetails, setReferrerDetails] = useState({});
 
   const userName = order?.userName || "";
   const userPhoto = order?.photoURL || "/images/userIcon_96x96.png";
@@ -111,6 +110,18 @@ const UserProfile = () => {
             </div>
           </div>
 
+          {/* Wallet balance */}
+          <div className={styles.referralSection}>
+            <div className={styles.referralRow}>
+              <p className={styles.referralLabel}>Total Balance:</p>
+              <p className={styles.referralCode}>{`${order.walletBalance} Rs`}</p>
+            </div>
+            <div className={styles.referralRow}>
+              <p className={styles.referralLabel}>Amount Earned(Referral):</p>
+              <p className={styles.referralCode}>{`${order.referralAmountSettled} Rs`}</p>
+            </div>
+          </div>
+
           {/* Referral code section */}
           <div className={styles.referralSection}>
             <div className={styles.referralRow}>
@@ -140,6 +151,9 @@ const UserProfile = () => {
           {/* Logout button at bottom */}
           {/* <button className={styles.logoutBtn} onClick={assignReferralCodesToAllUsers}>
             assign referral
+          </button> */}
+          {/* <button className={styles.logoutBtn} onClick={assignWalletToAllUsers}>
+            assign wallet
           </button> */}
           <button className={styles.logoutBtn} onClick={handleLogout}>
             Logout

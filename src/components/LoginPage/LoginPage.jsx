@@ -132,6 +132,9 @@ const LoginPage = ({ fetchUserData }) => {
           userPhoneNumber: mobileNumber,
           referredBy,
           referralCode: await generateReferralCode(),
+          hasValidReferralCode: true,
+          walletBalance: 0,
+          referralAmountSettled: 0,
         });
         return {
           userPhoneNumber: mobileNumber,
