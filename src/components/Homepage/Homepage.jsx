@@ -31,12 +31,12 @@ const Homepage = ({ isPopupVisible, setPopupVisible }) => {
       tilePath: "/chicken",
       restrictedAt: chickenRestricted,
     },
-    {
-      title: "Eggs",
-      imgSrc: "/images/eggRightEdge.png",
-      tilePath: "/egg",
-      restrictedAt: eggsRestricted,
-    },
+    // {
+    //   title: "Eggs",
+    //   imgSrc: "/images/eggRightEdge.png",
+    //   tilePath: "/egg",
+    //   restrictedAt: eggsRestricted,
+    // },
   ];
 
   useEffect(() => {
