@@ -15,7 +15,7 @@ import SelectAddress from "../SelectAddress/SelectAddress";
 import { lowDeliveryFeePincodes } from "../../../staticValues";
 
 const Cart = () => {
-  const { order, setOrder, goatsData, hensData, eggsData } = useContext(Context);
+  const { order, setOrder, goatsData, hensData, eggsData, readyToCookData } = useContext(Context);
   const [showOtpInputPopup, setShowOtpInputPopup] = useState(false);
   const [showVerificationLoading, setShowVerificationLoading] = useState(false);
   const [showConfirmationLoading, setShowConfirmationLoading] = useState(false);
@@ -182,9 +182,7 @@ const Cart = () => {
 
       if (currentSelectedAddressDetails.userPinCode !== localStorage.getItem("true-meat-location")) {
         console.log("Error occured due to mismatch of selected pincode and selected address pincode.");
-        alert(
-          "Selected pincode is not the same as the pincodes in selected address. Please change the pincode at the top of the page or create a new address in this location."
-        );
+        alert("Selected pincode is not the same as the pincodes in selected address. Please change the pincode at the top of the page or create a new address in this location.");
         return;
       }
     } else {
@@ -314,6 +312,47 @@ const Cart = () => {
       setOrderConfirmation(true);
       return;
     }
+    if (order.orderType === "readytocook") {
+      const dd = "2025-12-31";
+      const docRef = await addDoc(collection(db, "rtcOrders"), {
+        geolocation: currentSelectedAddressDetails.geolocation,
+        landmark: currentSelectedAddressDetails.landmark,
+        userAddress: currentSelectedAddressDetails.userAddress,
+        userCity: currentSelectedAddressDetails.city || "",
+        userPinCode: currentSelectedAddressDetails.userPinCode || "",
+
+        userName: order.userName,
+        userPhoneNumber: order.userPhoneNumber,
+
+        userAddressId: currentSelectedAddressDetails.id,
+        userId: localStorage.getItem("choose-your-goat-userId"),
+
+        meatRequirements: order.meatRequirements,
+        orderType: "readytocook",
+        orderedDate: new Date().getTime(),
+        scheduledDeliveryDate: dd,
+        deliveryFee: deliveryFee,
+        totalBill: order.totalBill + deliveryFee,
+      });
+      console.log(docRef);
+
+      sendEmailOrder(
+        currentSelectedAddressDetails.userName,
+        // order.userName,
+        order.userPhoneNumber,
+        currentSelectedAddressDetails.userAddress,
+        currentSelectedAddressDetails.landmark,
+        order.meatRequirements,
+        order.totalBill + deliveryFee,
+        order.scheduledDeliveryDate || dd,
+        order.orderType,
+        order.orderedDate || Date.now()
+      );
+
+      setShowConfirmationLoading(false);
+      setOrderConfirmation(true);
+      return;
+    }
 
     try {
       await runTransaction(db, async (transaction) => {
@@ -333,9 +372,7 @@ const Cart = () => {
             if (key !== "goatId" && requirement[key] !== undefined && mapping[key]) {
               const goatField = mapping[key];
               if (goatData[goatField] < requirement[key]) {
-                throw new Error(
-                  `Not enough ${goatField} for goat ${requirement.goatId}. Requested: ${requirement[key]}, Available: ${goatData[goatField]}`
-                );
+                throw new Error(`Not enough ${goatField} for goat ${requirement.goatId}. Requested: ${requirement[key]}, Available: ${goatData[goatField]}`);
               }
             }
           }
@@ -358,9 +395,7 @@ const Cart = () => {
           Object.keys(requirement).forEach((requirementKey) => {
             if (requirementKey !== "goatId") {
               const priceKey = priceNames[requirementKey];
-              billCalculated +=
-                requirement[requirementKey] *
-                (goat[localStorage.getItem("true-meat-location")]?.[priceKey] ?? goat["general"]?.[priceKey] ?? goat[priceKey]);
+              billCalculated += requirement[requirementKey] * (goat[localStorage.getItem("true-meat-location")]?.[priceKey] ?? goat["general"]?.[priceKey] ?? goat[priceKey]);
             }
           });
 
@@ -554,18 +589,9 @@ const Cart = () => {
     }
   };
 
-  const sendEmailOrder = async (
-    userName,
-    userPhoneNumber,
-    userAddress,
-    landmark,
-    meatRequirements,
-    totalBill,
-    scheduledDeliveryDate,
-    orderType,
-    orderedDate
-  ) => {
+  const sendEmailOrder = async (userName, userPhoneNumber, userAddress, landmark, meatRequirements, totalBill, scheduledDeliveryDate, orderType, orderedDate) => {
     try {
+      console.log(userName, userPhoneNumber, userAddress, landmark, meatRequirements, totalBill, scheduledDeliveryDate, orderType, orderedDate);
       const resp = await axios.post("https://sendneworderemail-ypvdab2dka-uc.a.run.app", {
         // const resp = await axios.post("http://127.0.0.1:5001/choose-your-goat/us-central1/sendNewOrderEmail", {
         userName: userName,
@@ -657,6 +683,24 @@ const Cart = () => {
                   </div>
                 );
               })
+            : order.orderType === "readytocook"
+            ? order.meatRequirements.map((item, index) => {
+                const rtcData = readyToCookData.find((rtc) => rtc.docId === item.docId);
+                const totalPrice = rtcData ? rtcData.price * item.quantity : 0;
+
+                return (
+                  <div className={styles.cartItemsWrap}>
+                    <div className={styles.cartItem} key={index}>
+                      <div className={styles.priceValues}>
+                        <p>
+                          {item?.name} {`(${item.quantity})`}
+                        </p>
+                      </div>
+                      <p>₹ {totalPrice}/-</p>
+                    </div>
+                  </div>
+                );
+              })
             : order.meatRequirements.map((goatObj, index) => (
                 <div className={styles.cartItemsWrap} key={index}>
                   {Object.keys(goatObj).map((keyName) => {
@@ -716,14 +760,7 @@ const Cart = () => {
 
         <div id="recaptcha"></div>
 
-        {!createNewAddress && (
-          <SelectAddress
-            selectedAddressId={selectedAddressId}
-            setSelectedAddressId={setSelectedAddressId}
-            setCreateNewAddress={setCreateNewAddress}
-            placeOrder={placeOrder}
-          />
-        )}
+        {!createNewAddress && <SelectAddress selectedAddressId={selectedAddressId} setSelectedAddressId={setSelectedAddressId} setCreateNewAddress={setCreateNewAddress} placeOrder={placeOrder} />}
         {createNewAddress && <CheckOutForm sendOtp={sendOtp} placeOrder={placeOrder} />}
       </div>
 

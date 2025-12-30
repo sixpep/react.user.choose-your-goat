@@ -157,3 +157,59 @@
 .footer a:hover {
   text-decoration: underline;
 }
+
+.readyToCookCard {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  background: #0f0f0f;
+  margin: 20px 0 28px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.readyToCookText h3 {
+  color: #ffffff;
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.readyToCookText p {
+  color: #cccccc;
+  font-size: 14px;
+}
+
+.readyToCookImage img {
+  height: 80px;
+  object-fit: contain;
+}
+
+.festiveBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #e63946;
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.readyToCookBanner {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+}
+
+.readyToCookBanner img {
+  width: 100%;
+  height: auto; /* 🔑 keeps full image visible */
+  display: block;
+  object-fit: contain; /* 🔑 no crop */
+}

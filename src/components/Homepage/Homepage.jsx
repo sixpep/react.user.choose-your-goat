@@ -5,9 +5,12 @@ import { motion } from "framer-motion";
 import { db } from "../../firebase/setup";
 import { collection, doc, getDoc, getDocs, onSnapshot, query, orderBy, limit, where } from "firebase/firestore";
 import { Context } from "../../App";
+import { useNavigate } from "react-router-dom";
 
 // const Homepage = ({ selectLocationPopup, setSelectLocationPopup, setLocationName, locationName, isPopupVisible, setPopupVisible }) => {
 const Homepage = ({ isPopupVisible, setPopupVisible }) => {
+  const navigate = useNavigate();
+
   const [popupData, setPopupData] = useState({});
   const [muttonRestricted, setMuttonRestricted] = useState(false);
   const [chickenRestricted, setChickenRestricted] = useState(false);
@@ -134,6 +137,17 @@ const Homepage = ({ isPopupVisible, setPopupVisible }) => {
             you
             <span className={styles.choosingTitle}> like to order?</span>
           </h2>
+        </div>
+        {/* Ready To Cook – Festive Card */}
+        <div className={styles.readyToCookCard} onClick={() => (window.location.pathname = "/ready-to-cook")}>
+          {/* <div className={styles.festiveBadge}>🎉 Festive</div> */}
+          <div className={styles.readyToCookBanner}>
+            <img src="/images/readyToCookBanner.png" alt="Ready to Cook - Festive Special" />
+          </div>
+
+          {/* <div className={styles.readyToCookImage}>
+            <img src="/images/readyToCookBanner.png" alt="Ready to Cook" />
+          </div> */}
         </div>
         <div className={styles.meatTiles}>
           {MeatTileProps.map((tile, ind) => (

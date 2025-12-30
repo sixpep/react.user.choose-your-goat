@@ -15,6 +15,7 @@ import EggsPage from "./components/ChickenPage/EggsPage";
 import PopupModal from "./components/Modals/PopupModal";
 import { getTokenFromQuery } from "./utils/extractQuery.utils";
 import UserProfile from "./components/UserProfilePage/UserProfile";
+import ReadyToCookPage from "./components/ReadyToCookPage/ReadyToCookPage";
 
 export const Context = React.createContext();
 
@@ -25,6 +26,7 @@ const App = () => {
   const [goatsData, setGoatsData] = useState([]);
   const [hensData, setHensData] = useState([]);
   const [eggsData, setEggsData] = useState([]);
+  const [readyToCookData, setReadyToCookData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const [order, setOrder] = useState({
@@ -225,6 +227,19 @@ const App = () => {
       setEggsData(updatedEggsData);
     });
 
+    const unsubscribeReadyToCook = onSnapshot(collection(db, "readytocook"), (snapshot) => {
+      const updatedReadyToCookData = snapshot.docs.map((doc) => ({
+        docId: doc.id,
+        ...doc.data(),
+      }));
+
+      console.log("Updated Ready To Cook Data", updatedReadyToCookData);
+
+      updatedReadyToCookData.sort((a, b) => a.rank - b.rank);
+
+      setReadyToCookData(updatedReadyToCookData);
+    });
+
     fetchUserData();
 
     // for location popup
@@ -247,6 +262,7 @@ const App = () => {
       unsubscribeGoats();
       unsubscribeHens();
       unsubscribeEggs();
+      unsubscribeReadyToCook();
     };
   }, []);
 
@@ -255,7 +271,7 @@ const App = () => {
   };
 
   return (
-    <Context.Provider value={{ order, setOrder, goatsData, setGoatsData, hensData, eggsData }}>
+    <Context.Provider value={{ order, setOrder, goatsData, setGoatsData, hensData, eggsData, readyToCookData }}>
       <div className="appContainer">
         <Navbar selectLocationPopup={selectLocationPopup} setSelectLocationPopup={setSelectLocationPopup} locationName={locationName} />
         <BrowserRouter>
@@ -282,6 +298,7 @@ const App = () => {
             <Route path="/cart" element={<Cart />} />
             <Route path="/orders" element={<UserOrders />} />
             <Route path="/profile" element={<UserProfile />} />
+            <Route path="/ready-to-cook" element={<ReadyToCookPage />} />
           </Routes>
         </BrowserRouter>
         {!isPopupVisible && selectLocationPopup && (
