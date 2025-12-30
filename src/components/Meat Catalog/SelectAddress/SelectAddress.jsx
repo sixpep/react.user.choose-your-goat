@@ -108,8 +108,7 @@ const SelectAddress = ({ selectedAddressId, setSelectedAddressId, setCreateNewAd
 
     setMinDate(currentHour < 20 ? today : tomorrow);
   };
-  const placeOrderIsEnabled =
-    selectedAddressId.length > 0 && ((order.orderType !== "chicken" && order.orderType !== "egg") || !!order.scheduledDeliveryDate);
+  const placeOrderIsEnabled = selectedAddressId.length > 0 && ((order.orderType !== "chicken" && order.orderType !== "egg") || !!order.scheduledDeliveryDate);
 
   return (
     <section className="mb-4 bg-white py-4 pb-20 antialiased dark:bg-gray-900 md:pb-16 shadow-inner max-h-[99vh] overflow-y-auto z-30">
@@ -137,21 +136,22 @@ const SelectAddress = ({ selectedAddressId, setSelectedAddressId, setCreateNewAd
         </div>
       )}
 
-      <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Customize</h2>
-        <textarea
-          name="butcherInstructions"
-          id="butcherInstructions"
-          maxLength={350}
-          rows={3} // ✅ 3 lines height
-          className="mt-1 block w-full rounded-lg border border-gray-300 bg-white p-3 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500"
-          placeholder="Eg: Medium pieces, extra cleaning, separate liver…"
-          value={order.butcherInstructions || ""}
-          onChange={handleChangeInput}
-        />
-        <div className="mt-1 text-right text-xs text-gray-500">{order.butcherInstructions?.length || 0}/350</div>
-      </div>
-
+      {order.orderType !== "readytocook" && order.orderType !== "egg" && (
+        <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Preferred size</h2>
+          <textarea
+            name="butcherInstructions"
+            id="butcherInstructions"
+            maxLength={350}
+            rows={3} // ✅ 3 lines height
+            className="mt-1 block w-full rounded-lg border border-gray-300 bg-white p-3 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500"
+            placeholder="Eg: Curry Cut, Biryani Cut .."
+            value={order.butcherInstructions || ""}
+            onChange={handleChangeInput}
+          />
+          <div className="mt-1 text-right text-xs text-gray-500">{order.butcherInstructions?.length || 0}/350</div>
+        </div>
+      )}
       <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Select Address</h2>
         {(order.orderType === "chicken" || order.orderType === "egg") && <span>*Delivery will take about 45 min.</span>}
@@ -187,12 +187,7 @@ const SelectAddress = ({ selectedAddressId, setSelectedAddressId, setCreateNewAd
           <p className="text-blue-600 font-medium">+ Add New Address</p>
         </div>
         {order.userAddressesList?.map((address, index) => (
-          <label
-            key={address.id}
-            className={`block border rounded-lg p-4 cursor-pointer ${
-              selectedAddressId === address.id ? "border-blue-500 bg-blue-50" : "border-gray-300"
-            }`}
-          >
+          <label key={address.id} className={`block border rounded-lg p-4 cursor-pointer ${selectedAddressId === address.id ? "border-blue-500 bg-blue-50" : "border-gray-300"}`}>
             <div className="flex items-start gap-3">
               <input
                 type="radio"
@@ -212,15 +207,8 @@ const SelectAddress = ({ selectedAddressId, setSelectedAddressId, setCreateNewAd
                 <p className="text-sm text-gray-600">{address.city}</p>
                 <p className="text-sm text-gray-600">{address.userPinCode}</p>
                 <p className="text-sm text-gray-600">{address.userPhoneNumber}</p>
-                <p className="text-sm text-gray-600">
-                  {"Latitude: " + (address.geolocation?.latitude || "NA") + ", Longitude: " + (address.geolocation?.longitude || "NA")}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => handleUpdateLocation(address.id, index)}
-                  className="mt-2 text-sm text-blue-600 hover:underline"
-                  disabled={locationLoading[index]}
-                >
+                <p className="text-sm text-gray-600">{"Latitude: " + (address.geolocation?.latitude || "NA") + ", Longitude: " + (address.geolocation?.longitude || "NA")}</p>
+                <button type="button" onClick={() => handleUpdateLocation(address.id, index)} className="mt-2 text-sm text-blue-600 hover:underline" disabled={locationLoading[index]}>
                   {locationLoading[index] ? "Updating..." : "Update Location"}
                 </button>
               </div>
