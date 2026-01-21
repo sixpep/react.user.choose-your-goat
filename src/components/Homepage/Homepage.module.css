@@ -158,58 +158,56 @@
   text-decoration: underline;
 }
 
-.readyToCookCard {
-  position: relative;
+/* Wrapper */
+.readyToCookBannerWrap {
   width: 100%;
+  margin: 16px 0 24px 0;
   border-radius: 16px;
-  background: #0f0f0f;
-  margin: 20px 0 28px;
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  overflow: hidden;
-}
-
-.readyToCookText h3 {
-  color: #ffffff;
-  font-size: 20px;
-  margin-bottom: 4px;
-}
-
-.readyToCookText p {
-  color: #cccccc;
-  font-size: 14px;
-}
-
-.readyToCookImage img {
-  height: 80px;
-  object-fit: contain;
-}
-
-.festiveBadge {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: #e63946;
-  color: #fff;
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-weight: 600;
-}
-
-.readyToCookBanner {
-  width: 100%;
-  border-radius: 12px;
   overflow: hidden;
   background: #000;
 }
 
-.readyToCookBanner img {
+/* Banner Image */
+.readyToCookBanner {
   width: 100%;
-  height: auto; /* 🔑 keeps full image visible */
+  height: auto;
   display: block;
-  object-fit: contain; /* 🔑 no crop */
+
+  /* Smooth entry */
+  animation: bannerFadeIn 0.8s ease-out, bannerPulse 5s ease-in-out infinite;
+
+  will-change: transform;
+}
+
+/* Hover interaction (desktop only) */
+@media (hover: hover) {
+  .readyToCookBanner:hover {
+    transform: scale(1.03);
+    transition: transform 0.6s ease;
+  }
+}
+
+/* Fade-in on load */
+@keyframes bannerFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Subtle breathing pulse */
+@keyframes bannerPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

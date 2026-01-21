@@ -31,12 +31,12 @@ const Homepage = ({ isPopupVisible, setPopupVisible }) => {
       tilePath: "/chicken",
       restrictedAt: chickenRestricted,
     },
-    // {
-    //   title: "Eggs",
-    //   imgSrc: "/images/eggRightEdge.png",
-    //   tilePath: "/egg",
-    //   restrictedAt: eggsRestricted,
-    // },
+    {
+      title: "Eggs",
+      imgSrc: "/images/eggRightEdge.png",
+      tilePath: "/egg",
+      restrictedAt: eggsRestricted,
+    },
   ];
 
   useEffect(() => {
@@ -138,17 +138,21 @@ const Homepage = ({ isPopupVisible, setPopupVisible }) => {
             <span className={styles.choosingTitle}> like to order?</span>
           </h2>
         </div>
-        {/* Ready To Cook – Festive Card */}
-        <div className={styles.readyToCookCard} onClick={() => (window.location.pathname = "/ready-to-cook")}>
-          {/* <div className={styles.festiveBadge}>🎉 Festive</div> */}
-          <div className={styles.readyToCookBanner}>
-            <img src="/images/readyToCookBanner.png" alt="Ready to Cook - Festive Special" />
+        {/* Ready To Cook Banner */}
+        {/* <motion.div
+          className={styles.readyToCookCard}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          whileHover={{ scale: 1.01 }}
+          onClick={() => navigate("/ready-to-cook")}
+        >
+          <div className={styles.readyToCookBannerWrap}>
+            <img src="/images/readyToCookBanner.png" alt="Ready to Cook - New Year Special" className={styles.readyToCookBanner} />
           </div>
 
-          {/* <div className={styles.readyToCookImage}>
-            <img src="/images/readyToCookBanner.png" alt="Ready to Cook" />
-          </div> */}
-        </div>
+          <motion.div className={styles.glowPulse} animate={{ opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 2.5, repeat: Infinity }} />
+        </motion.div> */}
         <div className={styles.meatTiles}>
           {MeatTileProps.map((tile, ind) => (
             <MeatTile key={ind} title={tile.title} imgSrc={tile.imgSrc} hide={tile.restrictedAt} tilePath={tile.tilePath} />
