@@ -43,7 +43,7 @@ const ReadyToCookPage = () => {
             </h6>
           </div>
           <div className={styles.deliveryDate}>
-            <p>New Year Special Only</p>
+            <p>Delivery</p>
             <h6>
               31st December <br /> <span>(12PM to 9PM)</span>
             </h6>
@@ -51,7 +51,7 @@ const ReadyToCookPage = () => {
         </div>
         <div className={styles.quanityControllers}>
           {readyToCookData.map((item, index) => (
-            <QuantityControllerComp key={index} name={item.name} description={item.description} price={item.price} size={item.size} docId={item.docId} isOrderAllowed={item.isAllowed} />
+            <QuantityControllerComp key={index} name={item.name} description={item.description} price={item.price} size={item.size} docId={item.docId} isAllowed={item.isAllowed} />
           ))}
         </div>
       </div>

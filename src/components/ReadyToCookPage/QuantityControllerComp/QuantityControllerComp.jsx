@@ -1,8 +1,9 @@
 import React, { useContext, useMemo } from "react";
 import styles from "../../Meat Catalog/Tile Component/Tile.module.css";
+import styles2 from "./QuantityControllerComp.module.css";
 import { Context } from "../../../App";
 
-const QuantityControllerComp = ({ name, price, description, size, docId }) => {
+const QuantityControllerComp = ({ name, price, description, size, docId, isAllowed }) => {
   const { order, setOrder } = useContext(Context);
 
   const currentItem = useMemo(() => order.meatRequirements.find((item) => item.docId === docId), [order.meatRequirements, docId]);
@@ -10,6 +11,8 @@ const QuantityControllerComp = ({ name, price, description, size, docId }) => {
   const quantity = currentItem?.quantity ?? 0;
 
   const handleIncrement = () => {
+    if (!isAllowed) return;
+
     setOrder((prev) => {
       const existingIndex = prev.meatRequirements.findIndex((item) => item.docId === docId);
 
@@ -28,7 +31,7 @@ const QuantityControllerComp = ({ name, price, description, size, docId }) => {
   };
 
   const handleDecrement = () => {
-    if (!currentItem) return;
+    if (!currentItem || !isAllowed) return;
 
     setOrder((prev) => {
       const updatedMeatRequirements =
@@ -45,7 +48,9 @@ const QuantityControllerComp = ({ name, price, description, size, docId }) => {
   };
 
   return (
-    <div className={styles.quantityControl}>
+    <div className={`${styles.quantityControl} ${!isAllowed ? styles2.disabledCard : ""}`}>
+      {!isAllowed && <div className={styles2.soldOutBadge}>Sold Out</div>}
+
       <div className={styles.label}>
         <div className={styles.itemLabelWrap}>
           <p>{name}</p>
@@ -61,11 +66,13 @@ const QuantityControllerComp = ({ name, price, description, size, docId }) => {
         </div>
 
         <div className={styles.quantityButtons}>
-          <button onClick={handleDecrement} disabled={quantity === 0}>
+          <button onClick={handleDecrement} disabled={!isAllowed || quantity === 0}>
             −
           </button>
           <p>{quantity}</p>
-          <button onClick={handleIncrement}>+</button>
+          <button onClick={handleIncrement} disabled={!isAllowed}>
+            +
+          </button>
         </div>
       </div>
     </div>
