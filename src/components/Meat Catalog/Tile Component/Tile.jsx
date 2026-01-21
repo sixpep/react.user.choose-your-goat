@@ -157,13 +157,7 @@ const Tile = ({
 
         // check if request already exists
         let existingRequest = await getDocs(
-          query(
-            collection(db, "notify"),
-            where("goatId", "==", user.goatId),
-            where("notifyAbout", "==", user.notifyAbout),
-            where("userId", "==", user.userId),
-            limit(1)
-          )
+          query(collection(db, "notify"), where("goatId", "==", user.goatId), where("notifyAbout", "==", user.notifyAbout), where("userId", "==", user.userId), limit(1))
         );
 
         if (existingRequest.empty) {
@@ -362,8 +356,7 @@ const Tile = ({
               <div className={styles.itemLabelWrap}>
                 <p>Mutton</p>
                 <span className={styles.availableNote}>
-                  Available Shares :{" "}
-                  {totalShares > 0 && !remainingMuttonShares ? <span>SOLD</span> : <span>{!isActive ? 0 : remainingMuttonShares || 0}</span>}
+                  Available Shares : {totalShares > 0 && !remainingMuttonShares ? <span>SOLD</span> : <span>{!isActive ? 0 : remainingMuttonShares || 0}</span>}
                 </span>
               </div>
             </div>
@@ -441,11 +434,11 @@ const Tile = ({
             </span> */}
           </div>
 
-          {nextUnlockText && (
+          {/* {nextUnlockText && (
             <div className={styles.unlockingNote}>
               <p>{nextUnlockText} </p>
             </div>
-          )}
+          )} */}
 
           {/* ///// */}
 
